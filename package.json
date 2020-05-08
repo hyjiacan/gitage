@@ -1,0 +1,13 @@
+{
+  "name": "gitea-pages",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "serve": "supervisor app/index.js"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
+  }
+}
