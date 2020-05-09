@@ -1,6 +1,7 @@
 {
-  "name": "gitea-pages",
-  "version": "0.0.0",
+  "name": "node-pages",
+  "description": "Git pages server based on Node.js",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "supervisor app/index.js"
