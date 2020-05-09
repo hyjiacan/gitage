@@ -9,6 +9,7 @@ if (!fs.existsSync(root)) {
 
 module.exports = {
   root: path.resolve(root),
+  logPath: 'logs',
   host: '0.0.0.0',
   port: 1997,
   configFile: 'pages.config.json'

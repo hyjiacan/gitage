@@ -9,8 +9,6 @@ const config = require('./config')
 const MIME = require('./assets/mime')
 const util = require('util')
 
-const META_FILE = '.pages.meta.json'
-
 const PROJECT_ROOT_MAP = {}
 
 function renderIndex(res) {
@@ -23,20 +21,28 @@ function renderIndex(res) {
     if (!fs.statSync(projectPath).isDirectory()) {
       return
     }
-    const metaFile = path.join(projectPath, META_FILE)
+    const pkgFile = path.join(projectPath, 'package.json')
 
-    const meta = JSON.parse(readFileContent(metaFile))
+    const pkg = JSON.parse(readFileContent(pkgFile))
+
+    let repoUrl
+    if (typeof pkg.repository === 'string') {
+      repoUrl = pkg.repository
+    } else {
+      repoUrl = pkg.repository.url
+    }
 
     return `<li>
   <div>
     <h3>${projectName}
       <small style="font-size: 14px">
-        <a href="${meta.web}">Repository</a> |
-        <a href="${projectName}/">Pages</a>
+        <span style="background-color: #5f6371; color: #ffffff;padding: 2px 5px;margin: 0 5px;">${pkg.name}@${pkg.version}</span>
+        <a href="${repoUrl}">Repository</a> |
+        <a href="${projectName}/">Page</a>
       </small>
     </h3>
   </div>
-  <div>${meta.description}</div>
+  <div style="color: #666;">${pkg.description || ''}</div>
 </li>`
   })
 
@@ -44,7 +50,7 @@ function renderIndex(res) {
   const html = `<!doctype html>
 <html>
 <head>
-<title>Index</title>
+<title>Git pages</title>
 <meta charset="UTF-8" />
 </head>
 <body>
@@ -172,24 +178,9 @@ async function handleGitHooks(req, res) {
   const checkoutPath = path.join(config.root, name)
   await checkoutRepo(cloneUrl, checkoutPath)
 
-  writeProjectMeta(repository, checkoutPath)
-
   res.writeHead(200)
   res.end()
   res.end()
-}
-
-// 写元数据
-function writeProjectMeta(repository, checkoutPath) {
-  const meta = {
-    name: repository.name,
-    description: repository.description,
-    web: repository.html_url
-  }
-
-  const metaFile = path.join(checkoutPath, META_FILE)
-
-  fs.writeFileSync(metaFile, JSON.stringify(meta))
 }
 
 async function checkoutRepo(url, dist) {
