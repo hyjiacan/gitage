@@ -11,12 +11,17 @@
 ```json
 {
   "path": "docs",
-  "index": "index.html"
+  "index": "index.html",
+  "tag": true
 }
 ```
 
+- `path` 部署目录，默认为 `docs`
+- `index` 部署目录下的索引页名称，默认为 `index.html`
+- `tag` 是否仅在收到 `tag` 时部署，默认为 `false`
+
 ## 待办
 
-- [ ] 允许接收不同类型的 hook: `push/tag`
 - [ ] 移除非发布目录
 - [ ] 运行日志
+- [ ] 检查请求是否跨项目了（不允许通过 `..` 访问其它目录
