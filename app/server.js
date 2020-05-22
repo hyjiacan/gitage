@@ -20,7 +20,7 @@ function requestHandler(req, res) {
   if (reqPath.startsWith('api/hooks')) {
     // 接收 git 钩子
     gitHook.handle(req, res).catch(e => {
-      logger.error(e.message)
+      logger.error(e)
       res.writeHead(500)
       res.write(e.message)
       res.end()
@@ -52,7 +52,7 @@ const server = http.createServer((req, res) => {
   try {
     requestHandler(req, res)
   } catch (e) {
-    logger.error(e.message)
+    logger.error(e)
     res.writeHead(500)
     res.write(e.message)
     res.end()
@@ -60,7 +60,7 @@ const server = http.createServer((req, res) => {
 })
 
 server.on('error', e => {
-  logger.error(e.message)
+  logger.error(e)
 })
 
 server.on('close', () => {

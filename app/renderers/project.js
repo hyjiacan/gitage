@@ -19,7 +19,7 @@ module.exports = {
 
     // 读取配置文件
     const configFile = path.join(projectPath, config.configFile)
-    const pageConfig = fs.existsSync(configFile) ? JSON.parse(util.readFileContent()) : {}
+    const pageConfig = fs.existsSync(configFile) ? JSON.parse(util.readFileContent(configFile)) : {}
 
     const pageRoot = PROJECT_ROOT_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
 
