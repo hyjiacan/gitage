@@ -1,3 +1,4 @@
+const fs = require('fs')
 const path = require('path')
 
 const config = require('../config')
@@ -16,7 +17,8 @@ module.exports = {
     }
 
     // 读取配置文件
-    const pageConfig = JSON.parse(util.readFileContent(path.join(projectPath, config.configFile)))
+    const configFile = path.join(projectPath, config.configFile)
+    const pageConfig = fs.existsSync(configFile) ? JSON.parse(util.readFileContent()) : {}
 
     PROJECT_ROOT_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
 
