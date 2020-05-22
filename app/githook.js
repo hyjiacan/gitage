@@ -1,6 +1,7 @@
 const fs = require('fs')
 const util = require('./misc/util')
 const config = require('./config')
+const logger = require('./misc/logger')
 
 module.exports = {
   /**
@@ -24,14 +25,14 @@ module.exports = {
     const event = req.headers['x-gitea-event']
 
     if (!event) {
-      console.info('Currently only accepts hook request from GITEA')
+      logger.info('Currently only accepts hook request from GITEA')
       res.writeHead(200)
       res.end()
       return
     }
 
     if (event !== 'push') {
-      console.info('Currently only accepts PUSH method')
+      logger.info('Currently only accepts PUSH method')
       res.writeHead(200)
       res.end()
       return
@@ -41,14 +42,14 @@ module.exports = {
     const name = repository.name
     const cloneUrl = repository.clone_url
 
-    const checkoutPath = path.join(config.root, name)
+    const checkoutPath = path.join(config.projectRoot, name)
     await checkoutRepo(cloneUrl, checkoutPath)
 
     res.writeHead(200)
     res.end()
   },
   async checkoutRepo(url, dist) {
-    console.info('Checkout: %s', url)
+    logger.info(`Checkout: ${url}`)
 
     // # remove any untracked files and directories
     // git --work-tree=${WEB_DIR} clean -fd
@@ -59,10 +60,10 @@ module.exports = {
     if (fs.existsSync(dist)) {
       // 清空工作目录
       // await runCommand(`git clean -f -d "${dist}"`)
-      console.info('rmdir: %s', dist)
+      logger.info(`rmdir: ${dist}`)
       fs.rmdirSync(dist, {recursive: true})
     }
-    console.info('mkdir: %s', dist)
+    logger.info(`mkdir: ${dist}`)
     fs.mkdirSync(dist, {recursive: true, mode: '777'})
 
     // 克隆代码

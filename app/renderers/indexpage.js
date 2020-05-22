@@ -5,10 +5,10 @@ const util = require('../misc/util')
 
 function renderIndex(res) {
   // 查找项目目录
-  const items = fs.readdirSync(config.root)
+  const items = fs.readdirSync(config.projectRoot)
 
   const projects = items.map(projectName => {
-    const projectPath = path.join(config.root, projectName)
+    const projectPath = path.join(config.projectRoot, projectName)
 
     if (!fs.statSync(projectPath).isDirectory()) {
       return

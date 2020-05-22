@@ -3,6 +3,8 @@ const path = require('path')
 
 const config = require('../config')
 
+const LEVELS = ['debug', 'info', 'warn', 'error']
+
 function timestamp() {
   const now = new Date()
 
@@ -12,21 +14,34 @@ function timestamp() {
     now.getHours().toString().padStart(2, '0'),
     now.getMinutes().toString().padStart(2, '0'),
     now.getSeconds().toString().padStart(2, '0')
-  ]}.${now.getMilliseconds().toString().padStart(3, '0')}`
+  ].join(':')}.${now.getMilliseconds().toString().padStart(3, '0')}`
 
   return {dirName, fileName, time}
 }
 
 function log(level, msg) {
   const {dirName, fileName, time} = timestamp()
-  const content = `${time} [${level}] ${msg}`
+  const content = `[${time}] [${level}] ${msg}`
 
-  const dir = path.join(config.root, config.logPath, dirName)
+  const dir = path.join(config.logPath, dirName)
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, {recursive: true, mode: '777'})
   }
 
-  console[level](msg)
+  level = level.toLowerCase()
+
+  if (console[level]) {
+    console[level](content)
+  } else {
+    console.log(content)
+  }
+
+  const allowIdx = LEVELS.indexOf(config.logLevel.toLowerCase())
+  const idx = LEVELS.indexOf(level)
+
+  if (idx < allowIdx) {
+    return
+  }
 
   // 写文件
   fs.appendFileSync(path.join(dir, fileName), content + '\n', {encoding: 'utf-8'})
@@ -34,12 +49,15 @@ function log(level, msg) {
 
 module.exports = {
   info(msg) {
-    log('info', msg)
+    log('INFO', msg)
   },
   warn(msg) {
-    log('warn', msg)
+    log('WARN', msg)
   },
   error(msg) {
-    log('error', msg)
+    log('ERROR', msg)
+  },
+  debug(msg) {
+    log('DEBUG', msg)
   }
 }

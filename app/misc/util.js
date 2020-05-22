@@ -1,6 +1,7 @@
 const fs = require('fs')
 const child_process = require('child_process')
 const util = require('util')
+const logger = require('./logger')
 
 module.exports = {
   /**
@@ -24,23 +25,23 @@ module.exports = {
     if (fs.existsSync(pathName)) {
       return true
     }
-    console.info('Path not found:', pathName)
+    logger.info(`Path not found: ${pathName}`)
     res.writeHead(404)
     res.end()
     return false
   },
 
   async runCommand(cmd) {
-    console.info('Spawn: %s', cmd)
+    logger.info(`Spawn: ${cmd}`)
     const {stdout, stderr} = await util.promisify(child_process.exec)(cmd, {
       windowsHide: true
     })
 
-    console.info(stdout)
+    logger.debug(stdout)
     if (stderr) {
-      console.error(stderr)
+      logger.info(stderr)
     }
-    console.info('Clone complete')
+    logger.debug('Clone complete')
   },
   receivePostData(req) {
     return new Promise(resolve => {

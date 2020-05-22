@@ -5,12 +5,13 @@ const config = require('../config')
 
 const MIME = require('../assets/mime')
 const util = require('../misc/util')
+const logger = require('../misc/logger')
 
 const PROJECT_ROOT_MAP = {}
 
 module.exports = {
   renderIndex(res, projectName) {
-    const projectPath = path.join(config.root, projectName)
+    const projectPath = path.join(config.projectRoot, projectName)
 
     if (!util.checkPath(res, projectPath)) {
       return
@@ -20,9 +21,9 @@ module.exports = {
     const configFile = path.join(projectPath, config.configFile)
     const pageConfig = fs.existsSync(configFile) ? JSON.parse(util.readFileContent()) : {}
 
-    PROJECT_ROOT_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
+    const pageRoot = PROJECT_ROOT_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
 
-    const indexFile = path.join(projectPath, pageConfig.path, pageConfig.index || 'index.html')
+    const indexFile = path.join(pageRoot, pageConfig.index || 'index.html')
 
     const content = util.readFile(indexFile)
     res.writeHead(200, {
@@ -33,7 +34,8 @@ module.exports = {
     res.end()
   },
 
-  getStatic(res, filePath) {
+  getStatic(res, projectName, filePath) {
+    filePath = path.join(PROJECT_ROOT_MAP[projectName], filePath)
     if (!util.checkPath(res, filePath)) {
       return
     }

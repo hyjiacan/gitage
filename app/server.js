@@ -3,19 +3,24 @@ const url = require('url')
 
 const indexPage = require('./renderers/indexpage')
 const gitHook = require('./githook')
+const project = require('./renderers/project')
+const logger = require('./misc/logger')
 
-const server = http.createServer((req, res) => {
+function requestHandler(req, res) {
+  logger.debug(req.url)
+
   const reqPath = url.parse(req.url).path.replace(/^\//, '')
 
   if (reqPath === '') {
     indexPage.render(res)
+    logger.debug(`${reqPath}`)
     return
   }
 
   if (reqPath.startsWith('api/hooks')) {
     // 接收 git 钩子
     gitHook.handle(req, res).catch(e => {
-      console.error(e)
+      logger.error(e.message)
       res.writeHead(500)
       res.write(e.message)
       res.end()
@@ -25,7 +30,7 @@ const server = http.createServer((req, res) => {
 
   const temp = reqPath.split('/')
 
-  const project = temp.shift()
+  const projectName = temp.shift()
   const filePath = temp.join('/')
 
   if (filePath === '') {
@@ -36,18 +41,35 @@ const server = http.createServer((req, res) => {
       res.end()
       return
     }
-    project.renderIndex(res, project)
+    project.renderIndex(res, projectName)
     return
   }
 
-  const targetPath = path.join(PROJECT_ROOT_MAP[project], filePath)
+  project.getStatic(res, projectName, filePath)
+}
 
-  project.getStatic(res, targetPath)
+const server = http.createServer((req, res) => {
+  try {
+    requestHandler(req, res)
+  } catch (e) {
+    logger.error(e.message)
+    res.writeHead(500)
+    res.write(e.message)
+    res.end()
+  }
+})
+
+server.on('error', e => {
+  logger.error(e.message)
+})
+
+server.on('close', () => {
+  logger.info('Server closed')
 })
 
 module.exports = {
   start(port, host) {
     server.listen(port, host)
-    console.info('Git pages running on http://%s:%d', host, port)
+    logger.info(`Git pages running on http://${host}:${port}`)
   }
 }
