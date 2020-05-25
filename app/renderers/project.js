@@ -5,7 +5,6 @@ const config = require('../config')
 
 const MIME = require('../assets/mime')
 const util = require('../misc/util')
-const logger = require('../misc/logger')
 
 const PROJECT_ROOT_MAP = {}
 

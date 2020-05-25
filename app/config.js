@@ -3,6 +3,7 @@ const path = require('path')
 
 const root = path.join(__dirname, '../')
 
+const APP_NAME = 'Git Pages'
 const HOST = '0.0.0.0'
 const PORT = 1997
 const PROJECT_ROOT = 'projects'
@@ -14,6 +15,7 @@ if (!fs.existsSync(root)) {
 }
 
 module.exports = {
+  appName: APP_NAME,
   root: path.resolve(root),
   projectRoot: path.resolve(path.join(root, PROJECT_ROOT)),
   logPath: path.resolve(path.join(root, LOG_PATH)),

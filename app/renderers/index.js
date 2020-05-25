@@ -24,37 +24,18 @@ function renderIndex(res) {
       repoUrl = pkg.repository.url
     }
 
-    return `<li>
-  <div>
-    <h3>${projectName}
-      <small style="font-size: 14px">
-        <span style="background-color: #5f6371; color: #ffffff;padding: 2px 5px;margin: 0 5px;">${pkg.name}@${pkg.version}</span>
-        <a href="${repoUrl}">Repository</a> |
-        <a href="${projectName}/">Page</a>
-      </small>
-    </h3>
-  </div>
-  <div style="color: #666;">${pkg.description || ''}</div>
-</li>`
+    return {
+      projectName,
+      repoUrl,
+      name: pkg.name,
+      version: pkg.version,
+      description: pkg.description || ''
+    }
   })
 
-
-  const html = `<!doctype html>
-<html>
-<head>
-<title>Git pages</title>
-<meta charset="UTF-8" />
-</head>
-<body>
-<h2>Index</h2>
-<ul>
-${projects.join('\n')}
-</ul>
-</body>
-</html> 
-  `
-  res.write(html)
-  res.end()
+  res.render('index.html', {
+    projects
+  })
 }
 
 module.exports = {

@@ -1,10 +1,15 @@
 const http = require('http')
+const fs = require('fs')
 const url = require('url')
+const path = require('path')
 
-const indexPage = require('./renderers/indexpage')
+const indexPage = require('./renderers/index')
 const gitHook = require('./githook')
 const project = require('./renderers/project')
 const logger = require('./misc/logger')
+const config = require('./config')
+const util = require('./misc/util')
+const jst = require('./externals/jst')
 
 function requestHandler(req, res) {
   logger.debug(req.url)
@@ -48,8 +53,29 @@ function requestHandler(req, res) {
   project.getStatic(res, projectName, filePath)
 }
 
+async function renderTemplate(templateFile, context) {
+  const templateFilePath = path.join(config.root, 'app', 'templates', templateFile)
+  if (!fs.existsSync(templateFilePath)) {
+    console.info(templateFilePath)
+    this.response.writeHead(500)
+    this.response.write(`Template not exists: ${templateFile}`)
+    this.response.end()
+    return
+  }
+  const templateContent = util.readFileContent(templateFilePath)
+  const html = await jst.render(templateContent, {
+    $appName: config.appName,
+    ...context
+  })
+
+  this.response.writeHead(200, {'content-type': 'text/html'})
+  this.response.write(html)
+  this.response.end()
+}
+
 const server = http.createServer((req, res) => {
   try {
+    res.render = renderTemplate.bind({request: req, response: res})
     requestHandler(req, res)
   } catch (e) {
     logger.error(e)
