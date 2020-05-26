@@ -9,7 +9,7 @@ const project = require('./renderers/project')
 const logger = require('./misc/logger')
 const config = require('./config')
 const util = require('./misc/util')
-const jst = require('./externals/jst')
+const jst = require('./externals/jst/src/engine')
 
 function requestHandler(req, res) {
   logger.debug(req.url)

@@ -6,8 +6,7 @@
 
 依赖:
 
-- [htmlparser](https://github.com/tautologistics/node-htmlparser)
-- [jst](http://gitee.com/hyjiacan/jst.git)
+- 简单的 js 模板引擎 [jst](http://gitee.com/hyjiacan/jst.git)
 
 ## 配置
 

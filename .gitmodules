@@ -1,0 +1,3 @@
+[submodule "app/externals/jst"]
+	path = app/externals/jst
+	url = https://gitee.com/hyjiacan/jst.git
