@@ -1,7 +1,7 @@
 {
   "name": "node-pages",
   "description": "Git pages server based on Node.js",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "scripts": {
     "serve": "supervisor -w app -e js app/index.js"
