@@ -6,25 +6,50 @@ const config = require('../config')
 const MIME = require('../assets/mime')
 const util = require('../misc/util')
 
-const PROJECT_ROOT_MAP = {}
+const PAGE_CONFIG_MAP = {}
+
+// 读取配置文件
+function getPageConfig(userName, projectName) {
+  const id = `${userName}/${projectName}`
+
+  let conf = PAGE_CONFIG_MAP[id]
+  if (conf) {
+    return conf
+  }
+
+  const projectPath = path.join(config.projectRoot, userName, projectName)
+  const configFile = path.join(projectPath, config.configFile)
+  const pageConfig = fs.existsSync(configFile) ? JSON.parse(util.readFileContent(configFile)) : {}
+  const pageRoot = PAGE_CONFIG_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
+  const indexFile = path.join(pageRoot, pageConfig.index || 'index.html')
+
+  conf = {
+    index: indexFile,
+    root: pageRoot
+  }
+
+  PAGE_CONFIG_MAP[id] = conf
+
+  return conf
+}
 
 module.exports = {
-  renderIndex(res, projectName) {
-    const projectPath = path.join(config.projectRoot, projectName)
+  read(userPath) {
+    return util.readDir(userPath, projectPath => {
+      const content = util.readFileContent(path.join(projectPath, '.pages.push'))
+      return JSON.parse(content)
+    })
+  },
+  index(res, userName, projectName) {
+    const projectPath = path.join(config.projectRoot, userName, projectName)
 
     if (!util.checkPath(res, projectPath)) {
       return
     }
 
-    // 读取配置文件
-    const configFile = path.join(projectPath, config.configFile)
-    const pageConfig = fs.existsSync(configFile) ? JSON.parse(util.readFileContent(configFile)) : {}
+    const conf = getPageConfig(userName, projectName)
+    const content = util.readFile(conf.index)
 
-    const pageRoot = PROJECT_ROOT_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
-
-    const indexFile = path.join(pageRoot, pageConfig.index || 'index.html')
-
-    const content = util.readFile(indexFile)
     res.writeHead(200, {
       'Content-Type': 'text/html',
       'Content-Length': content.length
@@ -33,8 +58,9 @@ module.exports = {
     res.end()
   },
 
-  getStatic(res, projectName, filePath) {
-    filePath = path.join(PROJECT_ROOT_MAP[projectName], filePath)
+  getStatic(res, userName, projectName, filePath) {
+    const conf = getPageConfig(userName, projectName)
+    filePath = path.join(conf.root, filePath)
     if (!util.checkPath(res, filePath)) {
       return
     }
@@ -47,5 +73,4 @@ module.exports = {
     res.write(content)
     res.end()
   }
-
 }

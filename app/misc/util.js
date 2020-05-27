@@ -1,4 +1,5 @@
 const fs = require('fs')
+const path = require('path')
 const child_process = require('child_process')
 const util = require('util')
 const logger = require('./logger')
@@ -19,6 +20,36 @@ module.exports = {
     return fs.readFileSync(fileName, {
       flag: 'r'
     })
+  },
+
+  /**
+   * 读取目录
+   * @param targetPath
+   * @param {function} dirHandler 用于处理每个目录，返回值将作为每个目录的读取结果
+   * @return {[]}
+   */
+  readDir(targetPath, dirHandler) {
+    const dirs = []
+    fs.readdirSync(targetPath).forEach(dirName => {
+      // 隐藏目录，不需要
+      if (dirName.startsWith('.')) {
+        return
+      }
+      const dirPath = path.join(targetPath, dirName)
+
+      if (!fs.statSync(dirPath).isDirectory()) {
+        return
+      }
+      dirs.push(dirHandler(dirPath))
+    })
+    return dirs
+  },
+
+  writeFile(filename, content) {
+    if (typeof content === 'object') {
+      content = JSON.stringify(content, null, 2)
+    }
+    fs.writeFileSync(filename, content, {encoding: 'utf-8'})
   },
 
   checkPath(res, pathName) {

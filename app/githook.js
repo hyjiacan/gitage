@@ -39,15 +39,20 @@ module.exports = {
       res.end()
       return
     }
-    
+
     logger.debug(`Git push: ${hash}`)
 
-    const {repository} = await util.receivePostData(req)
+    const data = await util.receivePostData(req)
+    const {repository} = data
     const name = repository.name
     const cloneUrl = repository.clone_url
 
-    const checkoutPath = path.join(config.projectRoot, name)
+    // 由用户名和项目名称组成
+    const checkoutPath = path.join(config.projectRoot, repository.owner.username, name)
     await this.checkoutRepo(cloneUrl, checkoutPath)
+
+    // 写 push 数据
+    util.writeFile(path.join(checkoutPath, '.pages.push'), data)
 
     res.writeHead(200)
     res.end()
@@ -72,5 +77,6 @@ module.exports = {
 
     // 克隆代码
     await util.runCommand(`git clone --verbose --depth=1 ${url} "${dist}"`)
+
   }
 }

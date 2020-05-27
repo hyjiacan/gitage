@@ -10,19 +10,32 @@ const logger = require('./misc/logger')
 const config = require('./config')
 const util = require('./misc/util')
 const jst = require('../externals/jst/src/engine')
+const user = require('./renderers/user')
 
 function requestHandler(req, res) {
   logger.debug(req.url)
 
-  const reqPath = url.parse(req.url).path.replace(/^\//, '')
+  const rawPath = url.parse(req.url).path
 
-  if (reqPath === '') {
-    indexPage.render(res)
-    logger.debug(`${reqPath}`)
+  // 重定向，使请求始终以 / 结束
+  if (!rawPath.endsWith('/')) {
+    res.writeHead(301, {
+      Location: `${rawPath}/`
+    })
+    res.end()
     return
   }
 
-  if (reqPath.startsWith('api/hooks')) {
+  // 移除请求开始部分的 / 符号
+  const reqPath = rawPath.replace(/^\//, '')
+
+  if (reqPath === '') {
+    // 渲染首页
+    if (req.method !== 'POST') {
+      indexPage.render(res)
+      logger.debug(`${reqPath}`)
+      return
+    }
     // 接收 git 钩子
     gitHook.handle(req, res).catch(e => {
       logger.error(e)
@@ -35,22 +48,24 @@ function requestHandler(req, res) {
 
   const temp = reqPath.split('/')
 
+  const userName = temp.shift()
   const projectName = temp.shift()
   const filePath = temp.join('/')
 
-  if (filePath === '') {
-    if (!reqPath.endsWith('/')) {
-      res.writeHead(301, {
-        Location: `${reqPath}/`
-      })
-      res.end()
-      return
-    }
-    project.renderIndex(res, projectName)
+  if (!projectName) {
+    // 渲染用户项目列表
+    user.index(res, userName)
     return
   }
 
-  project.getStatic(res, projectName, filePath)
+  if (!filePath) {
+    // 渲染项目页面
+    project.index(res, userName, projectName)
+    return
+  }
+
+  // 响应静态资源
+  project.getStatic(res, userName, projectName, filePath)
 }
 
 async function renderTemplate(templateFile, context) {

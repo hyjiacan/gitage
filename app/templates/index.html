@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="generator" content="jst"/>
-  <title>Index - {{$appName}}</title>
+  <title>Index - {{title}}</title>
   <style type="text/css">
   .pkg-version {
     background-color: #5f6371;
@@ -14,17 +14,19 @@
   </style>
 </head>
 <body>
-<h1>Index - {{$appName}}</h1>
+<h1>Index - {{title}}</h1>
 <ul>
   <t-for on="item of projects">
     <li>
       <div>
         <h3>
-          <span>{{item.projectName}}</span>
+          <a href="/{{item.repository.owner.username}}">{{item.repository.owner.username}}</a>
+          <span>/</span>
+          <span>{{item.repository.name}}</span>
           <small style="font-size: 14px">
-            <span class="pkg-version">{{item.name}}@{{item.version}}</span>
-            <a href="{{item.repoUrl}}">Repository</a> |
-            <a href="{{item.projectName}}/">Page</a>
+            <span class="pkg-version">{{item.repository.updated_at}}</span>
+            <a href="{{item.repository.html_url}}">Repository</a> |
+            <a href="/{{item.repository.full_name}}/">Page</a>
           </small>
         </h3>
       </div>
