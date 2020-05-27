@@ -15,7 +15,8 @@ module.exports = {
     // TODO 暂时只处理 push 事件
     // 应用中应该根据配置来判断是否需要重新部署
     // 同时应该将项目 clone 到临时目录，然后仅将
-    // const hash = req.headers['x-github-delivery']
+    // 部署目录放到指定的项目目录下
+    const hash = req.headers['x-github-delivery']
     // X-github-Event: push
     // const event = req.headers['x-github-event'] ||
     //   req.headers['x-gitee-event'] ||
@@ -38,13 +39,15 @@ module.exports = {
       res.end()
       return
     }
+    
+    logger.debug(`Git push: ${hash}`)
 
     const {repository} = await util.receivePostData(req)
     const name = repository.name
     const cloneUrl = repository.clone_url
 
     const checkoutPath = path.join(config.projectRoot, name)
-    await checkoutRepo(cloneUrl, checkoutPath)
+    await this.checkoutRepo(cloneUrl, checkoutPath)
 
     res.writeHead(200)
     res.end()
