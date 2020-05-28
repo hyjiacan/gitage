@@ -78,9 +78,8 @@ async function renderTemplate(templateFile, context) {
     return
   }
   const templateContent = util.readFileContent(templateFilePath)
-  const html = await jst.render(templateContent, {
-    $appName: config.appName,
-    ...context
+  const html = await jst.render(templateContent, context, {
+    cache: !config.debug
   })
 
   this.response.writeHead(200, {'content-type': 'text/html'})

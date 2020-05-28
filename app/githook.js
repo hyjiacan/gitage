@@ -77,6 +77,5 @@ module.exports = {
 
     // 克隆代码
     await util.runCommand(`git clone --verbose --depth=1 ${url} "${dist}"`)
-
   }
 }

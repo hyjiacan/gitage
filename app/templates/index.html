@@ -17,31 +17,37 @@
 <h1>Index - {{title}}</h1>
 <ul>
   <t-for on="item of projects">
-    <li>
-      <div>
-        <h3>
-          <a href="/{{item.repository.owner.username}}">{{item.repository.owner.username}}</a>
-          <span>/</span>
-          <span>{{item.repository.name}}</span>
-          <small style="font-size: 14px">
-            <span class="pkg-version">{{item.repository.updated_at}}</span>
-            <a href="{{item.repository.html_url}}">Repository</a> |
-            <a href="/{{item.repository.full_name}}/">Page</a>
-          </small>
-        </h3>
-      </div>
-      <t-if on="item.description">
-        <div style="color: #666;">{{item.description}}</div>
-      </t-if>
-      <t-if on="!item.description">
-        <div style="color: #666;">无描述</div>
-      </t-if>
-    </li>
+    <t-with repo="item.repository">
+      <li>
+        <div>
+          <h3>
+            <a href="/{{repo.owner.username}}">{{repo.owner.username}}</a>
+            <span>/</span>
+            <span>{{repo.name}}</span>
+            <small style="font-size: 14px">
+              <span class="pkg-version">{{repo.updated_at}}</span>
+              <a href="{{repo.html_url}}">Repository</a> |
+              <a href="/{{repo.full_name}}/">Page</a>
+            </small>
+          </h3>
+        </div>
+        <t-if on="repo.description">
+          <div style="color: #666;">{{repo.description}}</div>
+        </t-if>
+        <t-else>
+          <div style="color: #666;">无描述</div>
+        </t-else>
+      </li>
+    </t-with>
   </t-for>
 </ul>
 <hr>
 <div style="text-align: center">
-  <span>Powered by jst.</span>
+  <span>Powered by</span>
+  <a href="http://gitee.com/hyjiacan/jst">jst</a>
+  <span>|</span>
+  <a href="https://gitee.com/hyjiacan/git-pages">git pages</a>
+  <span>.</span>
   <span>Template render takes @{timestamp}@ ms</span>
 </div>
 </body>
