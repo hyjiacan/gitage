@@ -54,7 +54,10 @@ module.exports = {
     // 写 push 数据
     util.writeFile(path.join(checkoutPath, '.pages.push'), data)
 
-    res.writeHead(200)
+    res.writeHead(200, {'content-type': 'application/json'})
+    res.write(JSON.stringify({
+      code: 'OK'
+    }))
     res.end()
   },
   async checkoutRepo(url, dist) {
