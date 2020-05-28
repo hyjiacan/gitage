@@ -5,6 +5,7 @@ const config = require('../config')
 
 const MIME = require('../assets/mime')
 const util = require('../misc/util')
+const deploy = require('../misc/deploy')
 
 const PAGE_CONFIG_MAP = {}
 
@@ -44,6 +45,15 @@ module.exports = {
     const projectPath = path.join(config.projectRoot, userName, projectName)
 
     if (!util.checkPath(res, projectPath)) {
+      return
+    }
+
+    const fullName = `${userName}/${projectName}`
+
+    if (deploy.isPending(fullName)) {
+      res.writeHead(200, {'content-type': 'text/plain'})
+      res.write(`Project ${fullName} is deploying, please waiting for a moment`)
+      res.end()
       return
     }
 

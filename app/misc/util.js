@@ -62,17 +62,17 @@ module.exports = {
     return false
   },
 
-  async runCommand(cmd) {
-    logger.info(`Spawn: ${cmd}`)
+  async runCommand(cmd, workingDir) {
+    logger.info(`exec: ${cmd}`)
     const {stdout, stderr} = await util.promisify(child_process.exec)(cmd, {
-      windowsHide: true
+      windowsHide: true,
+      cwd: workingDir
     })
 
     logger.debug(stdout)
     if (stderr) {
       logger.info(stderr)
     }
-    logger.debug('Clone complete')
   },
   receivePostData(req) {
     return new Promise(resolve => {

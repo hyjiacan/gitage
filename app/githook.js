@@ -1,8 +1,8 @@
-const fs = require('fs')
 const path = require('path')
 const util = require('./misc/util')
 const config = require('./config')
 const logger = require('./misc/logger')
+const deploy = require('./misc/deploy')
 
 module.exports = {
   /**
@@ -40,45 +40,20 @@ module.exports = {
       return
     }
 
-    logger.debug(`Git push: ${hash}`)
+    logger.debug(`Accept git push: ${hash}`)
 
     const data = await util.receivePostData(req)
     const {repository} = data
     const name = repository.name
-    const cloneUrl = repository.clone_url
 
     // 由用户名和项目名称组成
     const checkoutPath = path.join(config.projectRoot, repository.owner.username, name)
-    await this.checkoutRepo(cloneUrl, checkoutPath)
-
-    // 写 push 数据
-    util.writeFile(path.join(checkoutPath, '.pages.push'), data)
+    await deploy.checkout(data, checkoutPath)
 
     res.writeHead(200, {'content-type': 'application/json'})
     res.write(JSON.stringify({
       code: 'OK'
     }))
     res.end()
-  },
-  async checkoutRepo(url, dist) {
-    logger.info(`Checkout: ${url}`)
-
-    // # remove any untracked files and directories
-    // git --work-tree=${WEB_DIR} clean -fd
-    //
-    // # force checkout of the latest deploy
-    // git --work-tree=${WEB_DIR} checkout --force
-
-    if (fs.existsSync(dist)) {
-      // 清空工作目录
-      // await runCommand(`git clean -f -d "${dist}"`)
-      logger.info(`rmdir: ${dist}`)
-      fs.rmdirSync(dist, {recursive: true})
-    }
-    logger.info(`mkdir: ${dist}`)
-    fs.mkdirSync(dist, {recursive: true, mode: '777'})
-
-    // 克隆代码
-    await util.runCommand(`git clone --verbose --depth=1 ${url} "${dist}"`)
   }
 }
