@@ -80,20 +80,26 @@ function requestHandler(req, res) {
 async function renderTemplate(templateFile, context) {
   const templateFilePath = path.join(config.root, 'app', 'templates', templateFile)
   if (!fs.existsSync(templateFilePath)) {
-    console.info(templateFilePath)
     this.response.writeHead(500)
     this.response.write(`Template not exists: ${templateFile}`)
     this.response.end()
     return
   }
-  const templateContent = util.readFileContent(templateFilePath)
-  const html = await jst.render(templateContent, context, {
-    cache: !config.debug
-  })
+  try {
+    const templateContent = await util.readFileContent(templateFilePath)
+    const html = await jst.render(templateContent, context, {
+      cache: !config.debug
+    })
 
-  this.response.writeHead(200, {'content-type': 'text/html'})
-  this.response.write(html)
-  this.response.end()
+    this.response.writeHead(200, {'content-type': 'text/html'})
+    this.response.write(html)
+    this.response.end()
+  } catch (e) {
+    logger.error(e)
+    this.response.writeHead(500)
+    this.response.write(e.message)
+    this.response.end()
+  }
 }
 
 const server = http.createServer((req, res) => {

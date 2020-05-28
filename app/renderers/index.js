@@ -4,26 +4,27 @@ const config = require('../config')
 const util = require('../misc/util')
 const project = require('./project')
 
-function renderIndex(res) {
+async function renderIndex(res) {
   // 查找项目目录
   const items = fs.readdirSync(config.projectRoot)
 
   const projects = []
 
-  items.forEach(userName => {
+  for (const userName of items) {
     // 隐藏目录，不需要
     if (userName.startsWith('.')) {
-      return
+      continue
     }
     // 用户目录
     const userPath = path.join(config.projectRoot, userName)
 
     if (!fs.statSync(userPath).isDirectory()) {
-      return
+      continue
     }
 
-    projects.push(...project.read(userPath))
-  })
+    const ps = await project.read(userPath)
+    projects.push(...ps)
+  }
 
   res.render('index.html', {
     title: config.appName,

@@ -10,14 +10,16 @@ module.exports = {
    * @param fileName
    * @return {String}
    */
-  readFileContent(fileName) {
-    return fs.readFileSync(fileName, {
+  async readFileContent(fileName) {
+    const buffer = await util.promisify(fs.readFile)(fileName, {
       flag: 'r'
-    }).toString('utf-8')
+    })
+
+    return buffer.toString('utf-8')
   },
 
-  readFile(fileName) {
-    return fs.readFileSync(fileName, {
+  async readFile(fileName) {
+    return util.promisify(fs.readFile)(fileName, {
       flag: 'r'
     })
   },
@@ -25,31 +27,26 @@ module.exports = {
   /**
    * 读取目录
    * @param targetPath
-   * @param {function} dirHandler 用于处理每个目录，返回值将作为每个目录的读取结果
    * @return {[]}
    */
-  readDir(targetPath, dirHandler) {
-    const dirs = []
-    fs.readdirSync(targetPath).forEach(dirName => {
+  async readDir(targetPath) {
+    const dirs = await util.promisify(fs.readdir)(targetPath)
+    return dirs.filter(dirName => {
       // 隐藏目录，不需要
       if (dirName.startsWith('.')) {
-        return
+        return false
       }
       const dirPath = path.join(targetPath, dirName)
 
-      if (!fs.statSync(dirPath).isDirectory()) {
-        return
-      }
-      dirs.push(dirHandler(dirPath))
+      return fs.statSync(dirPath).isDirectory()
     })
-    return dirs
   },
 
-  writeFile(filename, content) {
+  async writeFile(filename, content) {
     if (typeof content === 'object') {
       content = JSON.stringify(content, null, 2)
     }
-    fs.writeFileSync(filename, content, {encoding: 'utf-8'})
+    return util.promisify(fs.writeFile)(filename, content, {encoding: 'utf-8'})
   },
 
   checkPath(res, pathName) {
@@ -74,7 +71,7 @@ module.exports = {
       logger.info(stderr)
     }
   },
-  receivePostData(req) {
+  async receivePostData(req) {
     return new Promise(resolve => {
       let buffer = []
       req.on('data', chunk => {

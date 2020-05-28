@@ -7,8 +7,8 @@ const config = require('../config')
 
 const FLAG_DIR = path.join(config.projectRoot, '.pending')
 
-function setFlag(name) {
-  util.writeFile(path.join(FLAG_DIR, name), '')
+async function setFlag(name) {
+  await util.writeFile(path.join(FLAG_DIR, name), '')
 }
 
 function removeFlag(name) {
@@ -26,7 +26,7 @@ async function checkoutRepo(data, dist) {
   const url = data.repository.cloneUrl
 
   // 写检出标记
-  setFlag(fullName)
+  await setFlag(fullName)
 
   logger.info(`Checkout: ${url}`)
 
@@ -47,7 +47,7 @@ async function checkoutRepo(data, dist) {
   }
 
   // 写 push 数据
-  util.writeFile(path.join(dist, '.pages.push'), data)
+  await util.writeFile(path.join(dist, '.pages.push'), data)
 
   // 移除检出标记
   removeFlag(fullName)
