@@ -50,7 +50,7 @@ function requestHandler(req, res) {
 
   const userName = temp.shift()
   const projectName = temp.shift()
-  const filePath = temp.join('/')
+  let filePath = temp.join('/')
 
   if (!projectName) {
     // 渲染用户项目列表
@@ -61,6 +61,15 @@ function requestHandler(req, res) {
   if (!filePath) {
     // 渲染项目页面
     project.index(res, userName, projectName)
+    return
+  }
+
+  const projectPath = path.join(config.projectRoot, userName, projectName)
+  const abs = path.resolve(path.join(projectPath, filePath))
+  // 如果最后的绝对路径不是以 projectPath 开头，表示越权访问了
+  if (!abs.startsWith(projectPath)) {
+    res.writeHead(404)
+    res.end()
     return
   }
 
