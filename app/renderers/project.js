@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
 
+const md0 = require('../../externals/md0/md0')
+
 const config = require('../config')
 
 const MIME = require('../assets/mime')
@@ -8,6 +10,29 @@ const util = require('../misc/util')
 const deploy = require('../misc/deploy')
 
 const PAGE_CONFIG_MAP = {}
+
+let md0css
+
+/**
+ * 从缓存中读取缓存数据，如果没有缓存那么就先写入
+ * @return {Promise<string>}
+ */
+async function getReadme(projectPath, readmeFile) {
+  // 缓存文件
+  const cacheFile = path.join(projectPath, '.readme.cache')
+  let content
+  if (fs.existsSync(cacheFile)) {
+    content = await util.readFileContent(cacheFile)
+  } else {
+    const md = await util.readFileContent(readmeFile)
+    // 使用 md0 渲染
+    // TODO 暂时假设都是 markdown 文件
+    content = md0(md, {
+      useHljs: true
+    })
+  }
+  return content
+}
 
 // 读取配置文件
 async function getPageConfig(userName, projectName) {
@@ -34,13 +59,37 @@ async function getPageConfig(userName, projectName) {
   return conf
 }
 
+/**
+ * 读取项目下的 readme 文件，并返回其文件名
+ * @param projectPath
+ * @return {Promise<string|null>}
+ */
+async function getReadmeFile(projectPath) {
+  const files = await util.readDir(projectPath, true)
+  // 查找第一个 以 readme 开头的文件即可
+  // 忽略大小写
+  for (const file of files) {
+    if (/^readme/i.test(file)) {
+      return path.join(file)
+    }
+  }
+  return null
+}
+
 module.exports = {
   async read(userPath) {
     const dirs = await util.readDir(userPath)
     const projects = []
     for (const dir of dirs) {
       const content = await util.readFileContent(path.join(userPath, dir, '.pages.push'))
-      projects.push(JSON.parse(content))
+      // 这是原始的 push 数据
+      const project = JSON.parse(content)
+      // 追加 readme 文件信息
+      const readmeFile = await getReadmeFile(path.join(userPath, dir))
+      if (readmeFile) {
+        project.readme = readmeFile
+      }
+      projects.push(project)
     }
     return projects
   },
@@ -69,6 +118,23 @@ module.exports = {
     })
     res.write(content)
     res.end()
+  },
+
+  async readme(res, userName, projectName, filePath) {
+    const projectPath = path.join(config.projectRoot, userName, projectName)
+    const readmeFile = path.join(projectPath, filePath)
+    if (!util.checkPath(res, readmeFile)) {
+      return
+    }
+    const html = await getReadme(projectPath, readmeFile)
+    if (!md0css) {
+      md0css = await util.readFileContent(path.join(config.root, 'externals', 'md0', 'md0.css'))
+    }
+    res.render('markdown.html', {
+      title: `${userName}/${projectName}`,
+      css: md0css,
+      content: html
+    })
   },
 
   async getStatic(res, userName, projectName, filePath) {

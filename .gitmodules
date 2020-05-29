@@ -1,3 +1,6 @@
 [submodule "externals/jst"]
 	path = externals/jst
 	url = https://gitee.com/hyjiacan/jst.git
+[submodule "externals/md0"]
+	path = externals/md0
+	url = https://gitee.com/hyjiacan/md0.git

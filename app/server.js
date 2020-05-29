@@ -9,33 +9,34 @@ const project = require('./renderers/project')
 const logger = require('./misc/logger')
 const config = require('./config')
 const util = require('./misc/util')
-const jst = require('../externals/jst/src/engine')
+const jst = require('../externals/jst')
 const user = require('./renderers/user')
+
+function redirect(res, rawPath) {
+  // 重定向，使请求始终以 / 结束
+  res.writeHead(301, {
+    Location: `${rawPath}/`
+  })
+  res.end()
+}
 
 function requestHandler(req, res) {
   logger.debug(req.url)
 
   const rawPath = url.parse(req.url).path
-
-  // 重定向，使请求始终以 / 结束
-  if (!rawPath.endsWith('/')) {
-    res.writeHead(301, {
-      Location: `${rawPath}/`
-    })
-    res.end()
+  if (rawPath === '') {
+    redirect(res, rawPath)
     return
   }
 
-  // 移除请求开始部分的 / 符号
-  const reqPath = rawPath.replace(/^\//, '')
-
-  if (reqPath === '') {
+  if (rawPath === '/') {
     // 渲染首页
     if (req.method !== 'POST') {
       indexPage.render(res)
-      logger.debug(`${reqPath}`)
+      logger.debug(`${rawPath}`)
       return
     }
+
     // 接收 git 钩子
     gitHook.handle(req, res).catch(e => {
       logger.error(e)
@@ -46,6 +47,9 @@ function requestHandler(req, res) {
     return
   }
 
+
+  // 移除请求开始部分的 / 符号
+  const reqPath = rawPath.replace(/^\//, '')
   const temp = reqPath.split('/')
 
   const userName = temp.shift()
@@ -70,6 +74,12 @@ function requestHandler(req, res) {
   if (!abs.startsWith(projectPath)) {
     res.writeHead(404)
     res.end()
+    return
+  }
+
+  // 渲染 readme 文件
+  if (temp.length === 1 && /^readme/i.test(filePath)) {
+    project.readme(res, userName, projectName, filePath)
     return
   }
 

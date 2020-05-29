@@ -27,9 +27,10 @@ module.exports = {
   /**
    * 读取目录
    * @param targetPath
+   * @param isFile
    * @return {[]}
    */
-  async readDir(targetPath) {
+  async readDir(targetPath, isFile = false) {
     const dirs = await util.promisify(fs.readdir)(targetPath)
     return dirs.filter(dirName => {
       // 隐藏目录，不需要
@@ -37,8 +38,8 @@ module.exports = {
         return false
       }
       const dirPath = path.join(targetPath, dirName)
-
-      return fs.statSync(dirPath).isDirectory()
+      const stat = fs.statSync(dirPath)
+      return isFile ? stat.isFile() : stat.isDirectory()
     })
   },
 
