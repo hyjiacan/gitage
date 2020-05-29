@@ -1,7 +1,7 @@
 const fs = require('fs')
 const path = require('path')
 
-const md0 = require('../../externals/md0/md0')
+const md0 = require('../../externals/md0')
 
 const config = require('../config')
 
@@ -128,7 +128,7 @@ module.exports = {
     }
     const html = await getReadme(projectPath, readmeFile)
     if (!md0css) {
-      md0css = await util.readFileContent(path.join(config.root, 'externals', 'md0', 'md0.css'))
+      md0css = await util.readFileContent(path.join(config.root, 'externals', 'md0', 'dist', 'md0.css'))
     }
     res.render('markdown.html', {
       title: `${userName}/${projectName}`,
