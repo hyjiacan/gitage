@@ -14,14 +14,16 @@
 
 ```json
 {
+  "type": "markdown",
   "path": "docs",
   "index": "index.html",
   "tag": true
 }
 ```
 
+- `type` 标记部署内容的类型，目前仅支持 `markdown`，表示内容为 `markdown`，否则直接留空 **区分大小写**
 - `path` 部署目录，默认为 `docs`
-- `index` 部署目录下的索引页名称，默认为 `index.html`
+- `index` 部署目录下的索引页名称，默认为 `index.html/index.md` **区分大小写**
 - `tag` 是否仅在收到 `tag` 时部署，默认为 `false` (计划中)
 
 在仓库的 web hook 上添加地址:

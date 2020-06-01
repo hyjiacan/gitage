@@ -1,10 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 const config = require('../config')
-const util = require('../misc/util')
 const project = require('./project')
 
-async function renderIndex(res) {
+async function renderIndex(req, res) {
   // 查找项目目录
   const items = fs.readdirSync(config.projectRoot)
 
@@ -26,7 +25,7 @@ async function renderIndex(res) {
     projects.push(...ps)
   }
 
-  res.render('index.html', {
+  await res.render('index.html', {
     title: config.appName,
     projects
   })

@@ -6,8 +6,8 @@ const util = require('../misc/util')
 const project = require('./project')
 
 module.exports = {
-  async index(res, userName) {
-    const userPath = path.join(config.projectRoot, userName)
+  async index(req, res) {
+    const userPath = path.join(config.projectRoot, req.params.user)
 
     if (!util.checkPath(res, userPath)) {
       return
@@ -15,8 +15,8 @@ module.exports = {
 
     // 读取项目列表
     const projects = await project.read(userPath)
-    res.render('index.html', {
-      title: `${config.appName} @${userName}`,
+    await res.render('index.html', {
+      title: `${config.appName} @${req.params.user}`,
       projects
     })
   }

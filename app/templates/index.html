@@ -28,10 +28,10 @@
               <span class="pkg-version">{{repo.updated_at}}</span>
               <a href="{{repo.html_url}}">Repository</a>
               <span>|</span>
-              <a href="/{{repo.full_name}}/">Page</a>
+              <a href="/projects/{{repo.full_name}}/">Page</a>
               <t-if on="item.readme">
                 <span>|</span>
-                <a href="/{{repo.full_name}}/{{item.readme}}">README</a>
+                <a href="/projects/{{repo.full_name}}/{{item.readme}}">README</a>
               </t-if>
             </small>
           </h3>

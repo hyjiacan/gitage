@@ -55,8 +55,7 @@ module.exports = {
       return true
     }
     logger.info(`Path not found: ${pathName}`)
-    res.writeHead(404)
-    res.end()
+    res.notFound()
     return false
   },
 

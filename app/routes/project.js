@@ -1,8 +1,6 @@
 const fs = require('fs')
 const path = require('path')
 
-const md0 = require('../../externals/md0')
-
 const config = require('../config')
 
 const MIME = require('../assets/mime')
@@ -10,29 +8,6 @@ const util = require('../misc/util')
 const deploy = require('../misc/deploy')
 
 const PAGE_CONFIG_MAP = {}
-
-let md0css
-
-/**
- * 从缓存中读取缓存数据，如果没有缓存那么就先写入
- * @return {Promise<string>}
- */
-async function getReadme(projectPath, readmeFile) {
-  // 缓存文件
-  const cacheFile = path.join(projectPath, '.readme.cache')
-  let content
-  if (fs.existsSync(cacheFile)) {
-    content = await util.readFileContent(cacheFile)
-  } else {
-    const md = await util.readFileContent(readmeFile)
-    // 使用 md0 渲染
-    // TODO 暂时假设都是 markdown 文件
-    content = md0(md, {
-      useHljs: true
-    })
-  }
-  return content
-}
 
 // 读取配置文件
 async function getPageConfig(userName, projectName) {
@@ -47,11 +22,14 @@ async function getPageConfig(userName, projectName) {
   const configFile = path.join(projectPath, config.configFile)
   const pageConfig = fs.existsSync(configFile) ? JSON.parse(await util.readFileContent(configFile)) : {}
   const pageRoot = PAGE_CONFIG_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
-  const indexFile = path.join(pageRoot, pageConfig.index || 'index.html')
+  // 部署内容的类型
+  const contentType = pageConfig.type
+  const indexFile = path.join(pageRoot, pageConfig.index || (contentType === 'markdown' ? 'index.md' : 'index.html'))
 
   conf = {
     index: indexFile,
-    root: pageRoot
+    root: pageRoot,
+    type: contentType
   }
 
   PAGE_CONFIG_MAP[id] = conf
@@ -76,6 +54,27 @@ async function getReadmeFile(projectPath) {
   return null
 }
 
+/**
+ * 根据 markdown 文件结构生成目录
+ * @return {Promise<void>}
+ */
+async function makeMarkdownCatalog() {
+
+}
+
+async function renderMarkdown(res, userName, projectName, readmeFileName) {
+  const projectPath = path.join(config.projectRoot, userName, projectName)
+  const readmeFile = path.join(projectPath, readmeFileName)
+  if (!util.checkPath(res, readmeFile)) {
+    return
+  }
+  const content = await util.readFileContent(readmeFile)
+  await res.render('markdown.html', {
+    title: `${userName}/${projectName}`,
+    content
+  })
+}
+
 module.exports = {
   async read(userPath) {
     const dirs = await util.readDir(userPath)
@@ -93,7 +92,10 @@ module.exports = {
     }
     return projects
   },
-  async index(res, userName, projectName) {
+  async index(req, res, requestPath) {
+    const userName = req.params.user
+    const projectName = req.params.project
+
     const projectPath = path.join(config.projectRoot, userName, projectName)
 
     if (!util.checkPath(res, projectPath)) {
@@ -109,48 +111,33 @@ module.exports = {
       return
     }
 
-    const conf = await getPageConfig(userName, projectName)
-    const content = await util.readFile(conf.index)
-
-    res.writeHead(200, {
-      'Content-Type': 'text/html',
-      'Content-Length': content.length
-    })
-    res.write(content)
-    res.end()
-  },
-
-  async readme(res, userName, projectName, filePath) {
-    const projectPath = path.join(config.projectRoot, userName, projectName)
-    const readmeFile = path.join(projectPath, filePath)
-    if (!util.checkPath(res, readmeFile)) {
+    // 查看项目的 readme
+    if (/^\/readme/i.test(requestPath)) {
+      await renderMarkdown(res, userName, projectName, requestPath)
       return
     }
-    const html = await getReadme(projectPath, readmeFile)
-    if (!md0css) {
-      md0css = await util.readFileContent(path.join(config.root, 'externals', 'md0', 'dist', 'md0.css'))
-    }
-    res.render('markdown.html', {
-      title: `${userName}/${projectName}`,
-      css: md0css,
-      content: html
-    })
-  },
 
-  async getStatic(res, userName, projectName, filePath) {
     const conf = await getPageConfig(userName, projectName)
-    filePath = path.join(conf.root, filePath)
-    if (!util.checkPath(res, filePath)) {
+
+    const filename = requestPath === '/' ? conf.index : path.join(conf.root, requestPath)
+
+    const abs = path.resolve(filename)
+
+    // 如果最后的绝对路径不是以 projectPath 开头，表示越权访问了
+    if (!abs.startsWith(projectPath)) {
+      res.notFound()
       return
     }
-    const ext = path.extname(filePath)
+
+    // 部署的是 markdown 内容
+    if (conf.type === 'markdown') {
+      await renderMarkdown(res, userName, projectName, filename)
+      return
+    }
+
+    const content = await util.readFile(filename)
+    const ext = path.extname(filename)
     const mime = MIME[ext] || 'application/octet-stream'
-    const content = await util.readFile(filePath)
-    res.writeHead(200, {
-      'Content-Type': mime,
-      'content-length': content.length
-    })
-    res.write(content)
-    res.end()
+    res.write(content, mime)
   }
 }
