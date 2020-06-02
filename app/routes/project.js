@@ -68,10 +68,11 @@ async function renderMarkdown(res, userName, projectName, readmeFileName) {
   if (!util.checkPath(res, readmeFile)) {
     return
   }
-  const content = await util.readFileContent(readmeFile)
+  // const content = await util.readFileContent(readmeFile)
   await res.render('markdown.html', {
-    title: `${userName}/${projectName}`,
-    content
+    userName,
+    projectName,
+    file: readmeFileName.replace(/^\//, '')
   })
 }
 
@@ -135,6 +136,40 @@ module.exports = {
       return
     }
 
+    const content = await util.readFile(filename)
+    const ext = path.extname(filename)
+    const mime = MIME[ext] || 'application/octet-stream'
+    res.write(content, mime)
+  },
+  async raw(req, res, requestPath) {
+    const userName = req.params.user
+    const projectName = req.params.project
+
+    const projectPath = path.join(config.projectRoot, userName, projectName)
+
+    if (!util.checkPath(res, projectPath)) {
+      return
+    }
+
+    const fullName = `${userName}/${projectName}`
+
+    if (deploy.isPending(fullName)) {
+      res.writeHead(200, {'content-type': 'text/plain'})
+      res.write(`Project ${fullName} is deploying, please waiting for a moment`)
+      res.end()
+      return
+    }
+    const conf = await getPageConfig(userName, projectName)
+
+    const filename = /^\/readme/i.test(requestPath) ? path.join(projectPath, requestPath) : path.join(conf.root, requestPath)
+
+    const abs = path.resolve(filename)
+
+    // 如果最后的绝对路径不是以 projectPath 开头，表示越权访问了
+    if (!abs.startsWith(projectPath)) {
+      res.notFound()
+      return
+    }
     const content = await util.readFile(filename)
     const ext = path.extname(filename)
     const mime = MIME[ext] || 'application/octet-stream'

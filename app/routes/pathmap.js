@@ -15,5 +15,9 @@ module.exports = {
     })
     // 项目的 readme
     router.get('/projects/:user/:project/readme', project.readme)
+    // 项目原始文件
+    router.get('/raw/:user/:project', async (req, res) => {
+      await project.raw(req, res, req.path.substring(`/raw/${req.params.user}/${req.params.project}`.length))
+    })
   }
 }
