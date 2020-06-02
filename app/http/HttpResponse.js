@@ -36,7 +36,7 @@ class HttpResponse {
   write(content, contentType) {
     this._content = content
     if (contentType) {
-      this._headers['content-type'] = contentType
+      this._headers['content-type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
     }
   }
 

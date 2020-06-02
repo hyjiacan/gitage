@@ -16,7 +16,7 @@ function resolvePath(requestPath) {
       path: requestPath,
       isDynamic: false,
       match: val => {
-        return requestPath === val
+        return val.startsWith(requestPath)
       }
     }
   }

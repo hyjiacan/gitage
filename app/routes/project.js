@@ -56,23 +56,36 @@ async function getReadmeFile(projectPath) {
 
 /**
  * 根据 markdown 文件结构生成目录
- * @return {Promise<void>}
+ * @return {Promise<>}
  */
-async function makeMarkdownCatalog() {
+async function getMarkdownCatalog(projectPath) {
+  const files = await util.readDir(projectPath, true)
 
+  const result = []
+
+  for (const file of files) {
+    const ext = path.extname(file)
+    if (!/^\.(md|markdown)$/i.test(ext)) {
+      continue
+    }
+    result.push({
+      name: path.basename(file, ext),
+      file: encodeURIComponent(file)
+    })
+  }
+  return result
 }
 
-async function renderMarkdown(res, userName, projectName, readmeFileName) {
-  const projectPath = path.join(config.projectRoot, userName, projectName)
-  const readmeFile = path.join(projectPath, readmeFileName)
-  if (!util.checkPath(res, readmeFile)) {
+async function renderMarkdown(res, userName, projectName, requestName, readmeFileName, catalog) {
+  if (!util.checkPath(res, readmeFileName)) {
     return
   }
-  // const content = await util.readFileContent(readmeFile)
   await res.render('markdown.html', {
     userName,
     projectName,
-    file: readmeFileName.replace(/^\//, '')
+    catalog: catalog || [],
+    file: encodeURIComponent(requestName.replace(/^\//, '')),
+    name: path.basename(requestName)
   })
 }
 
@@ -114,7 +127,7 @@ module.exports = {
 
     // 查看项目的 readme
     if (/^\/readme/i.test(requestPath)) {
-      await renderMarkdown(res, userName, projectName, requestPath)
+      await renderMarkdown(res, userName, projectName, requestPath, path.join(projectPath, requestPath))
       return
     }
 
@@ -132,7 +145,8 @@ module.exports = {
 
     // 部署的是 markdown 内容
     if (conf.type === 'markdown') {
-      await renderMarkdown(res, userName, projectName, filename)
+      const catalog = await getMarkdownCatalog(conf.root)
+      await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), filename, catalog)
       return
     }
 
@@ -154,9 +168,7 @@ module.exports = {
     const fullName = `${userName}/${projectName}`
 
     if (deploy.isPending(fullName)) {
-      res.writeHead(200, {'content-type': 'text/plain'})
-      res.write(`Project ${fullName} is deploying, please waiting for a moment`)
-      res.end()
+      res.write(`Project ${fullName} is deploying, please waiting for a moment`, 'text/plain')
       return
     }
     const conf = await getPageConfig(userName, projectName)

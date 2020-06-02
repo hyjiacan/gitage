@@ -172,6 +172,8 @@
   ".ma2": "audio/ma2",
   ".ma3": "audio/ma3",
   ".ma5": "audio/ma5",
+  ".md": "text/x-markdown",
+  ".markdown": "text/x-markdown",
   ".man": "application/x-troff-man",
   ".map": "magnus-internal/imagemap",
   ".mbd": "application/mbedlet",
