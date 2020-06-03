@@ -4,7 +4,7 @@ const path = require('path')
 const root = path.join(__dirname, '../')
 
 const APP_NAME = 'Git Pages'
-const HOST = '0.0.0.0'
+const HOST = '127.0.0.1'
 const PORT = 1997
 const PROJECT_ROOT_PATH = 'projects'
 const PROJECT_ROOT_URL = 'projects'

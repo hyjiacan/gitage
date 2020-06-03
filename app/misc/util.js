@@ -31,7 +31,7 @@ module.exports = {
    * @return {[]}
    */
   async readDir(targetPath, isFile = false) {
-    const dirs = await util.promisify(fs.readdir)(targetPath)
+    const dirs = await this.readEntities(targetPath)
     return dirs.filter(dirName => {
       // 隐藏目录，不需要
       if (dirName.startsWith('.')) {
@@ -40,6 +40,22 @@ module.exports = {
       const dirPath = path.join(targetPath, dirName)
       const stat = fs.statSync(dirPath)
       return isFile ? stat.isFile() : stat.isDirectory()
+    })
+  },
+
+  /**
+   * 读取目录
+   * @param targetPath
+   * @return {[]}
+   */
+  async readEntities(targetPath) {
+    const dirs = await util.promisify(fs.readdir)(targetPath)
+    return dirs.filter(dirName => {
+      // 隐藏目录，不需要
+      if (dirName.startsWith('.')) {
+        return false
+      }
+      return true
     })
   },
 

@@ -13,11 +13,16 @@
 </head>
 <body>
 <ul id="catalog">
-  <t-for on="item of catalog">
+  <t-tree on="catalog as item">
     <li>
-      <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}">{{item.name}}</a>
+      <div>
+        <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}">{{item.name}}</a>
+      </div>
+      <ul>
+        <t-children/>
+      </ul>
     </li>
-  </t-for>
+  </t-tree>
 </ul>
 <div id="content"></div>
 <script type="text/javascript">
