@@ -32,7 +32,7 @@ function resolvePath(requestPath) {
       return item
     }
     return `(?<${temp[1]}>[^/]+)`
-  }).join('\/') + endFlag
+  }).join('/') + endFlag
 
   return {
     path: requestPath,

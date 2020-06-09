@@ -4,6 +4,10 @@ const config = require('../config')
 const project = require('./project')
 
 async function renderIndex(req, res) {
+  if (req.path !== '/') {
+    res.notFound()
+    return
+  }
   // 查找项目目录
   const items = fs.readdirSync(config.projectRoot)
 

@@ -133,9 +133,7 @@ module.exports = {
     const fullName = `${userName}/${projectName}`
 
     if (deploy.isPending(fullName)) {
-      res.writeHead(200, {'content-type': 'text/plain'})
       res.write(`Project ${fullName} is deploying, please waiting for a moment`)
-      res.end()
       return
     }
 

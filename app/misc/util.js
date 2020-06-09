@@ -60,6 +60,10 @@ module.exports = {
   },
 
   async writeFile(filename, content) {
+    const dir = path.dirname(filename)
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, {recursive: true, mode: '777'})
+    }
     if (typeof content === 'object') {
       content = JSON.stringify(content, null, 2)
     }

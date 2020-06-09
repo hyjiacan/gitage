@@ -4,19 +4,24 @@
   <meta charset="utf-8"/>
   <title>{{userName}}/{{projectName}}</title>
   <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-  <script src="https://cdn.bootcss.com/highlight.js/9.15.10/highlight.min.js"></script>
-  <link href="https://cdn.bootcss.com/highlight.js/9.15.10/styles/default.min.css" rel="stylesheet">
-  <!--  <script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>-->
-  <!--  <link href="https://cdn.jsdelivr.net/npm/md0/dist/md0.css" rel="stylesheet">-->
-  <link href="/static/md0/md0.css" rel="stylesheet">
-  <script src="/static/md0/md0.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/md0/dist/md0.css" rel="stylesheet">
+  <style type="text/css">
+  #catalog {
+  }
+  </style>
 </head>
 <body>
 <ul id="catalog">
   <t-tree on="catalog as item">
     <li>
       <div>
-        <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}">{{item.name}}</a>
+        <t-if on="item.type === 'dir'">
+          <span>[DIR] {{item.name}}</span>
+        </t-if>
+        <t-else>
+          <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}">{{item.name}}</a>
+        </t-else>
       </div>
       <t-if on="item.children">
         <ul>
@@ -28,11 +33,15 @@
 </ul>
 <div id="content"></div>
 <script type="text/javascript">
-$.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content) {
-  var html = md0(content, {
-    useHljs: true
+$(function () {
+  $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content) {
+    var html = md0(content, {
+      codeHeader: false,
+      // codeIndex: false,
+      useHljs: false
+    })
+    $('#content').html(html)
   })
-  $('#content').html(html)
 })
 </script>
 </body>

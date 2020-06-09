@@ -7,11 +7,11 @@ const util = require('../misc/util')
 const config = require('../config')
 
 class HttpResponse {
-  _req
-  _res
-  _content
-  _code
-  _headers
+  _req = null
+  _res = null
+  _content = null
+  _code = 200
+  _headers = {}
 
   /**
    *
@@ -34,9 +34,19 @@ class HttpResponse {
   }
 
   write(content, contentType) {
-    this._content = content
+    if (typeof content === 'string' || content instanceof Buffer) {
+      this._content = content
+      if (contentType) {
+        this._headers['content-type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
+      }
+      return
+    }
+    // JSON
+    this._content = JSON.stringify(content)
     if (contentType) {
       this._headers['content-type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
+    } else {
+      this._headers['content-type'] = 'application/json'
     }
   }
 
@@ -79,6 +89,20 @@ class HttpResponse {
     } else {
       this._content = err
     }
+  }
+
+  /**
+   *
+   * @param message
+   */
+  badRequest(message) {
+    this._code = 400
+    this._content = message || ''
+  }
+
+  notAllowed(message) {
+    this._code = 405
+    this._content = message || ''
   }
 
   flush() {

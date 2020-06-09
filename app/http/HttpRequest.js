@@ -1,10 +1,9 @@
 const url = require('url')
 
 class HttpRequest {
-  _req
-  _url
-  _method
-
+  _req = null
+  _url = null
+  _method = ''
   params = {}
 
   /**
@@ -31,6 +30,10 @@ class HttpRequest {
 
   get method() {
     return this._method
+  }
+
+  get headers() {
+    return this._req.headers
   }
 }
 

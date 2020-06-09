@@ -2,6 +2,7 @@ const index = require('./index')
 const user = require('./user')
 const project = require('./project')
 const staticRender = require('./static')
+const hook = require('./hook')
 
 module.exports = {
   map(router) {
@@ -9,6 +10,8 @@ module.exports = {
     router.get('/', index.render)
     // 静态资源
     router.get('/static/', staticRender.render)
+    // GIT HOOKS
+    router.request('/hook/', hook.handle)
     // 项目列表页
     router.get('/projects/', index.render)
     // 用户项目列表项
