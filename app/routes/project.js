@@ -58,8 +58,9 @@ async function getReadmeFile(projectPath) {
  * 根据 markdown 文件结构生成目录
  * @return {Promise<>}
  */
-async function getMarkdownCatalog(projectPath, currentPath) {
-  const relativeRoot = path.relative(projectPath, currentPath)
+async function getMarkdownCatalog(currentPath, root) {
+  root = root || currentPath
+  const relativeRoot = path.relative(root, currentPath)
   const entities = await util.readEntities(currentPath)
 
   const result = []
@@ -69,7 +70,7 @@ async function getMarkdownCatalog(projectPath, currentPath) {
     const stat = fs.statSync(abs)
     // 读取目录
     if (stat.isDirectory()) {
-      const children = await getMarkdownCatalog(projectPath, abs)
+      const children = await getMarkdownCatalog(abs, root)
       result.push({
         type: 'dir',
         name: path.basename(entity),
@@ -158,7 +159,7 @@ module.exports = {
 
     // 部署的是 markdown 内容
     if (conf.type === 'markdown') {
-      const catalog = await getMarkdownCatalog(projectPath, conf.root)
+      const catalog = await getMarkdownCatalog(conf.root)
       await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), filename, catalog)
       return
     }

@@ -18,9 +18,11 @@
       <div>
         <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}">{{item.name}}</a>
       </div>
-      <ul>
-        <t-children/>
-      </ul>
+      <t-if on="item.children">
+        <ul>
+          <t-children/>
+        </ul>
+      </t-if>
     </li>
   </t-tree>
 </ul>

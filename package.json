@@ -6,9 +6,9 @@
   "scripts": {
     "serve": "supervisor -w app -e js app/index.js"
   },
-  "dependencies": {
-  },
+  "dependencies": {},
   "devDependencies": {
+    "eslint": "^7.2.0",
     "supervisor": "^0.12.0"
   }
 }
