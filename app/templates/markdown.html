@@ -3,9 +3,12 @@
 <head>
   <meta charset="utf-8"/>
   <title>{{userName}}/{{projectName}}</title>
-  <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>
-  <link href="https://cdn.jsdelivr.net/npm/md0/dist/md0.css" rel="stylesheet">
+<!--  <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>-->
+  <!--  <script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>-->
+  <!--  <link href="https://cdn.jsdelivr.net/npm/md0/dist/md0.css" rel="stylesheet">-->
+  <script src="/static/jquery-3.3.1.min.js"></script>
+  <script src="/static/md0/md0.js"></script>
+  <link href="/static/md0/md0.css" rel="stylesheet">
   <style type="text/css">
   #catalog {
   }
@@ -32,6 +35,14 @@
   </t-tree>
 </ul>
 <div id="content"></div>
+<div style="text-align: center">
+  <span>Powered by</span>
+  <a href="{{$jst.repository}}" title="{{$jst.description}}">{{$jst.name}}@{{$jst.version}}</a>
+  <span>|</span>
+  <a href="{{$pages.repository}}" title="{{$pages.description}}">{{$pages.name}}@{{$pages.version}}</a>
+  <span>.</span>
+  <span>Template render takes @{timestamp}@ ms</span>
+</div>
 <script type="text/javascript">
 $(function () {
   $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content) {

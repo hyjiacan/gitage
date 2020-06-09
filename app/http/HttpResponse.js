@@ -6,6 +6,9 @@ const jst = require('../../externals/jst')
 const util = require('../misc/util')
 const config = require('../config')
 
+const jstPkg = require('../../externals/jst/package.json')
+const pkg = require('../../package.json')
+
 class HttpResponse {
   _req = null
   _res = null
@@ -67,7 +70,11 @@ class HttpResponse {
     }
     try {
       const templateContent = await util.readFileContent(templateFilePath)
-      const html = await jst.render(templateContent, context, {
+      const html = await jst.render(templateContent, {
+        $jst: jstPkg,
+        $pages: pkg,
+        ...context
+      }, {
         cache: !config.debug
       })
 

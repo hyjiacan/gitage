@@ -1,11 +1,12 @@
 {
   "name": "node-pages",
   "description": "Git pages server based on Node.js",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "private": true,
   "scripts": {
     "serve": "supervisor -w app -e js app/index.js"
   },
+  "repository": "https://gitee.com/hyjiacan/git-pages.git",
   "dependencies": {},
   "devDependencies": {
     "eslint": "^7.2.0",
