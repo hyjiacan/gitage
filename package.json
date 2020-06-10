@@ -1,5 +1,5 @@
 {
-  "name": "node-pages",
+  "name": "git-pages",
   "description": "Git pages server based on Node.js",
   "version": "0.5.0",
   "private": true,

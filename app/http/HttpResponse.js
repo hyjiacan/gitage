@@ -69,8 +69,7 @@ class HttpResponse {
       return
     }
     try {
-      const templateContent = await util.readFileContent(templateFilePath)
-      const html = await jst.render(templateContent, {
+      const html = await jst.render(templateFilePath, {
         $jst: jstPkg,
         $pages: pkg,
         ...context
