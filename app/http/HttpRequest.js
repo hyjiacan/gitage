@@ -1,7 +1,17 @@
 const url = require('url')
 
 class HttpRequest {
+  /**
+   *
+   * @type {IncomingMessage}
+   * @private
+   */
   _req = null
+  /**
+   *
+   * @type {UrlWithStringQuery}
+   * @private
+   */
   _url = null
   _method = ''
   params = {}

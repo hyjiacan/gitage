@@ -52,10 +52,7 @@ module.exports = {
     const dirs = await util.promisify(fs.readdir)(targetPath)
     return dirs.filter(dirName => {
       // 隐藏目录，不需要
-      if (dirName.startsWith('.')) {
-        return false
-      }
-      return true
+      return !dirName.startsWith('.')
     })
   },
 

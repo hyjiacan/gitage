@@ -67,6 +67,9 @@ module.exports = {
     logger.debug(`Accept git push from ${host}: ${delivery}`)
 
     const data = await util.receivePostData(req.raw)
+    /**
+     * @type {{owner: {}}}
+     */
     const {repository} = data
     const name = repository.name
 

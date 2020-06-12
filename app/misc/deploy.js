@@ -17,7 +17,7 @@ function removeFlag(name) {
 
 /**
  * 从 GIT 检出代码
- * @param data
+ * @param {{repository: {full_name: string, cloneUrl: string}}} data
  * @param dist
  * @return {Promise<void>}
  */
@@ -38,7 +38,7 @@ async function checkoutRepo(data, dist) {
     // git --work-tree=${WEB_DIR} checkout --force
     await util.runCommand(`git pull --verbose`, dist)
     await util.runCommand(`git checkout -f`, dist)
-  }else{
+  } else {
     logger.info(`mkdir: ${dist}`)
     fs.mkdirSync(dist, {recursive: true, mode: '777'})
 

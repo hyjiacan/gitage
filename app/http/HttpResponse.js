@@ -3,15 +3,29 @@ const fs = require('fs')
 
 const logger = require('../misc/logger')
 const jst = require('../../externals/jst')
-const util = require('../misc/util')
 const config = require('../config')
 
 const jstPkg = require('../../externals/jst/package.json')
 const pkg = require('../../package.json')
 
 class HttpResponse {
+  /**
+   *
+   * @type {IncomingMessage}
+   * @private
+   */
   _req = null
+  /**
+   *
+   * @type {ServerResponse}
+   * @private
+   */
   _res = null
+  /**
+   *
+   * @type {string}
+   * @private
+   */
   _content = null
   _code = 200
   _headers = {}

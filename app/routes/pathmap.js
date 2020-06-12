@@ -16,13 +16,14 @@ module.exports = {
     router.get('/projects/', index.render)
     // 用户项目列表项
     router.get('/projects/:user', user.index)
-    // 项目首页
+    /**
+     * 项目首页
+     * @param {{params: {project: string}}} req
+     */
     router.get('/projects/:user/:project', async (req, res) => {
       const p = req.path.substring(`/projects/${req.params.user}/${req.params.project}`.length)
       await project.index(req, res, decodeURIComponent(p))
     })
-    // 项目的 readme
-    router.get('/projects/:user/:project/readme', project.readme)
     // 项目原始文件
     router.get('/raw/:user/:project', async (req, res) => {
       const p = req.path.substring(`/raw/${req.params.user}/${req.params.project}`.length)
