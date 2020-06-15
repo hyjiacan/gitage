@@ -12,7 +12,7 @@ const server = http.createServer(async (req, res) => {
     await router.route(request, response)
   } catch (e) {
     logger.error(e)
-    response.serverError(e)
+    await response.serverError(e)
   } finally {
     response.flush()
   }

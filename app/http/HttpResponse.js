@@ -79,7 +79,7 @@ class HttpResponse {
   async render(templateFile, context) {
     const templateFilePath = path.join(config.root, 'app', 'templates', templateFile)
     if (!fs.existsSync(templateFilePath)) {
-      this.serverError(`Template not exists: ${templateFile}`)
+      await this.serverError(`Template not exists: ${templateFile}`)
       return
     }
     try {
@@ -94,7 +94,7 @@ class HttpResponse {
       this.write(html, 'text/html')
     } catch (e) {
       logger.error(e)
-      this.serverError(e)
+      await this.serverError(e)
     }
   }
 
@@ -102,13 +102,20 @@ class HttpResponse {
    *
    * @param {Error|string} err
    */
-  serverError(err) {
+  async serverError(err) {
     this._code = 500
-    if (err instanceof Error) {
-      this._content = err.stack
-    } else {
-      this._content = err
-    }
+    // if (err instanceof Error) {
+    //   this._content = err.stack
+    // } else {
+    //   this._content = err
+    // }
+    let message = err instanceof Error ? err.stack : err
+    message = message
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+    await this.render('500.html', {
+      message
+    })
   }
 
   /**
