@@ -20,6 +20,8 @@ function timestamp() {
 }
 
 function log(level, msg) {
+  msg = msg.trimEnd()
+
   const {dirName, fileName, time} = timestamp()
   const content = `[${time}] [${level}] ${msg}`
 

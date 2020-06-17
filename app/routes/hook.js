@@ -64,7 +64,7 @@ module.exports = {
       return
     }
 
-    logger.debug(`Accept git push from ${host}: ${delivery}`)
+    logger.debug(`Accept git push from ${host}: ${delivery.value}`)
 
     const data = await util.receivePostData(req.raw)
     /**
@@ -75,6 +75,7 @@ module.exports = {
 
     // 由用户名和项目名称组成
     const checkoutPath = path.join(config.projectRoot, repository.owner.username, name)
+
     await deploy.checkout(data, checkoutPath)
 
     res.write({
