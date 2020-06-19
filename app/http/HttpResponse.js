@@ -11,27 +11,6 @@ const pkg = require('../../package.json')
 class HttpResponse {
   /**
    *
-   * @type {IncomingMessage}
-   * @private
-   */
-  _req = null
-  /**
-   *
-   * @type {ServerResponse}
-   * @private
-   */
-  _res = null
-  /**
-   *
-   * @type {string}
-   * @private
-   */
-  _content = null
-  _code = 200
-  _headers = {}
-
-  /**
-   *
    * @param {IncomingMessage} request
    * @param {ServerResponse} response
    */
@@ -77,7 +56,7 @@ class HttpResponse {
   }
 
   async render(templateFile, context) {
-    const templateFilePath = path.join(config.root, 'app', 'templates', templateFile)
+    const templateFilePath = path.join(config.root, 'templates', templateFile)
     if (!fs.existsSync(templateFilePath)) {
       await this.serverError(`Template not exists: ${templateFile}`)
       return
@@ -109,13 +88,18 @@ class HttpResponse {
     // } else {
     //   this._content = err
     // }
-    let message = err instanceof Error ? err.stack : err
-    message = message
-      .replace(/</g, '&lt;')
-      .replace(/>/g, '&gt;')
-    await this.render('500.html', {
-      message
-    })
+    try {
+      let message = err instanceof Error ? err.stack : err
+      message = message
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+      await this.render('500.html', {
+        message
+      })
+    } catch (e) {
+      logger.error(e)
+      this._content = e.message
+    }
   }
 
   /**

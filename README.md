@@ -1,6 +1,6 @@
 # git-pages
 
-基于 Node.js 的 GIT 静态服务器。无第三方依赖，丢到 Node 上就能直接运行。
+基于 web-hook 的 GIT 静态服务器。运行在 NodeJS 上。
 
 目前仅测试过 [gitea](https://gitea.io/)
 
@@ -8,9 +8,35 @@
 
 - 简单的 js 模板引擎 [jst](http://gitee.com/hyjiacan/jst)
 
-## 配置
+运行时需要服务器上安装了 git, nodejs>8
 
-在项目下添加文件 `pages.config.json`，其格式如下(可选):
+## 服务器配置
+
+配置文件名为 `config` (区分大小写)，放置在部署根目录。
+
+*config*
+```
+# 系统名称
+APP_NAME = Git Pages
+# 是否启用调试
+DEBUG = true
+# 启动服务的IP地址
+HOST = 0.0.0.0
+# 启动服务的端口
+PORT = 1997
+# 日志路径，可以指定为绝对路径或相对路径
+LOG_PATH = logs
+# 项目检出路径，可以指定为绝对路径或相对路径
+PROJECT_ROOT_PATH = projects
+```
+
+> 在无此文件时，使用以下默认配置
+
+> 注意：配置项名称均使用大写
+
+## 仓库配置
+
+在仓库下添加文件 `pages.config.json`，其格式如下(可选):
 
 ```json
 {
@@ -52,8 +78,6 @@ POST `http://127.0.0.1:1997/hook/`
 ### 0.6.0
 
 - [ ] 允许仅在收到 tag 推送时重新部署
-- [ ] 保留历史版本（在启用tag时）
 - [ ] 允许指定分支(通过 `ref: refs/head/master` 来判断)
 - [ ] 插件支持
 - [ ] 优化 jst 性能
-- [ ] 添加在线配置

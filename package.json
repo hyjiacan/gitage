@@ -4,12 +4,17 @@
   "version": "0.5.0",
   "private": true,
   "scripts": {
-    "serve": "supervisor -w app -e js app/index.js"
+    "serve": "supervisor -w app -e js app/index.js",
+    "build": "npx webpack --dist --mode=production --progress"
   },
   "repository": "https://gitee.com/hyjiacan/git-pages.git",
   "dependencies": {},
   "devDependencies": {
+    "clean-webpack-plugin": "^3.0.0",
+    "copy-webpack-plugin": "^6.0.2",
     "eslint": "^7.2.0",
-    "supervisor": "^0.12.0"
+    "supervisor": "^0.12.0",
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.12"
   }
 }
