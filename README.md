@@ -1,49 +1,49 @@
 # git-pages
 
-基于 web-hook 的 GIT 静态服务器。运行在 NodeJS 上。
+A static server for Git based on web-hook. Running on NodeJS.
 
-目前仅测试过 [gitea](https://gitea.io/)
+Tested on [gitea](https://gitea.io/) for now.
 
-依赖:
+Dependencies:
 
-- 简单的 js 模板引擎 [jst](http://gitee.com/hyjiacan/jst)
+- Simple Javascript Template Engine [jst](http://github.com/hyjiacan/jst)
 
-运行时需要服务器上安装了 git, nodejs>8
+Git, nodejs>8 must be installed on your server.
 
-## 用法
+## Usage
 
 ```shell script
 npm run build
 node dist/pages.js
 ```
 
-## 服务器配置
+## Server Configuration
 
-配置文件名为 `config` (区分大小写)，放置在部署根目录。
+Config file: `config` (case-sensitive), should be put in the root path of git-pages.
 
 *config*
 ```
-# 系统名称
+# System name
 APP_NAME = Git Pages
-# 是否启用调试
+# DEBUG flag
 DEBUG = true
-# 启动服务的IP地址
+# serve ip
 HOST = 0.0.0.0
-# 启动服务的端口
+# serve port
 PORT = 1997
-# 日志路径，可以指定为绝对路径或相对路径
+# Path for logs, can be absolute or relative 
 LOG_PATH = logs
-# 项目检出路径，可以指定为绝对路径或相对路径
+# Path to checkout repository, can be absolute or relative
 PROJECT_ROOT_PATH = projects
 ```
 
-> 在无此文件时，使用以下默认配置
+> If no config file, the value above will be the default values.
 
-> 注意：配置项名称均使用大写
+> Note: config names must be **UPPERCASE**
 
-## 仓库配置
+## Repo Configuration
 
-在仓库下添加文件 `pages.config.json`，其格式如下(可选):
+Add file `pages.config.json` into your repo, in the form bellow:
 
 ```json
 {
@@ -54,18 +54,18 @@ PROJECT_ROOT_PATH = projects
 }
 ```
 
-- `type` 标记部署内容的类型，目前仅支持 `markdown`，表示内容为 `markdown`，否则直接留空 **区分大小写**
-- `path` 部署目录，默认为 `docs`
-- `index` 部署目录下的索引页名称，默认为 `index.html/index.md` **区分大小写**
-- `tag` 是否仅在收到 `tag` 时部署，默认为 `false` (计划中)
+- `type` Deploy type, only `markdown` supported currently, or just leave it empty **case-sensitive**
+- `path` The directory to deploy (where the static assets located in), default: `docs`
+- `index` The index file to deploy，default: `index.html/index.md` **case-sensitive**
+- `tag` Whether to deploy only on `tag` pushed，default: `false` (planning)
 
-在仓库的 web hook 上添加地址:
+Add web-hook on your repository:
 
 POST `http://127.0.0.1:1997/hook/`
 
 
-`127.0.0.1` 是部署的服务器IP
-`1997` 是部署的端口
+`127.0.0.1` The deployment IP
+`1997` The deployment port
 
 ## 开发计划
 
