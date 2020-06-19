@@ -9,6 +9,10 @@
   },
   "repository": "https://gitee.com/hyjiacan/git-pages.git",
   "dependencies": {},
+  "author": {
+    "name": "hyjiacan",
+    "email": "hyjiacan@163.com"
+  },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.2",

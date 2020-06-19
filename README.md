@@ -10,6 +10,13 @@
 
 运行时需要服务器上安装了 git, nodejs>8
 
+## 用法
+
+```shell script
+npm run build
+node dist/pages.js
+```
+
 ## 服务器配置
 
 配置文件名为 `config` (区分大小写)，放置在部署根目录。

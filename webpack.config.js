@@ -4,9 +4,12 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const distConfig = {
   entry: {
-    app: './app/index.js'
+    pages: './app/index.js'
   },
   target: 'node',
+  node: {
+    __dirname: false
+  },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js'

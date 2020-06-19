@@ -1,6 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const root = process.cwd()
+const pkg = require('../package.json')
+
+const root = process.env.NODE_ENV === 'production' ? __dirname : path.resolve(path.join(__dirname, '..'))
 
 const OPTIONS = {
   ROOT: root,
@@ -65,6 +67,12 @@ const options = {
   debug: OPTIONS.DEBUG
 }
 
-console.debug(JSON.stringify(options, null, 2))
+console.info('----------------GIT-PAGES----------------')
+console.info('%s@%s by %s', pkg.name, pkg.version, pkg.author)
+console.info('-----------------------------------------')
+for (const name in options) {
+  console.info('%s: %s', name, options[name])
+}
+console.info('-----------------------------------------')
 
 module.exports = options
