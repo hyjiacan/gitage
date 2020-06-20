@@ -17,13 +17,13 @@ function removeFlag(name) {
 
 /**
  * 从 GIT 检出代码
- * @param {{repository: {full_name: string, cloneUrl: string}}} data
+ * @param {{repository: {full_name: string, clone_url: string}}} data
  * @param dist
  * @return {Promise<void>}
  */
 async function checkoutRepo(data, dist) {
   const fullName = data.repository.full_name.replace('/', '#')
-  const url = data.repository.cloneUrl
+  const url = data.repository.clone_url
 
   // 写检出标记
   await setFlag(fullName)
