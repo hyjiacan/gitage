@@ -2,10 +2,10 @@ const path = require('path')
 const fs = require('fs')
 
 const logger = require('../misc/logger')
-const jst = require('../../externals/jst')
+const wet = require('../../externals/wet')
 const config = require('../config')
 
-const jstPkg = require('../../externals/jst/package.json')
+const enginePkg = require('../../externals/wet/package.json')
 const pkg = require('../../package.json')
 
 class HttpResponse {
@@ -62,8 +62,8 @@ class HttpResponse {
       return
     }
     try {
-      const html = await jst.render(templateFilePath, {
-        $jst: jstPkg,
+      const html = await wet.render(templateFilePath, {
+        $engine: enginePkg,
         $pages: pkg,
         ...context
       }, {

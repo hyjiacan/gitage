@@ -6,7 +6,7 @@ Tested on [gitea](https://gitea.io/) for now.
 
 Dependencies:
 
-- Simple Javascript Template Engine [jst](http://github.com/hyjiacan/jst)
+- Simple Javascript Template Engine [wet](http://github.com/hyjiacan/wet)
 
 Git, nodejs>8 must be installed on your server.
 

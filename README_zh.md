@@ -6,7 +6,7 @@
 
 依赖:
 
-- 简单的 js 模板引擎 [jst](http://gitee.com/hyjiacan/jst)
+- 简单的 js 模板引擎 [wet](http://gitee.com/hyjiacan/wet)
 
 运行时需要服务器上安装了 git, nodejs>8
 
@@ -87,4 +87,4 @@ POST `http://127.0.0.1:1997/hook/`
 - [ ] 允许仅在收到 tag 推送时重新部署
 - [ ] 允许指定分支(通过 `ref: refs/head/master` 来判断)
 - [ ] 插件支持
-- [ ] 优化 jst 性能
+- [ ] 优化 `wet` 性能
