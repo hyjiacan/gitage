@@ -71,6 +71,9 @@ async function getMarkdownCatalog(currentPath, root) {
     // 读取目录
     if (stat.isDirectory()) {
       const children = await getMarkdownCatalog(abs, root)
+      if (!children.length) {
+        continue
+      }
       result.push({
         type: 'dir',
         name: path.basename(entity),
@@ -84,16 +87,13 @@ async function getMarkdownCatalog(currentPath, root) {
     }
     result.push({
       name: path.basename(entity, ext),
-      file: path.join(relativeRoot, encodeURIComponent(entity))
+      file: path.join(relativeRoot, encodeURIComponent(entity)).replace(/\\/g, '/')
     })
   }
   return result
 }
 
-async function renderMarkdown(res, userName, projectName, requestName, readmeFileName, catalog) {
-  if (!util.checkPath(res, readmeFileName)) {
-    return
-  }
+async function renderMarkdown(res, userName, projectName, requestName, catalog) {
   await res.render('markdown.html', {
     userName,
     projectName,
@@ -139,7 +139,10 @@ module.exports = {
 
     // 查看项目的 readme
     if (/^\/readme/i.test(requestPath)) {
-      await renderMarkdown(res, userName, projectName, requestPath, path.join(projectPath, requestPath))
+      if (!util.checkPath(res, path.join(projectPath, requestPath))) {
+        return
+      }
+      await renderMarkdown(res, userName, projectName, requestPath)
       return
     }
 
@@ -158,7 +161,7 @@ module.exports = {
     // 部署的是 markdown 内容
     if (conf.type === 'markdown') {
       const catalog = await getMarkdownCatalog(conf.root)
-      await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), filename, catalog)
+      await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), catalog)
       return
     }
 
