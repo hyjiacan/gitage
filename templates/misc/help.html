@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>HELP</title>
+</head>
+<body>
+
+<h2>WEB 勾子地址</h2>
+<p>
+  <code>
+    <span id="host"></span>
+  </code>
+</p>
+
+<h2>仓库配置</h2>
+
+<a href="{{$pages.repository}}#readme">去源码仓库查看</a>
+
+<h2>关于 pages</h2>
+<ul>
+  <li>版本: {{$pages.version}}</li>
+  <li>作者: {{typeof $pages.author === 'string' ? $pages.author: `${$pages.author.name}<${$pages.author.email}>`}}</li>
+  <li>源码: {{$pages.repository}}</li>
+</ul>
+<h2>关于 wet</h2>
+<ul>
+  <li>版本: {{$engine.version}}</li>
+  <li>作者: {{$engine.author}}</li>
+  <li>源码: {{$engine.repository}}</li>
+</ul>
+<t-include file="../include/footer.html"/>
+<script>
+document.querySelector('#host').innerHTML = window.location.origin + '/hook/'
+</script>
+</body>
+</html>
