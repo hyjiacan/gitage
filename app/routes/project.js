@@ -94,7 +94,11 @@ async function getMarkdownCatalog(currentPath, root) {
 }
 
 async function renderMarkdown(res, userName, projectName, requestName, catalog) {
+  const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, '.pages.push'))
+  // 这是原始的 push 数据
+  const project = JSON.parse(content)
   await res.render('markdown.html', {
+    $project: project,
     userName,
     projectName,
     catalog: catalog || [],

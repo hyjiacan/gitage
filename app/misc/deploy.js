@@ -30,7 +30,15 @@ async function checkoutRepo(data, dist) {
 
   logger.info(`Checkout: ${url}`)
 
-  if (fs.existsSync(dist)) {
+  let dirExists = fs.existsSync(dist)
+
+  // .git 目录是否存在
+  if (!fs.existsSync(path.join(dist, '.git'))) {
+    fs.rmdirSync(dist, {recursive: true})
+    dirExists = false
+  }
+
+  if (dirExists) {
     // 清空工作目录
     await util.runCommand(`git clean -f -d "${dist}"`, dist)
     // logger.info(`rmdir: ${dist}`)

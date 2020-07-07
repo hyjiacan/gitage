@@ -46,6 +46,24 @@
     color: #059bf0;
   }
 
+  #title .description {
+    font-size: 16px;
+    font-weight: normal;
+    color: #555555;
+  }
+
+  #title .updated_date {
+    font-size: 14px;
+    float: right;
+  }
+
+  #edit-button {
+    position: fixed;
+    top: 30px;
+    right: 20px;
+    box-shadow: 0 0 5px #d9ff00;
+  }
+
   #catalog {
     position: absolute;
     left: 0;
@@ -123,8 +141,13 @@
   <!--  </script>-->
 </head>
 <body>
+<div id="edit-button">
+  <a href="{{$project.repository.html_url}}/{{decodeURIComponent(file)}}" target="_blank">编辑此文件</a>
+</div>
 <div id="title">
   <a href="/projects/{{userName}}/{{projectName}}/">{{userName}}/{{projectName}}</a>
+  <span class="description">{{$project.repository.description}}</span>
+  <div class="updated_date">最后更新于 {{$project.repository.updated_at}}</div>
 </div>
 <hr>
 <ul id="catalog">
