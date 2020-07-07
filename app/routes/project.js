@@ -167,6 +167,12 @@ module.exports = {
       return
     }
 
+    // 文件是否存在
+    if(!fs.existsSync(abs)) {
+      res.notFound()
+      return
+    }
+
     // 部署的是 markdown 内容
     if (conf.type === 'markdown') {
       const catalog = await getMarkdownCatalog(conf.root)
@@ -206,8 +212,15 @@ module.exports = {
       res.notFound()
       return
     }
-    const content = await util.readFile(filename)
-    const ext = path.extname(filename)
+
+    // 文件是否存在
+    if(!fs.existsSync(abs)) {
+      res.notFound()
+      return
+    }
+
+    const content = await util.readFile(abs)
+    const ext = path.extname(abs)
     const mime = MIME[ext] || 'application/octet-stream'
     res.write(content, mime)
   }
