@@ -1,8 +1,11 @@
 const fs = require('fs')
+const os = require('os')
 const path = require('path')
 const pkg = require('../package.json')
 
 const root = process.env.NODE_ENV === 'production' ? __dirname : path.resolve(path.join(__dirname, '..'))
+
+const tempRoot = path.join(os.tmpdir(), pkg.name)
 
 const OPTIONS = {
   ROOT: root,
@@ -11,6 +14,7 @@ const OPTIONS = {
   PORT: 1997,
   PROJECT_ROOT_PATH: 'projects',
   PROJECT_ROOT_URL: 'projects',
+  PROJECT_CHECKOUT_TMP: tempRoot,
   LOG_PATH: 'logs',
   CONFIG_FILE: 'pages.config.json',
   DEBUG: process.env.NODE_ENV !== 'production'
@@ -57,6 +61,7 @@ if (!fs.existsSync(root)) {
 const options = {
   appName: OPTIONS.APP_NAME,
   root: OPTIONS.ROOT,
+  projectTemp: path.isAbsolute(OPTIONS.PROJECT_CHECKOUT_TMP) ? path.resolve(OPTIONS.PROJECT_CHECKOUT_TMP) : path.resolve(path.join(root, OPTIONS.PROJECT_CHECKOUT_TMP)),
   projectRoot: path.isAbsolute(OPTIONS.PROJECT_ROOT_PATH) ? path.resolve(OPTIONS.PROJECT_ROOT_PATH) : path.resolve(path.join(root, OPTIONS.PROJECT_ROOT_PATH)),
   projectUrl: OPTIONS.PROJECT_ROOT_URL,
   logPath: path.isAbsolute(OPTIONS.LOG_PATH) ? path.resolve(OPTIONS.LOG_PATH) : path.resolve(path.join(root, OPTIONS.LOG_PATH)),

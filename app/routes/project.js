@@ -103,7 +103,12 @@ async function renderMarkdown(res, userName, projectName, requestName, catalog) 
     projectName,
     catalog: catalog || [],
     file: encodeURIComponent(requestName.replace(/^\//, '')),
-    name: path.basename(requestName)
+    name: path.basename(requestName),
+    editUrl: [
+      project.repository.html_url,
+      project.ref.replace('refs/heads', 'src/branch'),
+      requestName.replace(/^\//, '')
+    ].join('/')
   })
 }
 

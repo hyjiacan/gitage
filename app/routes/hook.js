@@ -1,6 +1,4 @@
-const path = require('path')
 const util = require('../misc/util')
-const config = require('../config')
 const logger = require('../misc/logger')
 const deploy = require('../misc/deploy')
 
@@ -46,9 +44,13 @@ module.exports = {
       return
     }
 
-    const {host, value} = event
+    // value 可能的值
+    // push: 任意的 push 事件
+    // release: 发布版本 (release)
+    // create: 创建 tag 或 branch
+    const {host, value: eventType} = event
 
-    if (value !== 'push') {
+    if (eventType !== 'push' && eventType !== 'create') {
       const msg = 'Currently accepts PUSH method only'
       logger.info(msg)
       res.write(msg)
@@ -67,19 +69,12 @@ module.exports = {
     logger.debug(`Accept git push from ${host}: ${delivery.value}`)
 
     const data = await util.receivePostData(req.raw)
-    /**
-     * @type {{owner: {}}}
-     */
-    const {repository} = data
-    const name = repository.name
 
-    // 由用户名和项目名称组成
-    const checkoutPath = path.join(config.projectRoot, repository.owner.username, name)
-
-    await deploy.checkout(data, checkoutPath)
+    const err = await deploy.checkout(data, eventType)
 
     res.write({
-      code: 'OK'
+      code: 'OK',
+      message: err
     })
   }
 }

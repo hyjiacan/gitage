@@ -33,8 +33,10 @@ HOST = 0.0.0.0
 PORT = 1997
 # 日志路径，可以指定为绝对路径或相对路径
 LOG_PATH = logs
-# 仓库检出路径，可以指定为绝对路径或相对路径
+# 仓库部署路径，可以指定为绝对路径或相对路径
 PROJECT_ROOT_PATH = projects
+# 仓库检出临时目录，留空使用系统临时目录
+PROJECT_CHECKOUT_TMP = 
 ```
 
 > 在无此文件时，使用以上默认配置
@@ -50,7 +52,8 @@ PROJECT_ROOT_PATH = projects
   "type": "markdown",
   "path": "docs",
   "index": "index.html",
-  "tag": true
+  "tag": true,
+  "branch": "master"
 }
 ```
 
