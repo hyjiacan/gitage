@@ -16,6 +16,7 @@ const OPTIONS = {
   PROJECT_ROOT_URL: 'projects',
   PROJECT_CHECKOUT_TMP: tempRoot,
   LOG_PATH: 'logs',
+  LOG_LEVEL: 'info',
   CONFIG_FILE: 'pages.config.json',
   DEBUG: process.env.NODE_ENV !== 'production'
 }
@@ -65,7 +66,7 @@ const options = {
   projectRoot: path.isAbsolute(OPTIONS.PROJECT_ROOT_PATH) ? path.resolve(OPTIONS.PROJECT_ROOT_PATH) : path.resolve(path.join(root, OPTIONS.PROJECT_ROOT_PATH)),
   projectUrl: OPTIONS.PROJECT_ROOT_URL,
   logPath: path.isAbsolute(OPTIONS.LOG_PATH) ? path.resolve(OPTIONS.LOG_PATH) : path.resolve(path.join(root, OPTIONS.LOG_PATH)),
-  logLevel: 'info',
+  logLevel: OPTIONS.LOG_LEVEL,
   host: OPTIONS.HOST,
   port: OPTIONS.PORT,
   configFile: OPTIONS.CONFIG_FILE,

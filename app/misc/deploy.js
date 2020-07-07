@@ -57,9 +57,13 @@ async function checkoutRepo(data, eventType) {
     // fs.rmdirSync(dist, {recursive: true})
     // git --work-tree=${WEB_DIR} checkout --force
     await util.runCommand(`git fetch origin ${branch} --verbose`, dist)
-    await util.runCommand(`git reset --hard origin/${branch}`, dist)
+    // await util.runCommand(`git reset --hard origin/${branch}`, dist)
+    const head = await util.readFileContent(path.join(dist, '.git', 'HEAD'))
+    logger.info('Checking current branch name: ' + head)
+    if (!head.startsWith(`ref: refs/heads/${branch}`)) {
+      await util.runCommand(`git checkout -B ${branch} -f`, dist)
+    }
     await util.runCommand(`git pull --verbose`, dist)
-    // await util.runCommand(`git checkout -b ${branch} origin/${branch} -f`, dist)
   } else {
     logger.info(`mkdir: ${dist}`)
     fs.mkdirSync(dist, {recursive: true, mode: '777'})
@@ -81,8 +85,8 @@ async function checkoutRepo(data, eventType) {
       }
     }
     if (pageConfig.branch) {
-      if (ref !== `refs/head/${pageConfig.branch}`) {
-        return 'Ignore: branches are not expected'
+      if (branch !== pageConfig.branch) {
+        return `Ignore: branch ${branch} is not expected`
       }
     }
   }
