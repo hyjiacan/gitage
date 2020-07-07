@@ -171,20 +171,21 @@ module.exports = {
     }
 
     // 文件是否存在
-    if(!fs.existsSync(abs)) {
+    if (!fs.existsSync(abs)) {
       res.notFound()
       return
     }
 
+    const ext = path.extname(filename)
+
     // 部署的是 markdown 内容
-    if (conf.type === 'markdown') {
+    if (conf.type === 'markdown' && /^\.(markdown|md)$/i.test(ext)) {
       const catalog = await getMarkdownCatalog(conf.root)
       await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), conf.dirName, catalog)
       return
     }
 
     const content = await util.readFile(filename)
-    const ext = path.extname(filename)
     const mime = MIME[ext] || 'application/octet-stream'
     res.write(content, mime)
   },
@@ -217,7 +218,7 @@ module.exports = {
     }
 
     // 文件是否存在
-    if(!fs.existsSync(abs)) {
+    if (!fs.existsSync(abs)) {
       res.notFound()
       return
     }
