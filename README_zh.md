@@ -33,6 +33,8 @@ HOST = 0.0.0.0
 PORT = 1997
 # 日志路径，可以指定为绝对路径或相对路径
 LOG_PATH = logs
+# 日志记录的级别
+LOG_LEVEL = info
 # 仓库部署路径，可以指定为绝对路径或相对路径
 PROJECT_ROOT_PATH = projects
 # 仓库检出临时目录，留空使用系统临时目录

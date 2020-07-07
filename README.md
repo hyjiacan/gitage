@@ -35,6 +35,10 @@ PORT = 1997
 LOG_PATH = logs
 # Path to checkout repository, can be absolute or relative
 PROJECT_ROOT_PATH = projects
+# Only log the logs which higher than this value
+LOG_LEVEL = info
+# The temorary path to checkout, leave it empty to use system temp path
+PROJECT_CHECKOUT_TMP = 
 ```
 
 > If no config file, the value above will be the default values.
