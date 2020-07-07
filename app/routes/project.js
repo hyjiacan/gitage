@@ -21,7 +21,8 @@ async function getPageConfig(userName, projectName) {
   const projectPath = path.join(config.projectRoot, userName, projectName)
   const configFile = path.join(projectPath, config.configFile)
   const pageConfig = fs.existsSync(configFile) ? JSON.parse(await util.readFileContent(configFile)) : {}
-  const pageRoot = PAGE_CONFIG_MAP[projectName] = path.join(projectPath, pageConfig.path || 'docs')
+  const dirName = pageConfig.path || 'docs'
+  const pageRoot = PAGE_CONFIG_MAP[projectName] = path.join(projectPath, dirName)
   // 部署内容的类型
   const contentType = pageConfig.type
   const indexFile = path.join(pageRoot, pageConfig.index || (contentType === 'markdown' ? 'index.md' : 'index.html'))
@@ -29,7 +30,8 @@ async function getPageConfig(userName, projectName) {
   conf = {
     index: indexFile,
     root: pageRoot,
-    type: contentType
+    type: contentType,
+    dirName
   }
 
   PAGE_CONFIG_MAP[id] = conf
@@ -93,7 +95,7 @@ async function getMarkdownCatalog(currentPath, root) {
   return result
 }
 
-async function renderMarkdown(res, userName, projectName, requestName, catalog) {
+async function renderMarkdown(res, userName, projectName, requestName, docRoot, catalog) {
   const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, '.pages.push'))
   // 这是原始的 push 数据
   const project = JSON.parse(content)
@@ -107,6 +109,7 @@ async function renderMarkdown(res, userName, projectName, requestName, catalog) 
     editUrl: [
       project.repository.html_url,
       project.ref.replace('refs/heads', 'src/branch'),
+      docRoot,
       requestName.replace(/^\//, '')
     ].join('/')
   })
@@ -151,7 +154,7 @@ module.exports = {
       if (!util.checkPath(res, path.join(projectPath, requestPath))) {
         return
       }
-      await renderMarkdown(res, userName, projectName, requestPath)
+      await renderMarkdown(res, userName, projectName, requestPath, conf.dirName)
       return
     }
 
@@ -176,7 +179,7 @@ module.exports = {
     // 部署的是 markdown 内容
     if (conf.type === 'markdown') {
       const catalog = await getMarkdownCatalog(conf.root)
-      await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), catalog)
+      await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), conf.dirName, catalog)
       return
     }
 
