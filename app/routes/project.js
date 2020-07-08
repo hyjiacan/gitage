@@ -5,6 +5,7 @@ const config = require('../config')
 
 const MIME = require('../assets/mime')
 const util = require('../misc/util')
+const logger = require('../misc/logger')
 const deploy = require('../misc/deploy')
 
 const PAGE_CONFIG_MAP = {}
@@ -64,6 +65,8 @@ async function getMarkdownCatalog(currentPath, root) {
   root = root || currentPath
   const relativeRoot = path.relative(root, currentPath)
   const entities = await util.readEntities(currentPath)
+
+  entities.sort((a, b) => a > b ? 1 : -1)
 
   const result = []
 
@@ -166,12 +169,7 @@ module.exports = {
 
     // 如果最后的绝对路径不是以 projectPath 开头，表示越权访问了
     if (!abs.startsWith(projectPath)) {
-      res.notFound()
-      return
-    }
-
-    // 文件是否存在
-    if (!fs.existsSync(abs)) {
+      logger.warn(`Access not granted: ${requestPath}`)
       res.notFound()
       return
     }
@@ -182,6 +180,13 @@ module.exports = {
     if (conf.type === 'markdown' && /^\.(markdown|md)$/i.test(ext)) {
       const catalog = await getMarkdownCatalog(conf.root)
       await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), conf.dirName, catalog)
+      return
+    }
+
+    // 文件是否存在
+    if (!fs.existsSync(abs)) {
+      logger.warn(`Assets not found: ${abs}`)
+      res.notFound()
       return
     }
 

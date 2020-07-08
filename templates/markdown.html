@@ -129,6 +129,13 @@
     word-break: keep-all;
     white-space: nowrap;
   }
+
+  .err {
+    color: #5f6371;
+    font-size: 24px;
+    text-align: center;
+    padding-top: 120px;
+  }
   </style>
   <!--  <script>-->
   <!--  function loadContent(userName, projectName, file) {-->
@@ -191,6 +198,9 @@ $(function () {
       catalog: true
     })
     $('#content').html(html)
+  }).catch(e => {
+    console.info(e)
+    $('#content').html(`<div class="err">File <b>{{file}}</b> ${e.statusText}</div>`)
   })
 })
 </script>
