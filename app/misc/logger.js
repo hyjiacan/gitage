@@ -61,7 +61,7 @@ module.exports = {
    * @param {Error} e
    */
   error(e) {
-    log('ERROR', config.debug ? e.stack : e.message)
+    log('ERROR', e.stack)
   },
   debug(msg) {
     log('DEBUG', msg)

@@ -96,6 +96,7 @@ async function checkoutRepo(data, eventType) {
   if (fs.existsSync(workingDir)) {
     fs.rmdirSync(workingDir, {recursive: true})
   }
+  fs.mkdirSync(workingDir)
 
   // // 此操作无法跨分区工作
   // fs.renameSync(dist, workingDir)
