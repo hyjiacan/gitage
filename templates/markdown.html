@@ -156,7 +156,9 @@
   <a href="{{editUrl}}" target="_blank">编辑此文件</a>
 </div>
 <div id="title">
-  <a href="/projects/{{userName}}/{{projectName}}/">{{userName}}/{{projectName}}</a>
+  <a href="/projects/{{userName}}/">{{userName}}</a>
+  <span>/</span>
+  <a href="/projects/{{userName}}/{{projectName}}/">{{projectName}}</a>
   <span class="description">{{$project.repository.description}}</span>
   <div class="updated_date">最后更新于 {{$project.repository.updated_at}}</div>
 </div>
