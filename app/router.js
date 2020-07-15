@@ -59,8 +59,7 @@ async function route(request, response) {
     return
   }
 
-  let handler
-  let params = {}
+  let handlers = []
 
   // 使用最长匹配
   const keys = Object.keys(routes)
@@ -72,20 +71,32 @@ async function route(request, response) {
     if (!match) {
       continue
     }
-    handler = route.handler
-    params = match.groups
-    // 暂时仅支持一个匹配
-    break
+    handlers.push({
+      handler: route.handler,
+      params: match.groups
+    })
   }
 
-  if (!handler) {
+  if (!handlers.length) {
     response.notFound()
     return
   }
 
+  await invokeRouterHandler(request, response, handlers, 0)
+}
+
+async function invokeRouterHandler(request, response, handlers, index) {
+  if (index >= handlers.length) {
+    response.notFound()
+    return
+  }
+  const {handler, params} = handlers[index]
+
   request.params = params
 
-  await handler(request, response)
+  await handler(request, response, () => {
+    invokeRouterHandler(request, response, handlers, index + 1)
+  })
 }
 
 function request(path, handler) {

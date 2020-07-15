@@ -102,6 +102,8 @@ async function renderMarkdown(res, userName, projectName, requestName, docRoot, 
   const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, '.pages.push'))
   // 这是原始的 push 数据
   const project = JSON.parse(content)
+  requestName = requestName.replace(/\\/g, '/')
+
   await res.render('markdown.html', {
     $project: project,
     userName,
@@ -110,11 +112,11 @@ async function renderMarkdown(res, userName, projectName, requestName, docRoot, 
     file: encodeURIComponent(requestName.replace(/^\//, '')),
     name: path.basename(requestName),
     editUrl: [
-      project.repository.html_url,
+      project.repository.html_url.replace(/\/$/g, ''),
       project.ref.replace('refs/heads', 'src/branch'),
-      docRoot,
+      docRoot.replace(/^\/(.+?)?\/?$/g, '$1'),
       requestName.replace(/^\//, '')
-    ].join('/')
+    ].filter(i => !!i).join('/')
   })
 }
 

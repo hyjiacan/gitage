@@ -15,8 +15,8 @@ module.exports = {
 
     // 读取项目列表
     const projects = await project.read(userPath)
-    await res.render('index.html', {
-      title: `${config.appName} @${req.params.user}`,
+    await res.render('user.html', {
+      user: req.params.user,
       projects
     })
   }

@@ -16,7 +16,7 @@ module.exports = {
     // GIT HOOKS
     router.request('/hook/', hook.handle)
     // 项目列表页
-    router.get('/projects/', index.render)
+    router.get('/projects/', index.projects)
     // 用户项目列表项
     router.get('/projects/:user', user.index)
     /**

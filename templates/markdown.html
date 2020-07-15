@@ -2,206 +2,122 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>{{userName}}/{{projectName}}</title>
-  <!--  <script src="https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>-->
-  <!--  <script src="https://cdn.jsdelivr.net/npm/md0/dist/md0.js"></script>-->
-  <!--  <link href="https://cdn.jsdelivr.net/npm/md0/dist/md0.css" rel="stylesheet">-->
-  <script src="/static/jquery-3.3.1.min.js"></script>
-  <script src="/static/md0/md0.js"></script>
-  <link href="/static/md0/md0.css" rel="stylesheet">
-  <style type="text/css">
-  html, body {
-    width: 100%;
-    height: 100%;
+  <title>{{userName}}/{{projectName}} - {{$config.appName}}</title>
+  <t-include file="include/assets.html"/>
+  <script src="/static/lib/md0/md0.js"></script>
+  <link href="/static/lib/md0/md0.css" rel="stylesheet">
+  <style>
+  #catalog {
+    font-size: small;
+  }
+
+  #catalog, #catalog ul {
+    list-style: none;
     margin: 0;
     padding: 0;
+    border-left: 1px dotted transparent;
   }
 
-  ::-webkit-scrollbar {
-    background-color: rgba(220, 220, 220, .3);
-    width: 8px;
-    height: 8px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    background-color: rgba(201, 201, 204, 0.5);
-    border-radius: 4px;
-  }
-
-  ::-webkit-scrollbar-thumb:hover {
-    background-color: rgba(91, 91, 90, 0.4);
-  }
-
-  #title {
-    padding: 5px 10px;
-    font-size: 30px;
-  }
-
-  #title a {
-    color: #026eab;
-    text-decoration: none;
-  }
-
-  #title a:hover {
-    color: #059bf0;
-  }
-
-  #title .description {
-    font-size: 16px;
-    font-weight: normal;
-    color: #555555;
-  }
-
-  #title .updated_date {
-    font-size: 14px;
-    float: right;
-  }
-
-  img {
-    max-width: 100%;
-  }
-
-  #edit-button {
-    position: fixed;
-    top: 30px;
-    right: 20px;
-    box-shadow: 0 0 5px #d9ff00;
-  }
-
-  #catalog {
-    position: absolute;
-    left: 0;
-    top: 60px;
-    width: 400px;
-    bottom: 40px;
-    overflow: auto;
-    background-color: rgba(233, 232, 232, 0.2);
-    padding: 5px;
-    box-sizing: border-box;
-    font-size: 14px;
-  }
-
-  #catalog ul {
-    margin: 0;
-    padding-left: 30px;
+  #catalog:hover, #catalog ul:hover {
+    border-left-color: #5f6371;
   }
 
   #catalog li {
-    padding: 5px 5px 5px 0;
+    padding: 5px 5px 5px 20px;
   }
 
-  #catalog li:hover {
-    border-left: 1px dotted #acac56;
+  .fa-folder, .fa-markdown {
+    color: rgba(95, 99, 113, 0.54);
   }
 
-  #container {
-    position: absolute;
-    top: 60px;
-    left: 410px;
-    bottom: 40px;
-    right: 0;
-    overflow: auto;
-  }
-
-  #content {
-    width: 960px;
-    margin: 0 auto;
-  }
-
-  #footer {
-    position: absolute;
-    left: 0;
-    width: 100%;
-    bottom: 0;
-    padding: 5px;
-    box-sizing: border-box;
-  }
-
-  .tree-dir {
-    color: #333333;
-  }
-
-  .tree-file {
-    color: #1d7bb9;
-  }
-
-  .tree-file, .tree-dir {
-    word-break: keep-all;
-    white-space: nowrap;
-  }
-
-  .err {
-    color: #5f6371;
-    font-size: 24px;
-    text-align: center;
-    padding-top: 120px;
+  .item-content:hover .fa-folder,
+  .item-content:hover .fa-markdown {
+    color: rgb(67, 73, 92);
   }
   </style>
-  <!--  <script>-->
-  <!--  function loadContent(userName, projectName, file) {-->
-  <!--    $.get('/raw/' + userName + '/' + projectName + '/' + file).then(function (content) {-->
-  <!--      var html = md0(content, {-->
-  <!--        codeHeader: false,-->
-  <!--        // codeIndex: false,-->
-  <!--        useHljs: false,-->
-  <!--        catalog: true-->
-  <!--      })-->
-  <!--      $('#content').html(html)-->
-  <!--    })-->
-  <!--  }-->
-  <!--  </script>-->
 </head>
 <body>
-<div id="edit-button">
-  <a href="{{editUrl}}" target="_blank">编辑此文件</a>
-</div>
-<div id="title">
-  <a href="/projects/{{userName}}/">{{userName}}</a>
-  <span>/</span>
-  <a href="/projects/{{userName}}/{{projectName}}/">{{projectName}}</a>
-  <span class="description">{{$project.repository.description}}</span>
-  <div class="updated_date">最后更新于 {{$project.repository.updated_at}}</div>
-</div>
-<hr>
-<ul id="catalog">
-  <t-tree on="catalog as item">
-    <li>
-      <div>
-        <t-if on="item.type === 'dir'">
-          <span class="tree-dir">{{item.name}}</span>
-        </t-if>
-        <t-else>
-          <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="tree-file">
-            {{item.name}}
-          </a>
-        </t-else>
-      </div>
-      <t-if on="item.children">
-        <ul>
-          <t-children/>
-        </ul>
-      </t-if>
-    </li>
-  </t-tree>
-</ul>
-<div id="container">
-  <div id="content"></div>
-</div>
-<div id="footer">
+<t-include file="include/header.html"/>
+<div class="container-fluid">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">
+          <i class="fa fa-home"></i>
+        </a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="/projects/">项目</a>
+      </li>
+      <li class="breadcrumb-item">
+        <a href="/projects/{{userName}}/">{{userName}}</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">{{projectName}}</li>
+      <li class="pl-4">
+        <span class="badge badge-info">最后更新于 {{$project.repository.updated_at}}</span>
+      </li>
+    </ol>
+  </nav>
+  <div class="mb-2 bg-light p-2">
+    <div class="float-left">
+      <i class="fa fa-book-open"></i>
+      <span>{{$project.repository.description}}</span>
+    </div>
+    <div class="float-right">
+      <a href="{{editUrl}}" target="_blank" class="mr-4">
+        <i class="fa fa-edit"></i>
+        <span>编辑</span>
+      </a>
+      <a href="/raw/{{userName}}/{{projectName}}/{{decodeURIComponent(file)}}" target="_blank">
+        <i class="fa fa-file-download"></i>
+        <span>下载</span>
+      </a>
+    </div>
+    <span class="clearfix"></span>
+  </div>
+  <div class="row">
+    <div class="col-3 overflow-auto bg-light p-2">
+      <ul id="catalog">
+        <t-tree on="catalog as item">
+          <li>
+            <div class="item-content d-inline-block">
+              <t-if on="item.type === 'dir'">
+                <i class="fa fa-folder"></i>
+                <span class="text-nowrap">{{item.name}}</span>
+              </t-if>
+              <t-else>
+                <i class="fab fa-markdown"></i>
+                <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-nowrap">
+                  {{item.name}}
+                </a>
+              </t-else>
+            </div>
+            <t-if on="item.children">
+              <ul>
+                <t-children/>
+              </ul>
+            </t-if>
+          </li>
+        </t-tree>
+      </ul>
+    </div>
+    <div id="content" class="col"></div>
+  </div>
   <t-include file="./include/footer.html"/>
 </div>
+<a class="btn btn-dark position-fixed text-light" href="#" style="right: 20px;bottom: 20px;">
+  <i class="fa fa-arrow-up"></i>
+</a>
 <script type="text/javascript">
 $(function () {
   $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content) {
     var html = md0(content, {
       codeHeader: false,
       // codeIndex: false,
-      useHljs: false,
-      catalog: true
+      useHljs: true
     })
     $('#content').html(html)
   }).catch(e => {
-    console.info(e)
     $('#content').html(`<div class="err">File <b>{{file}}</b> ${e.statusText}</div>`)
   })
 })

@@ -3,47 +3,54 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="generator" content="wet"/>
-  <title>Index - {{title}}</title>
-  <style type="text/css">
-  .pkg-version {
-    background-color: #5f6371;
-    color: #ffffff;
-    padding: 2px 5px;
-    margin: 0 5px;
-  }
-  </style>
+  <title>首页 - {{$config.appName}}</title>
+  <t-include file="include/assets.html"/>
 </head>
 <body>
-<h1>Index - {{title}}</h1>
-<ul>
-  <t-for on="item of projects">
-    <t-with repo="item.repository">
-      <li>
-        <div>
-          <h3>
-            <a href="/projects/{{repo.owner.username}}">{{repo.owner.username}}</a>
-            <span>/</span>
-            <a href="/projects/{{repo.full_name}}/">{{repo.name}}</a>
-            <small style="font-size: 14px">
-              <span class="pkg-version">{{repo.updated_at}}</span>
-              <a href="{{repo.html_url}}">Repository</a>
-              <t-if on="item.readme">
-                <span>|</span>
-                <a href="/projects/{{repo.full_name}}/{{item.readme}}">README</a>
-              </t-if>
-            </small>
-          </h3>
-        </div>
-        <t-if on="repo.description">
-          <div style="color: #666;">{{repo.description}}</div>
-        </t-if>
-        <t-else>
-          <div style="color: #666;">无描述</div>
-        </t-else>
+<div class="container">
+  <t-include file="include/header.html"/>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">
+        <i class="fa fa-home"></i>
       </li>
-    </t-with>
-  </t-for>
-</ul>
-<t-include file="./include/footer.html"/>
+    </ol>
+  </nav>
+  <table class="table table-bordered">
+    <thead class="thead-light">
+    <tr>
+      <th>用户数量</th>
+      <th>仓库数量</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+      <td>{{userCount}}</td>
+      <td>{{projectCount}}</td>
+    </tr>
+    </tbody>
+  </table>
+  <div class="card">
+    <div class="card-header">
+      <span>最近更新</span>
+      <div class="float-right">
+        <a href="/projects/">
+          所有项目
+          <i class="fa fa-chevron-right"></i>
+        </a>
+      </div>
+    </div>
+    <div class="card-body">
+      <ol class="list-group-flush">
+        <li class="list-group-item">
+          <span class="badge badge-light">2020-07-14 17:14:55</span>
+          <a href="#">xxx/xxx</a>
+          <span class="text-muted">description</span>
+        </li>
+      </ol>
+    </div>
+  </div>
+  <t-include file="./include/footer.html"/>
+</div>
 </body>
 </html>

@@ -29,6 +29,10 @@ class HttpResponse {
     return this._res
   }
 
+  header(key, value) {
+    this._headers[key] = value
+  }
+
   write(content, contentType) {
     if (typeof content === 'string' || content instanceof Buffer) {
       this._content = content
@@ -87,7 +91,7 @@ class HttpResponse {
     this._code = 500
     try {
       let message = err instanceof Error ? err.stack : err
-      await this.render('500.html', {
+      await this.render('server/500.html', {
         message: message
           .replace(/</g, '&lt;')
           .replace(/>/g, '&gt;')

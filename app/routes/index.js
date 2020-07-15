@@ -1,40 +1,39 @@
-const fs = require('fs')
 const path = require('path')
 const config = require('../config')
 const project = require('./project')
-
-async function renderIndex(req, res) {
-  if (req.path !== '/') {
-    res.notFound()
-    return
-  }
-  // 查找项目目录
-  const items = fs.readdirSync(config.projectRoot)
-
-  const projects = []
-
-  for (const userName of items) {
-    // 隐藏目录，不需要
-    if (userName.startsWith('.')) {
-      continue
-    }
-    // 用户目录
-    const userPath = path.join(config.projectRoot, userName)
-
-    if (!fs.statSync(userPath).isDirectory()) {
-      continue
-    }
-
-    const ps = await project.read(userPath)
-    projects.push(...ps)
-  }
-
-  await res.render('index.html', {
-    title: config.appName,
-    projects
-  })
-}
+const util = require('../misc/util')
 
 module.exports = {
-  render: renderIndex
+  async render(req, res) {
+    const users = await util.readDir(config.projectRoot)
+    let projectCount = 0
+
+    for (let i = 0; i < users.length; i++) {
+      const user = users[i]
+      const userPath = path.join(config.projectRoot, user)
+      const projects = await util.readDir(userPath)
+      projectCount += projects.length
+    }
+
+    await res.render('index.html', {
+      userCount: users.length,
+      projectCount
+    })
+  },
+  async projects(req, res) {
+    // 查找项目目录
+    const items = await util.readDir(config.projectRoot)
+
+    const projects = []
+
+    for (const user of items) {
+      const userPath = path.join(config.projectRoot, user)
+      const ps = await project.read(userPath)
+      projects.push(...ps)
+    }
+
+    await res.render('project.html', {
+      projects
+    })
+  }
 }
