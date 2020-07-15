@@ -65,6 +65,7 @@ class HttpResponse {
       const html = await wet.render(templateFilePath, {
         $engine: enginePkg,
         $pages: pkg,
+        $config: config,
         ...context
       }, {
         cache: !config.debug
@@ -73,7 +74,8 @@ class HttpResponse {
       this.write(html, 'text/html')
     } catch (e) {
       logger.error(e)
-      await this.serverError(e)
+      // 避免模板错误时，其内的表达式在500页面中被解析执行
+      await this.serverError(e.message.replace(/{{/g, '{!{').replace(/}}/g, '}!}'))
     }
   }
 
@@ -83,18 +85,12 @@ class HttpResponse {
    */
   async serverError(err) {
     this._code = 500
-    // if (err instanceof Error) {
-    //   this._content = err.stack
-    // } else {
-    //   this._content = err
-    // }
     try {
       let message = err instanceof Error ? err.stack : err
-      message = message
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
       await this.render('500.html', {
-        message
+        message: message
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
       })
     } catch (e) {
       logger.error(e)
