@@ -211,22 +211,9 @@
   padding: 5px 2px;
   line-height: 24px;
 }
-.md-0-table-align-left {
-  text-align: left;
-}
-.md-0-table-align-center {
-  text-align: center;
-}
-.md-0-table-align-right {
-  text-align: right;
-}
 /* For highlight js */
 pre.md0-code-block-content {
   margin: 0;
-}
-code.hljs {
-  background-color: #fdfdeb;
-  padding: 0;
 }
 
 
