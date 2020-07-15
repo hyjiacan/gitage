@@ -38,8 +38,8 @@
   </style>
 </head>
 <body>
-<t-include file="include/header.html"/>
-<div class="container-fluid">
+<div class="{{isReadme ? 'container' : 'container-fluid'}}">
+  <t-include file="include/header.html"/>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
@@ -77,36 +77,38 @@
     <span class="clearfix"></span>
   </div>
   <div class="row">
-    <div class="col-3 overflow-auto bg-light p-2">
-      <ul id="catalog">
-        <t-tree on="catalog as item">
-          <li>
-            <div class="item-content d-inline-block">
-              <t-if on="item.type === 'dir'">
-                <i class="fa fa-folder"></i>
-                <span class="text-nowrap">{{item.name}}</span>
+    <t-if on="!isReadme">
+      <div class="col-3 overflow-auto bg-light p-2">
+        <ul id="catalog">
+          <t-tree on="catalog as item">
+            <li>
+              <div class="item-content d-inline-block">
+                <t-if on="item.type === 'dir'">
+                  <i class="fa fa-folder"></i>
+                  <span class="text-nowrap">{{item.name}}</span>
+                </t-if>
+                <t-else>
+                  <i class="fab fa-markdown"></i>
+                  <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-nowrap">
+                    {{item.name}}
+                  </a>
+                </t-else>
+              </div>
+              <t-if on="item.children">
+                <ul>
+                  <t-children/>
+                </ul>
               </t-if>
-              <t-else>
-                <i class="fab fa-markdown"></i>
-                <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-nowrap">
-                  {{item.name}}
-                </a>
-              </t-else>
-            </div>
-            <t-if on="item.children">
-              <ul>
-                <t-children/>
-              </ul>
-            </t-if>
-          </li>
-        </t-tree>
-      </ul>
-    </div>
+            </li>
+          </t-tree>
+        </ul>
+      </div>
+    </t-if>
     <div id="content" class="col"></div>
   </div>
   <t-include file="./include/footer.html"/>
 </div>
-<a class="btn btn-dark position-fixed text-light" href="#" style="right: 20px;bottom: 20px;">
+<a class="btn btn-dark position-fixed text-light" href="#" style="right: 20px;bottom: 60px;">
   <i class="fa fa-arrow-up"></i>
 </a>
 <script type="text/javascript">

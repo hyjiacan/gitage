@@ -98,7 +98,9 @@ async function getMarkdownCatalog(currentPath, root) {
   return result
 }
 
-async function renderMarkdown(res, userName, projectName, requestName, docRoot, catalog) {
+async function renderMarkdown(res, option) {
+  let {userName, projectName, requestName, docRoot, catalog, isReadme} = option
+
   const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, '.pages.push'))
   // 这是原始的 push 数据
   const project = JSON.parse(content)
@@ -111,6 +113,7 @@ async function renderMarkdown(res, userName, projectName, requestName, docRoot, 
     catalog: catalog || [],
     file: encodeURIComponent(requestName.replace(/^\//, '')),
     name: path.basename(requestName),
+    isReadme,
     editUrl: [
       project.repository.html_url.replace(/\/$/g, ''),
       project.ref.replace('refs/heads', 'src/branch'),
@@ -154,16 +157,22 @@ module.exports = {
       return
     }
 
+    const conf = await getPageConfig(userName, projectName)
+
     // 查看项目的 readme
     if (/^\/readme/i.test(requestPath)) {
       if (!util.checkPath(res, path.join(projectPath, requestPath))) {
         return
       }
-      await renderMarkdown(res, userName, projectName, requestPath, conf.dirName)
+      await renderMarkdown(res, {
+        userName,
+        projectName,
+        requestName: requestPath,
+        docRoot: conf.dirName,
+        isReadme: true
+      })
       return
     }
-
-    const conf = await getPageConfig(userName, projectName)
 
     const filename = requestPath === '/' ? conf.index : path.join(conf.root, requestPath)
 
@@ -181,7 +190,13 @@ module.exports = {
     // 部署的是 markdown 内容
     if (conf.type === 'markdown' && /^\.(markdown|md)$/i.test(ext)) {
       const catalog = await getMarkdownCatalog(conf.root)
-      await renderMarkdown(res, userName, projectName, path.relative(conf.root, filename), conf.dirName, catalog)
+      await renderMarkdown(res, {
+        userName,
+        projectName,
+        requestName: path.relative(conf.root, filename),
+        docRoot: conf.dirName,
+        catalog
+      })
       return
     }
 
