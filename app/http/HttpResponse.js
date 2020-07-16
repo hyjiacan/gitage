@@ -78,8 +78,12 @@ class HttpResponse {
       this.write(html, 'text/html')
     } catch (e) {
       logger.error(e)
-      // 避免模板错误时，其内的表达式在500页面中被解析执行
-      await this.serverError(e.message.replace(/{{/g, '{!{').replace(/}}/g, '}!}'))
+      // 避免模板错误时，其内的表达式和标签在500页面中被解析执行
+      await this.serverError(e.message
+        .replace(/{{/g, '{!{').replace(/}}/g, '}!}')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+      )
     }
   }
 

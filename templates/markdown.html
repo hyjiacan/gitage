@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8"/>
-  <title>{{userName}}/{{projectName}} - {{$config.appName}}</title>
+  <title>{{userName}}/{{projectName}} - {{$config.name}}</title>
   <t-include file="include/assets.html"/>
   <script src="/static/lib/highlightjs/highlight.pack.js"></script>
   <script src="/static/lib/md0/md0.js"></script>
@@ -10,16 +10,20 @@
   <style>
   #catalog {
     font-size: small;
+    border-left: 1px dotted #5f6371;
+    list-style: none;
+    margin: 0;
+    padding: 0;
   }
 
-  #catalog, #catalog ul {
+  #catalog ul {
     list-style: none;
     margin: 0;
     padding: 0;
     border-left: 1px dotted transparent;
   }
 
-  #catalog:hover, #catalog ul:hover {
+  #catalog ul:hover {
     border-left-color: #5f6371;
   }
 
@@ -38,7 +42,7 @@
   </style>
 </head>
 <body>
-<div class="{{isReadme ? 'container' : 'container-fluid'}}">
+<div class="{{isReadme ? 'container' : 'container'}}">
   <t-include file="include/header.html"/>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -70,7 +74,7 @@
         <span>编辑</span>
       </a>
       <a href="/raw/{{userName}}/{{projectName}}/{{decodeURIComponent(file)}}" target="_blank">
-        <i class="fa fa-file-download"></i>
+        <i class="fa fa-download"></i>
         <span>下载</span>
       </a>
     </div>
@@ -78,18 +82,18 @@
   </div>
   <div class="row">
     <t-if on="!isReadme">
-      <div class="col-3 overflow-auto bg-light p-2">
+      <div class="col-3 overflow-auto p-2 pl-3">
         <ul id="catalog">
           <t-tree on="catalog as item">
             <li>
               <div class="item-content d-inline-block">
                 <t-if on="item.type === 'dir'">
                   <i class="fa fa-folder"></i>
-                  <span class="text-nowrap">{{item.name}}</span>
+                  <span class="text-wrap">{{item.name}}</span>
                 </t-if>
                 <t-else>
                   <i class="fab fa-markdown"></i>
-                  <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-nowrap">
+                  <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-wrap">
                     {{item.name}}
                   </a>
                 </t-else>

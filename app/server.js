@@ -29,6 +29,9 @@ server.on('close', () => {
 module.exports = {
   start(port, host) {
     server.listen(port, host)
+    if (host === '0.0.0.0') {
+      host = '127.0.0.1'
+    }
     logger.info(`Git pages running on http://${host}:${port}`)
   }
 }

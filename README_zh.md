@@ -25,6 +25,8 @@ node dist/pages.js
 ```
 # 系统名称
 APP_NAME = Git Pages
+系统描述
+APP_DESCRIPTION = 基于GIT的静态WEB服务
 # 是否启用调试
 DEBUG = true
 # 启动服务的IP地址

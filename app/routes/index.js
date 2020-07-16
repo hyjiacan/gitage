@@ -6,18 +6,29 @@ const util = require('../misc/util')
 module.exports = {
   async render(req, res) {
     const users = await util.readDir(config.projectRoot)
-    let projectCount = 0
+    const projects = []
 
     for (let i = 0; i < users.length; i++) {
       const user = users[i]
       const userPath = path.join(config.projectRoot, user)
-      const projects = await util.readDir(userPath)
-      projectCount += projects.length
+      const ps = await project.read(userPath)
+      projects.push(...ps)
     }
+
+    // 最近更新的项目 排序: repository.updated_at (top16)
+    projects.sort((a, b) => {
+      if (a.repository.updated_at > b.repository.updated_at) {
+        return -1
+      }
+      return 1
+    })
+
+    const recentList = projects.slice(0, 16)
 
     await res.render('index.html', {
       userCount: users.length,
-      projectCount
+      projectCount: projects.length,
+      recentList
     })
   },
   async projects(req, res) {
