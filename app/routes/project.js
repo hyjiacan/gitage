@@ -117,7 +117,7 @@ async function renderMarkdown(res, option) {
     editUrl: [
       project.repository.html_url.replace(/\/$/g, ''),
       project.ref.replace('refs/heads', 'src/branch'),
-      docRoot.replace(/^\/(.+?)?\/?$/g, '$1'),
+      isReadme ? '' : docRoot.replace(/^\/(.+?)?\/?$/g, '$1'),
       requestName.replace(/^\//, '')
     ].filter(i => !!i).join('/')
   })
