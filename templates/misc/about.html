@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
   <title>{{$config.name}}</title>
   <t-include file="../include/assets.html"/>
 </head>
@@ -15,7 +14,7 @@
           <i class="fa fa-home"></i>
         </a>
       </li>
-      <li class="breadcrumb-item active" aria-current="page">帮助</li>
+      <li class="breadcrumb-item active" aria-current="page">关于</li>
     </ol>
   </nav>
   <h3>WEB 勾子地址</h3>
@@ -23,25 +22,26 @@
     <code>
       <span id="host"></span>
     </code>
-    <div class="text-muted">在仓库的web hook页面填写以上地址</div>
+  <div class="text-muted">在仓库的web hook页面填写以上地址</div>
   </p>
 
-  <h3>仓库配置</h3>
+  <h3>配置</h3>
   <p>
-    <a href="{{$engine.repository}}#readme">去源码仓库查看</a>
+    <a href="{{$engine.repository}}#readme" target="_blank">去代码仓库查看</a>
   </p>
 
   <h3>关于 Gitage</h3>
   <ul>
     <li>版本: {{$engine.version}}</li>
-    <li>作者: {{typeof $engine.author === 'string' ? $engine.author: `${$engine.author.name}<${$engine.author.email}>`}}</li>
-    <li>源码: {{$engine.repository}}</li>
+    <li>作者: {{typeof $engine.author === 'string' ? $engine.author: `${$engine.author.name}<${$engine.author.email}>`}}
+    </li>
+    <li>源码: <a href="{{$engine.repository}}" target="_blank">{{$engine.repository}}</a></li>
   </ul>
   <h3>关于 wet</h3>
   <ul>
     <li>版本: {{$tpl.version}}</li>
     <li>作者: {{$tpl.author}}</li>
-    <li>源码: {{$tpl.repository}}</li>
+    <li>源码: <a href="{{$tpl.repository}}" target="_blank">{{$tpl.repository}}</a></li>
   </ul>
   <h3>第三方依赖</h3>
   <ul>

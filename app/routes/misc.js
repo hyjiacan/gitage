@@ -1,5 +1,5 @@
 module.exports = {
-  async help(req, res) {
-    await res.render('misc/help.html')
+  async about(req, res) {
+    await res.render('misc/about.html')
   }
 }

@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8"/>
   <title>{{userName}}/{{projectName}} - {{$config.name}}</title>
   <t-include file="include/assets.html"/>
   <script src="/static/lib/timeago.js"></script>
@@ -128,7 +127,7 @@ $(function () {
     })
     $('#content').html(html)
   }).catch(e => {
-    $('#content').html(`<div class="err">File ${e.statusText}: <b>{{decodeURIComponent(file)}}</b></div>`)
+    $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURIComponent(file)}}</b></div>`)
   })
 })
 </script>

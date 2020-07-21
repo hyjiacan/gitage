@@ -10,7 +10,7 @@ module.exports = {
     // 首页
     router.get('/', index.render)
     // 内置页面
-    router.get('/misc/help/', misc.help)
+    router.get('/misc/about/', misc.about)
     // 静态资源
     router.get('/static/', staticRender.render)
     // GIT HOOKS

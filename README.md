@@ -24,7 +24,7 @@ Config file: `config` (case-sensitive), should be put in the root path of gitage
 *config*
 ```
 # DEBUG flag
-DEBUG = true
+DEBUG = false
 # serve ip
 HOST = 0.0.0.0
 # serve port

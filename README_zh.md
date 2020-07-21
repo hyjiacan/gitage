@@ -1,6 +1,6 @@
 # gitage
 
-基于 web-hook 的 GIT 静态服务器。运行在 NodeJS 上。
+基于GIT的静态WEB服务。
 
 目前仅测试过 [gitea](https://gitea.io/)
 
@@ -24,7 +24,7 @@ node dist/gitage.js
 *config*
 ```
 # 是否启用调试
-DEBUG = true
+DEBUG = false
 # 启动服务的IP地址
 HOST = 0.0.0.0
 # 启动服务的端口
@@ -77,6 +77,7 @@ POST `http://127.0.0.1:1997/hook/`
 - [ ] 当前部署耗时较长，会导致仓库勾子无法收到响应（造成了 timeout ）
 - [ ] 项目列表添加分页支持
 - [ ] `<t-for>` 标签添加项索引支持
+- [ ] `<t-include>` 添加属性支持，以向 include 的文件传递数据
 
 ### 0.6.0
 
