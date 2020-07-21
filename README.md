@@ -1,6 +1,6 @@
-# git-pages
+# gitage
 
-A static server for Git based on web-hook. Running on NodeJS.
+Static web server based on git-scm.
 
 Tested on [gitea](https://gitea.io/) for now.
 
@@ -8,23 +8,21 @@ Dependencies:
 
 - Simple Javascript Template Engine [wet](http://github.com/hyjiacan/wet)
 
-Git, nodejs>8 must be installed on your server.
+- Git, nodejs>8 must be installed on your server.
 
 ## Usage
 
 ```shell script
 npm run build
-node dist/pages.js
+node dist/gitage.js
 ```
 
 ## Server Configuration
 
-Config file: `config` (case-sensitive), should be put in the root path of git-pages.
+Config file: `config` (case-sensitive), should be put in the root path of gitage.
 
 *config*
 ```
-# System name
-APP_NAME = Git Pages
 # DEBUG flag
 DEBUG = true
 # serve ip
@@ -47,7 +45,7 @@ PROJECT_CHECKOUT_TMP =
 
 ## Repo Configuration
 
-Add file `pages.config.json` into your repo, in the form bellow:
+Add file `gitage.config.json` into your repo, in the form bellow:
 
 ```json
 {

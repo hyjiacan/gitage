@@ -73,7 +73,7 @@ async function checkoutRepo(data, eventType) {
   }
 
   // 写 push 数据
-  await util.writeFile(path.join(dist, '.pages.push'), data)
+  await util.writeFile(path.join(dist, config.pushFile), data)
 
   const configFile = path.join(dist, config.configFile)
 

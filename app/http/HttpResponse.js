@@ -67,8 +67,8 @@ class HttpResponse {
     }
     try {
       const html = await wet.render(templateFilePath, {
-        $engine: enginePkg,
-        $pages: pkg,
+        $tpl: enginePkg,
+        $engine: pkg,
         $config: config,
         ...context
       }, {

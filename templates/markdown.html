@@ -128,7 +128,7 @@ $(function () {
     })
     $('#content').html(html)
   }).catch(e => {
-    $('#content').html(`<div class="err">File <b>{{file}}</b> ${e.statusText}</div>`)
+    $('#content').html(`<div class="err">File ${e.statusText}: <b>{{decodeURIComponent(file)}}</b></div>`)
   })
 })
 </script>

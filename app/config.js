@@ -9,8 +9,6 @@ const tempRoot = path.join(os.tmpdir(), pkg.name)
 
 const OPTIONS = {
   ROOT: root,
-  APP_NAME: 'Git Pages',
-  APP_DESCRIPTION: '基于GIT的静态WEB服务',
   HOST: '0.0.0.0',
   PORT: 1997,
   PROJECT_ROOT_PATH: 'projects',
@@ -18,7 +16,6 @@ const OPTIONS = {
   PROJECT_CHECKOUT_TMP: tempRoot,
   LOG_PATH: 'logs',
   LOG_LEVEL: 'info',
-  CONFIG_FILE: 'pages.config.json',
   DEBUG: process.env.NODE_ENV !== 'production'
 }
 
@@ -61,8 +58,10 @@ if (!fs.existsSync(root)) {
 }
 
 const options = {
-  name: OPTIONS.APP_NAME,
-  description: OPTIONS.APP_DESCRIPTION,
+  name: 'Gitage',
+  description: '基于GIT的静态WEB服务',
+  configFile: 'gitage.config.json',
+  pushFile: 'gitage.push.json',
   root: OPTIONS.ROOT,
   projectTemp: path.isAbsolute(OPTIONS.PROJECT_CHECKOUT_TMP) ? path.resolve(OPTIONS.PROJECT_CHECKOUT_TMP) : path.resolve(path.join(root, OPTIONS.PROJECT_CHECKOUT_TMP)),
   projectRoot: path.isAbsolute(OPTIONS.PROJECT_ROOT_PATH) ? path.resolve(OPTIONS.PROJECT_ROOT_PATH) : path.resolve(path.join(root, OPTIONS.PROJECT_ROOT_PATH)),
@@ -71,16 +70,17 @@ const options = {
   logLevel: OPTIONS.LOG_LEVEL,
   host: OPTIONS.HOST,
   port: OPTIONS.PORT,
-  configFile: OPTIONS.CONFIG_FILE,
   debug: OPTIONS.DEBUG
 }
 
-console.info('----------------GIT-PAGES----------------')
+const splitter = '----------------GITAGE----------------'
+
+console.info(splitter)
 console.info('%s@%s by %s', pkg.name, pkg.version, pkg.author)
-console.info('-----------------------------------------')
+console.info(splitter)
 for (const name in options) {
   console.info('%s: %s', name, options[name])
 }
-console.info('-----------------------------------------')
+console.info(splitter)
 
 module.exports = options

@@ -1,4 +1,4 @@
-# git-pages
+# gitage
 
 基于 web-hook 的 GIT 静态服务器。运行在 NodeJS 上。
 
@@ -14,7 +14,7 @@
 
 ```shell script
 npm run build
-node dist/pages.js
+node dist/gitage.js
 ```
 
 ## 服务器配置
@@ -23,10 +23,6 @@ node dist/pages.js
 
 *config*
 ```
-# 系统名称
-APP_NAME = Git Pages
-系统描述
-APP_DESCRIPTION = 基于GIT的静态WEB服务
 # 是否启用调试
 DEBUG = true
 # 启动服务的IP地址
@@ -49,7 +45,7 @@ PROJECT_CHECKOUT_TMP =
 
 ## 仓库配置
 
-在仓库下添加文件 `pages.config.json`，其格式如下(可选):
+在仓库下添加文件 `gitage.config.json`，其格式如下(可选):
 
 ```json
 {

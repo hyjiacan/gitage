@@ -4,7 +4,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const distConfig = {
   entry: {
-    pages: './app/index.js'
+    gitage: './app/index.js'
   },
   target: 'node',
   node: {

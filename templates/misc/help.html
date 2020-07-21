@@ -28,20 +28,20 @@
 
   <h3>仓库配置</h3>
   <p>
-    <a href="{{$pages.repository}}#readme">去源码仓库查看</a>
+    <a href="{{$engine.repository}}#readme">去源码仓库查看</a>
   </p>
 
-  <h3>关于 git-pages</h3>
+  <h3>关于 Gitage</h3>
   <ul>
-    <li>版本: {{$pages.version}}</li>
-    <li>作者: {{typeof $pages.author === 'string' ? $pages.author: `${$pages.author.name}<${$pages.author.email}>`}}</li>
-    <li>源码: {{$pages.repository}}</li>
+    <li>版本: {{$engine.version}}</li>
+    <li>作者: {{typeof $engine.author === 'string' ? $engine.author: `${$engine.author.name}<${$engine.author.email}>`}}</li>
+    <li>源码: {{$engine.repository}}</li>
   </ul>
   <h3>关于 wet</h3>
   <ul>
-    <li>版本: {{$engine.version}}</li>
-    <li>作者: {{$engine.author}}</li>
-    <li>源码: {{$engine.repository}}</li>
+    <li>版本: {{$tpl.version}}</li>
+    <li>作者: {{$tpl.author}}</li>
+    <li>源码: {{$tpl.repository}}</li>
   </ul>
   <h3>第三方依赖</h3>
   <ul>

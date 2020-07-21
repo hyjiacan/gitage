@@ -101,7 +101,7 @@ async function getMarkdownCatalog(currentPath, root) {
 async function renderMarkdown(res, option) {
   let {userName, projectName, requestName, docRoot, catalog, isReadme} = option
 
-  const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, '.pages.push'))
+  const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, config.pushFile))
   // 这是原始的 push 数据
   const project = JSON.parse(content)
   requestName = requestName.replace(/\\/g, '/')
@@ -128,7 +128,7 @@ module.exports = {
     const dirs = await util.readDir(userPath)
     const projects = []
     for (const dir of dirs) {
-      const content = await util.readFileContent(path.join(userPath, dir, '.pages.push'))
+      const content = await util.readFileContent(path.join(userPath, dir, config.pushFile))
       // 这是原始的 push 数据
       const project = JSON.parse(content)
       // 追加 readme 文件信息

@@ -1,5 +1,6 @@
 const http = require('http')
 
+const config = require('./config')
 const logger = require('./misc/logger')
 const router = require('./router')
 const HttpRequest = require('./http/HttpRequest')
@@ -27,11 +28,13 @@ server.on('close', () => {
 })
 
 module.exports = {
-  start(port, host) {
+  start() {
+    const port = config.port
+    let host = config.host
     server.listen(port, host)
     if (host === '0.0.0.0') {
       host = '127.0.0.1'
     }
-    logger.info(`Git pages running on http://${host}:${port}`)
+    logger.info(`${config.name} running on http://${host}:${port}`)
   }
 }
