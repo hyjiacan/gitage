@@ -4,6 +4,7 @@
   <meta charset="utf-8"/>
   <title>{{userName}}/{{projectName}} - {{$config.name}}</title>
   <t-include file="include/assets.html"/>
+  <script src="/static/lib/timeago.js"></script>
   <script src="/static/lib/highlightjs/highlight.pack.js"></script>
   <script src="/static/lib/md0/md0.js"></script>
   <link href="/static/lib/md0/md0.css" rel="stylesheet">
@@ -59,7 +60,9 @@
       </li>
       <li class="breadcrumb-item active" aria-current="page">{{projectName}}</li>
       <li class="pl-4">
-        <span class="badge badge-info">最后更新于 {{$project.repository.updated_at}}</span>
+        <span class="badge badge-info">最后更新于
+          <span datetime="{{$project.repository.updated_at}}"></span>
+        </span>
       </li>
     </ol>
   </nav>

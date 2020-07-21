@@ -47,13 +47,6 @@
     </div>
   </div>
   <t-include file="./include/footer.html"/>
-  <script>
-  var items = document.querySelectorAll('span[datetime]')
-  items.forEach(function (node) {
-    node.title = node.getAttribute('datetime')
-  })
-  timeago.render(items, 'zh_CN')
-  </script>
 </div>
 </body>
 </html>
