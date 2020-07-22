@@ -5,6 +5,7 @@ const logger = require('./misc/logger')
 const deploy = require('./misc/deploy')
 const router = require('./router')
 const pathmap = require('./routes/pathmap')
+const cache = require('./misc/cache')
 
 process.on('uncaughtException', e => {
   logger.error(e)
@@ -22,6 +23,7 @@ console.info(splitter)
 
 // 初始化
 deploy.clearFlag()
+cache.clear()
 
 pathmap.map(router)
 

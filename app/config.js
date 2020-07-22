@@ -61,6 +61,7 @@ const options = {
   description: '基于GIT的静态WEB服务',
   configFile: 'gitage.config.json',
   pushFile: 'gitage.push.json',
+  cachePath: path.join(root, '.cache'),
   root: root,
   webRoot: path.join(root, 'web'),
   projectTemp: path.isAbsolute(OPTIONS.PROJECT_CHECKOUT_TMP) ? path.resolve(OPTIONS.PROJECT_CHECKOUT_TMP) : path.resolve(path.join(root, OPTIONS.PROJECT_CHECKOUT_TMP)),
@@ -83,5 +84,6 @@ function createIfNotExists(thePath) {
 createIfNotExists(options.projectTemp)
 createIfNotExists(options.projectRoot)
 createIfNotExists(options.logPath)
+createIfNotExists(options.cachePath)
 
 module.exports = options

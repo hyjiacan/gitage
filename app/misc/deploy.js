@@ -3,6 +3,7 @@ const path = require('path')
 
 const logger = require('./logger')
 const util = require('./util')
+const cache = require('./cache')
 const config = require('../config')
 
 const FLAG_DIR = path.join(config.projectRoot, '.pending')
@@ -109,6 +110,10 @@ async function checkoutRepo(data, eventType) {
     fs.writeFileSync(ignoreFile, path.join(dist, '.git'), {encoding: 'utf-8'})
   }
   await util.runCommand(`xcopy "${dist}" "${workingDir}" /S /I /EXCLUDE:${ignoreFile}`)
+
+  // 移除目录缓存
+  cache.remove('catalog', fullName)
+  cache.remove('projects', 'projects')
 
   // 移除检出标记
   removeFlag(fullName)

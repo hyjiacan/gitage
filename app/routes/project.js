@@ -7,6 +7,7 @@ const MIME = require('../assets/mime')
 const util = require('../misc/util')
 const logger = require('../misc/logger')
 const deploy = require('../misc/deploy')
+const cache = require('../misc/cache')
 
 const PAGE_CONFIG_MAP = {}
 
@@ -191,7 +192,9 @@ module.exports = {
 
     // 部署的是 markdown 内容
     if (conf.type === 'markdown' && /^\.(markdown|md|txt|text)$/i.test(ext)) {
-      const catalog = await getMarkdownCatalog(conf.root)
+      const catalog = await cache.get('catalog', fullName, () => {
+        return getMarkdownCatalog(conf.root)
+      })
       await renderMarkdown(res, {
         userName,
         projectName,

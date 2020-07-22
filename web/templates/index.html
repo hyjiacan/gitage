@@ -39,6 +39,17 @@
             <span class="badge badge-pill badge-primary" datetime="{{project.repository.updated_at}}"></span>
             <a href="/projects/{{project.repository.full_name}}/">{{project.repository.full_name}}</a>
             <span class="text-muted">{{project.repository.description}}</span>
+            <t-if on="project.commits.length">
+              <ul>
+                <t-for on="item of project.commits">
+                  <li>
+                    <span class="text-black-50">{{item.committer.name}}</span>
+                    <span datetime="{{item.timestamp}}" class="text-muted"></span>
+                    <span>{{item.message}}</span>
+                  </li>
+                </t-for>
+              </ul>
+            </t-if>
           </li>
         </t-for>
       </ol>
