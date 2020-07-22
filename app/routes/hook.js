@@ -18,6 +18,11 @@ function getHeader(headers, suffix) {
   return null
 }
 
+async function handleRequest(req, eventType) {
+  const data = await util.receivePostData(req.raw)
+  await deploy.checkout(data, eventType)
+}
+
 module.exports = {
   /**
    *
@@ -68,13 +73,10 @@ module.exports = {
 
     logger.debug(`Accept git push from ${host}: ${delivery.value}`)
 
-    const data = await util.receivePostData(req.raw)
-
-    const err = await deploy.checkout(data, eventType)
+    handleRequest(req, eventType)
 
     res.write({
-      code: 'OK',
-      message: err
+      code: 'OK'
     })
   }
 }

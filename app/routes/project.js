@@ -155,7 +155,7 @@ module.exports = {
     const fullName = `${userName}/${projectName}`
 
     if (deploy.isPending(fullName)) {
-      res.write(`Project ${fullName} is deploying, please waiting for a moment`)
+      await res.notAvailable(`Project ${fullName} is deploying, please waiting for a moment`)
       return
     }
 
@@ -226,7 +226,7 @@ module.exports = {
     const fullName = `${userName}/${projectName}`
 
     if (deploy.isPending(fullName)) {
-      res.write(`Project ${fullName} is deploying, please waiting for a moment`, 'text/plain')
+      await res.notAvailable(`Project ${fullName} is deploying, please waiting for a moment`, 'text/plain')
       return
     }
     const conf = await getPageConfig(userName, projectName)

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>服务器忙 - {{$config.name}}</title>
+  <t-include file="../include/assets.html"/>
+</head>
+<body>
+<div class="container">
+  <t-include file="../include/header.html" />
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="/">
+          <i class="fa fa-home"></i>
+        </a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">服务器忙</li>
+    </ol>
+  </nav>
+  <div class="row pt-5">
+    <div class="col-3">
+      <img src="/static/images/busy.gif"/>
+    </div>
+    <div class="col">
+      <p class="display-4 pt-5 pl-5">
+        {{message}}
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

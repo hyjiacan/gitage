@@ -120,6 +120,13 @@ class HttpResponse {
     this._content = message || ''
   }
 
+  async notAvailable(message) {
+    this._code = 503
+    await this.render('server/503.html', {
+      message
+    })
+  }
+
   flush() {
     this._res.writeHead(this._code, this._headers)
     if (this._content) {
