@@ -14,12 +14,6 @@ const distConfig = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js'
   },
-  optimization: {
-    splitChunks: {
-      name: 'vendors',
-      chunks: 'all'
-    }
-  },
   plugins: [
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
