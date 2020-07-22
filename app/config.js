@@ -84,14 +84,4 @@ createIfNotExists(options.projectTemp)
 createIfNotExists(options.projectRoot)
 createIfNotExists(options.logPath)
 
-const splitter = '----------------GITAGE----------------'
-
-console.info(splitter)
-console.info('%s@%s by %s', pkg.name, pkg.version, pkg.author)
-console.info(splitter)
-for (const name in options) {
-  console.info('%s: %s', name, options[name])
-}
-console.info(splitter)
-
 module.exports = options

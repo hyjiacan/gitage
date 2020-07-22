@@ -28,18 +28,31 @@
   }
 
   #catalog li {
-    padding: 5px 5px 5px 20px;
+    padding: 5px 5px 0 20px;
   }
 
-  .fa-folder, .fa-markdown {
+  .fa-folder, .fa-markdown, .fa-file {
     color: rgba(95, 99, 113, 0.54);
   }
 
   .item-content:hover .fa-folder,
+  .item-content:hover .fa-file,
   .item-content:hover .fa-markdown {
     color: rgb(67, 73, 92);
   }
-  
+
+  .item-content a {
+    color: #015aba;
+  }
+
+  .item-content.active a,
+  .item-content.active .fa-folder,
+  .item-content.active .fa-file,
+  .item-content.active .fa-markdown {
+    color: #0a7e2d;
+    font-weight: bold;
+  }
+
   img {
     max-width: 100%;
   }
@@ -79,7 +92,7 @@
         <i class="fa fa-edit"></i>
         <span>编辑</span>
       </a>
-      <a href="/raw/{{userName}}/{{projectName}}/{{decodeURIComponent(file)}}" target="_blank">
+      <a href="/raw/{{userName}}/{{projectName}}/{{decodeURI(file)}}" target="_blank">
         <i class="fa fa-download"></i>
         <span>下载</span>
       </a>
@@ -98,7 +111,12 @@
                   <span class="text-wrap">{{item.name}}</span>
                 </t-if>
                 <t-else>
-                  <i class="fab fa-markdown"></i>
+                  <t-if on="item.ext === '.txt' || item.ext === '.text'">
+                    <i class="fa fa-file"></i>
+                  </t-if>
+                  <t-else>
+                    <i class="fab fa-markdown"></i>
+                  </t-else>
                   <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-wrap">
                     {{item.name}}
                   </a>
@@ -131,7 +149,19 @@ $(function () {
     })
     $('#content').html(html)
   }).catch(e => {
-    $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURIComponent(file)}}</b></div>`)
+    $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
+  })
+
+  // 高亮当前文件
+  var current = decodeURI(window.location.pathname)
+  var catalog = $('#catalog')
+  catalog.find('a[href]').each(function () {
+    var link = decodeURI($(this).attr('href'))
+    if (link !== current) {
+      return
+    }
+    $(this).removeAttr('href').parent().addClass('active')
+    return false
   })
 })
 </script>

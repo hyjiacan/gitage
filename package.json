@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "serve": "supervisor -w app -e js app/index.js",
+    "debug": "node app/index.js",
     "build": "npx webpack --dist --mode=production --progress"
   },
   "repository": "https://gitee.com/hyjiacan/gitage.git",
@@ -22,7 +23,7 @@
     "web hook"
   ],
   "dependencies": {
-    "wet": "https://gitee.com/hyjiacan/wet.git"
+    "@hyjiacan/wet": "https://gitee.com/hyjiacan/wet.git"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

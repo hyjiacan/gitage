@@ -66,9 +66,10 @@ async function getMarkdownCatalog(currentPath, root) {
   const relativeRoot = path.relative(root, currentPath)
   const entities = await util.readEntities(currentPath)
 
-  entities.sort((a, b) => a > b ? 1 : -1)
+  // entities.sort((a, b) => a > b ? 1 : -1)
 
-  const result = []
+  const dirs = []
+  const files = []
 
   for (const entity of entities) {
     const abs = path.join(currentPath, entity)
@@ -79,7 +80,7 @@ async function getMarkdownCatalog(currentPath, root) {
       if (!children.length) {
         continue
       }
-      result.push({
+      dirs.push({
         type: 'dir',
         name: path.basename(entity),
         children
@@ -87,15 +88,16 @@ async function getMarkdownCatalog(currentPath, root) {
     }
     // 文件
     const ext = path.extname(entity)
-    if (!/^\.(md|markdown)$/i.test(ext)) {
+    if (!/^\.(md|markdown|txt|text)$/i.test(ext)) {
       continue
     }
-    result.push({
+    files.push({
       name: path.basename(entity, ext),
-      file: path.join(relativeRoot, encodeURIComponent(entity)).replace(/\\/g, '/')
+      ext,
+      file: encodeURI(path.join(relativeRoot, entity).replace(/\\/g, '/'))
     })
   }
-  return result
+  return dirs.concat(files)
 }
 
 async function renderMarkdown(res, option) {
@@ -111,7 +113,7 @@ async function renderMarkdown(res, option) {
     userName,
     projectName,
     catalog: catalog || [],
-    file: encodeURIComponent(requestName.replace(/^\//, '')),
+    file: encodeURI(requestName.replace(/^\//, '')),
     name: path.basename(requestName),
     isReadme,
     editUrl: [
@@ -188,7 +190,7 @@ module.exports = {
     const ext = path.extname(filename)
 
     // 部署的是 markdown 内容
-    if (conf.type === 'markdown' && /^\.(markdown|md)$/i.test(ext)) {
+    if (conf.type === 'markdown' && /^\.(markdown|md|txt|text)$/i.test(ext)) {
       const catalog = await getMarkdownCatalog(conf.root)
       await renderMarkdown(res, {
         userName,

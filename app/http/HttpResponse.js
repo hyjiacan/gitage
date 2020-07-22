@@ -2,8 +2,8 @@ const path = require('path')
 const fs = require('fs')
 
 const logger = require('../misc/logger')
-const wet = require('wet')
-const enginePkg = require('wet/package.json')
+const wet = require('@hyjiacan/wet')
+const enginePkg = require('@hyjiacan/wet/package.json')
 const config = require('../config')
 
 const pkg = require('../../package.json')
