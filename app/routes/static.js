@@ -4,11 +4,11 @@ const util = require('../misc/util')
 
 const mimes = require('../assets/mime')
 
-const static_root = path.join(config.root, 'static')
+const static_root = path.join(config.webRoot, 'static')
 
 module.exports = {
   async render(req, res) {
-    const abs = path.resolve(path.join(config.root, req.path))
+    const abs = path.resolve(path.join(config.webRoot, req.path))
 
     if (!abs.startsWith(static_root)) {
       res.notFound()

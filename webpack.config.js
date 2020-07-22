@@ -14,24 +14,30 @@ const distConfig = {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js'
   },
-  // optimization: {
-  //   minimize: false
-  // },
+  optimization: {
+    splitChunks: {
+      name: 'vendors',
+      chunks: 'all'
+    }
+  },
   plugins: [
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
         {
-          from: './static/',
-          to: 'static'
+          from: './web/',
+          to: 'web'
         },
         {
-          from: './templates/',
-          to: 'templates'
+          from: './app/assets/',
+          to: 'assets'
         }
       ]
     })
-  ]
+  ],
+  externals: {
+    '../assets/mime': 'require(\'./assets/mime.json\')'
+  }
 }
 
 module.exports = distConfig

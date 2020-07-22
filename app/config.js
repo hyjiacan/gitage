@@ -8,7 +8,6 @@ const root = process.env.NODE_ENV === 'production' ? __dirname : path.resolve(pa
 const tempRoot = path.join(os.tmpdir(), pkg.name)
 
 const OPTIONS = {
-  ROOT: root,
   HOST: '0.0.0.0',
   PORT: 1997,
   PROJECT_ROOT_PATH: 'projects',
@@ -62,7 +61,8 @@ const options = {
   description: '基于GIT的静态WEB服务',
   configFile: 'gitage.config.json',
   pushFile: 'gitage.push.json',
-  root: OPTIONS.ROOT,
+  root: root,
+  webRoot: path.join(root, 'web'),
   projectTemp: path.isAbsolute(OPTIONS.PROJECT_CHECKOUT_TMP) ? path.resolve(OPTIONS.PROJECT_CHECKOUT_TMP) : path.resolve(path.join(root, OPTIONS.PROJECT_CHECKOUT_TMP)),
   projectRoot: path.isAbsolute(OPTIONS.PROJECT_ROOT_PATH) ? path.resolve(OPTIONS.PROJECT_ROOT_PATH) : path.resolve(path.join(root, OPTIONS.PROJECT_ROOT_PATH)),
   projectUrl: OPTIONS.PROJECT_ROOT_URL,
@@ -72,6 +72,17 @@ const options = {
   port: OPTIONS.PORT,
   debug: OPTIONS.DEBUG
 }
+
+function createIfNotExists(thePath) {
+  if (!fs.existsSync(thePath)) {
+    fs.mkdirSync(thePath, {recursive: true})
+  }
+}
+
+// 创建目录
+createIfNotExists(options.projectTemp)
+createIfNotExists(options.projectRoot)
+createIfNotExists(options.logPath)
 
 const splitter = '----------------GITAGE----------------'
 

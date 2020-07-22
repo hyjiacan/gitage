@@ -21,7 +21,9 @@
     "git hook",
     "web hook"
   ],
-  "dependencies": {},
+  "dependencies": {
+    "wet": "https://gitee.com/hyjiacan/wet.git"
+  },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.2",
