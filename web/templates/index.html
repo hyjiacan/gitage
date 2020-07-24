@@ -37,6 +37,10 @@
         <t-for on="project of recentList">
           <li class="list-group-item">
             <span class="badge badge-pill badge-primary" datetime="{{project.repository.updated_at}}"></span>
+            <span class="badge badge-light">
+              <img src="{{project.pusher.avatar_url}}" alt="{{project.pusher.username}}" width="20" />
+              <span>{{project.pusher.full_name}}</span>
+            </span>
             <a href="/projects/{{project.repository.full_name}}/">{{project.repository.full_name}}</a>
             <span class="text-muted">{{project.repository.description}}</span>
             <t-if on="project.commits.length">

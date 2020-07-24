@@ -27,7 +27,9 @@
           <a href="/projects/{{repo.full_name}}/">{{repo.name}}</a>
           <small style="font-size: 14px">
             <span class="badge badge-light">
-              <span>最后更新于</span>
+              <img src="{{item.pusher.avatar_url}}" alt="{{item.pusher.username}}" width="20"/>
+              <span>{{item.pusher.full_name}}</span>
+              <span>更新于</span>
               <span datetime="{{repo.updated_at}}"></span>
             </span>
             <a href="{{repo.html_url}}">仓库</a>

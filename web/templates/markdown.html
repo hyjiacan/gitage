@@ -87,9 +87,12 @@
       </li>
       <li class="breadcrumb-item active" aria-current="page">{{projectName}}</li>
       <li class="pl-4">
-        <span class="badge badge-info">最后更新于
-          <span datetime="{{$project.repository.updated_at}}"></span>
-        </span>
+          <span class="badge badge-pill badge-light">
+            <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
+            <span>{{$project.pusher.full_name}}</span>
+            <span>更新于</span>
+            <span datetime="{{$project.repository.updated_at}}"></span>
+          </span>
       </li>
     </ol>
   </nav>
