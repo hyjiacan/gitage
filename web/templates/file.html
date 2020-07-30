@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>{{userName}}/{{projectName}} - {{$config.name}}</title>
+  <title>{{userName}}/{{projectName}} - {{$config.name}} - {{$config.description}}</title>
   <t-include file="include/assets.html"/>
   <script src="/static/lib/timeago.js"></script>
   <script src="/static/lib/highlightjs/highlight.pack.js"></script>
@@ -10,62 +10,70 @@
   <link href="/static/lib/highlightjs/styles/default.css" rel="stylesheet">
   <style>
   #catalog {
-    font-size: small;
-    border-left: 1px dotted #5f6371;
-    list-style: none;
-    margin: 0;
-    padding: 0;
+      font-size: small;
+      border-left: 1px dotted #5f6371;
+      list-style: none;
+      margin: 0;
+      padding: 0;
   }
 
   #catalog ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-left: 1px dotted transparent;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      border-left: 1px dotted transparent;
   }
 
   #catalog ul:hover {
-    border-left-color: #5f6371;
+      border-left-color: #5f6371;
   }
 
   #catalog li {
-    padding: 5px 5px 0 20px;
+      padding: 5px 5px 0 20px;
   }
 
-  .fa-folder, .fa-markdown, .fa-file {
-    color: rgba(95, 99, 113, 0.54);
+  .item-content .fa,
+  .item-content .fab,
+  .item-content .fas {
+      font-size: large;
+      color: rgba(95, 99, 113, 0.54);
+      vertical-align: middle;
+      display: inline-block;
+      width: 24px;
+      text-align: center;
   }
 
-  .item-content:hover .fa-folder,
-  .item-content:hover .fa-file,
-  .item-content:hover .fa-markdown {
-    color: rgb(67, 73, 92);
+  .item-content:hover .fa,
+  .item-content:hover .fab,
+  .item-content:hover .fas {
+      color: rgb(67, 73, 92);
   }
 
   .item-content a {
-    color: #015aba;
+      color: #015aba;
+      vertical-align: middle;
   }
 
   .item-content.active a,
-  .item-content.active .fa-folder,
-  .item-content.active .fa-file,
-  .item-content.active .fa-markdown {
-    color: #0a7e2d;
-    font-weight: bold;
+  .item-content.active .fa,
+  .item-content.active .fab,
+  .item-content.active .fas {
+      color: #0a7e2d;
+      font-weight: bold;
   }
 
   img {
-    max-width: 100%;
+      max-width: 100%;
   }
 
   .md0-code-block {
-    background: none;
-    border: none;
-    margin-top: 0;
+      background: none;
+      border: none;
+      margin-top: 0;
   }
 
   .md0-code-block-content {
-    padding-top: 0;
+      padding-top: 0;
   }
   </style>
 </head>
@@ -86,27 +94,30 @@
         <a href="/projects/{{userName}}/">{{userName}}</a>
       </li>
       <li class="breadcrumb-item active" aria-current="page">{{projectName}}</li>
-      <li class="pl-4">
-          <span class="badge badge-pill badge-light">
-            <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
-            <span>{{$project.pusher.full_name}}</span>
-            <span>更新于</span>
-            <span datetime="{{$project.repository.updated_at}}"></span>
-          </span>
+      <li class="breadcrumb-item">
+        {{decodeURI(file)}}
       </li>
     </ol>
   </nav>
+  <div class="mb-2">
+    <i class="fa fa-book-open"></i>
+    <span>{{$project.repository.description}}</span>
+  </div>
   <div class="mb-2 bg-light p-2">
     <div class="float-left">
-      <i class="fa fa-book-open"></i>
-      <span>{{$project.repository.description}}</span>
+      <span class="badge badge-pill badge-light">
+        <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
+        <span>{{$project.pusher.full_name}}</span>
+        <span>更新于</span>
+        <span datetime="{{$project.repository.updated_at}}"></span>
+      </span>
     </div>
     <div class="float-right">
       <a href="{{editUrl}}" target="_blank" class="mr-4">
         <i class="fa fa-edit"></i>
         <span>编辑</span>
       </a>
-      <a href="/raw/{{userName}}/{{projectName}}/{{decodeURI(file)}}" target="_blank">
+      <a href="/raw/{{userName}}/{{projectName}}/{{decodeURI(file)}}?download" target="_blank">
         <i class="fa fa-download"></i>
         <span>下载</span>
       </a>
@@ -125,11 +136,14 @@
                   <span class="text-wrap">{{item.name}}</span>
                 </t-if>
                 <t-else>
-                  <t-if on="item.ext === '.txt' || item.ext === '.text'">
-                    <i class="fa fa-file"></i>
-                  </t-if>
-                  <t-else>
+                  <t-if on="item.ext === '.md' || item.ext === '.markdown'">
                     <i class="fab fa-markdown"></i>
+                  </t-if>
+                  <t-elif on="item.ext === '.docx'">
+                    <i class="fas fa-file-word"></i>
+                  </t-elif>
+                  <t-else>
+                    <i class="fa fa-file"></i>
                   </t-else>
                   <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-wrap">
                     {{item.name}}
@@ -155,7 +169,13 @@
 </a>
 <script type="text/javascript">
 $(function () {
-  $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content) {
+  $('#content').html('加载中...')
+  $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content, state, xhr) {
+    var contentType = xhr.getResponseHeader('content-type')
+    if (/text\/html/.test(contentType)) {
+      $('#content').html(content)
+      return
+    }
     var html = md0(content, {
       codeHeader: false,
       // codeIndex: false,

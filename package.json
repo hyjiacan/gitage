@@ -23,7 +23,8 @@
     "web hook"
   ],
   "dependencies": {
-    "@hyjiacan/wet": "https://gitee.com/hyjiacan/wet.git"
+    "@hyjiacan/wet": "https://gitee.com/hyjiacan/wet.git",
+    "mammoth": "^1.4.9"
   },
   "devDependencies": {
     "clean-webpack-plugin": "^3.0.0",

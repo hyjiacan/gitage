@@ -8,6 +8,7 @@ const util = require('../misc/util')
 const logger = require('../misc/logger')
 const deploy = require('../misc/deploy')
 const cache = require('../misc/cache')
+const handlers = require('../http/handlers')
 
 const PAGE_CONFIG_MAP = {}
 
@@ -89,11 +90,12 @@ async function getMarkdownCatalog(currentPath, root) {
     }
     // 文件
     const ext = path.extname(entity)
-    if (!/^\.(md|markdown|txt|text)$/i.test(ext)) {
+    const mime = MIME[ext] || 'application/octet-stream'
+    if (!/^\.(md|markdown|txt|text)$/i.test(ext) && !handlers.match(ext, mime)) {
       continue
     }
     files.push({
-      name: path.basename(entity, ext),
+      name: path.basename(entity),
       ext,
       file: encodeURI(path.join(relativeRoot, entity).replace(/\\/g, '/'))
     })
@@ -109,7 +111,7 @@ async function renderMarkdown(res, option) {
   const project = JSON.parse(content)
   requestName = requestName.replace(/\\/g, '/')
 
-  await res.render('markdown.html', {
+  await res.render('file.html', {
     $project: project,
     userName,
     projectName,
@@ -191,7 +193,7 @@ module.exports = {
     const ext = path.extname(filename)
 
     // 部署的是 markdown 内容
-    if (conf.type === 'markdown' && /^\.(markdown|md|txt|text)$/i.test(ext)) {
+    if (conf.type === 'markdown' && (/^\.(markdown|md|txt|text)$/i.test(ext) || handlers.match(ext, MIME[ext]))) {
       const catalog = await cache.get('catalog', fullName, () => {
         return getMarkdownCatalog(conf.root)
       })
@@ -250,9 +252,24 @@ module.exports = {
       return
     }
 
-    const content = await util.readFile(abs)
-    const ext = path.extname(abs)
-    const mime = MIME[ext] || 'application/octet-stream'
+    let ext = path.extname(abs)
+    let mime = MIME[ext] || 'application/octet-stream'
+
+    let outputFilename
+    if (req.query.download) {
+      res.header('Content-Disposition', 'attachment')
+      outputFilename = abs
+    } else {
+      // 下载时不需要去做这个事
+      outputFilename = await handlers.handle(abs, ext, mime)
+      if (outputFilename) {
+        ext = '.html'
+        mime = 'text/html'
+      } else {
+        outputFilename = abs
+      }
+    }
+    const content = await util.readFile(outputFilename)
     res.write(content, mime)
   }
 }

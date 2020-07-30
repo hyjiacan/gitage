@@ -10,6 +10,12 @@
 
 运行时需要服务器上安装了 git, nodejs>8
 
+## 概述
+
+gitage 运行在 nodejs 上，依赖 git (gitea, gogs, gitlab) 等托管系统的 web 勾子。
+
+gitage 主要为团队/公司等非公开组织提供一个易于部署的 pages 服务。
+
 ## 用法
 
 ```shell script

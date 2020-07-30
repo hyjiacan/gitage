@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const crypto = require('crypto')
 const child_process = require('child_process')
 const util = require('util')
 const logger = require('./logger')
@@ -98,6 +99,24 @@ module.exports = {
       req.on('end', () => {
         const data = JSON.parse(Buffer.concat(buffer).toString())
         resolve(data)
+      })
+    })
+  },
+  /**
+   *
+   * @param filename
+   * @return {Promise<string>}
+   */
+  async getFileMd5(filename) {
+    return new Promise(resolve => {
+      const md5sum = crypto.createHash('md5')
+      const stream = fs.createReadStream(filename)
+      stream.on('data', chunk => {
+        md5sum.update(chunk)
+      })
+      stream.on('end', () => {
+        const md5 = md5sum.digest('hex')
+        resolve(md5)
       })
     })
   }

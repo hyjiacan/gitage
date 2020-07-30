@@ -7,6 +7,8 @@ const router = require('./router')
 const pathmap = require('./routes/pathmap')
 const cache = require('./misc/cache')
 
+require('./handers/docx')
+
 process.on('uncaughtException', e => {
   logger.error(e)
 })
