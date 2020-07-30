@@ -1,0 +1,25 @@
+/* Chrome */
+::-webkit-scrollbar {
+    background-color: rgba(255, 255, 255, .5);
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: rgba(30, 30, 30, 0.2);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(30, 30, 30, 0.3);
+}
+
+/* Firefox */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(30, 30, 30, 0.2) rgba(255, 255, 255, .5);
+}
+
+*:hover {
+    scrollbar-color: rgba(30, 30, 30, 0.3) rgba(255, 255, 255, .5);
+}
