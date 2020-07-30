@@ -4,10 +4,15 @@
   <title>{{userName}}/{{projectName}} - {{$config.name}} - {{$config.description}}</title>
   <t-include file="include/assets.html"/>
   <script src="/static/lib/timeago.js"></script>
-  <script src="/static/lib/highlightjs/highlight.pack.js"></script>
-  <script src="/static/lib/md0/md0.js"></script>
-  <link href="/static/lib/md0/md0.css" rel="stylesheet">
-  <link href="/static/lib/highlightjs/styles/default.css" rel="stylesheet">
+  <t-if on="/^\.(md|markdown)$/i.test(ext)">
+    <script src="/static/lib/highlightjs/highlight.pack.js"></script>
+    <script src="/static/lib/md0/md0.js"></script>
+    <link href="/static/lib/md0/md0.css" rel="stylesheet">
+    <link href="/static/lib/highlightjs/styles/default.css" rel="stylesheet">
+  </t-if>
+  <t-elif on="/^\.pdf$/i.test(ext)">
+    <script src="/static/lib/pdfobject.min.js"></script>
+  </t-elif>
   <style>
   #catalog {
       font-size: small;
@@ -78,7 +83,8 @@
   </style>
 </head>
 <body>
-<div class="{{isReadme ? 'container' : 'container'}}">
+<!--<div class="{{isReadme ? 'container' : 'container'}}">-->
+<div class="container">
   <t-include file="include/header.html"/>
   <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
@@ -99,20 +105,20 @@
       </li>
     </ol>
   </nav>
-  <div class="mb-2">
-    <i class="fa fa-book-open"></i>
-    <span>{{$project.repository.description}}</span>
-  </div>
-  <div class="mb-2 bg-light p-2">
+  <div class="mb-2 p-2">
     <div class="float-left">
-      <span class="badge badge-pill badge-light">
+      <span>
+        <i class="fa fa-book-open"></i>
+        <span>{{$project.repository.description}}</span>
+      </span>
+    </div>
+    <div class="float-right">
+      <span class="badge badge-light mr-4">
         <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
         <span>{{$project.pusher.full_name}}</span>
         <span>更新于</span>
         <span datetime="{{$project.repository.updated_at}}"></span>
       </span>
-    </div>
-    <div class="float-right">
       <a href="{{editUrl}}" target="_blank" class="mr-4">
         <i class="fa fa-edit"></i>
         <span>编辑</span>
@@ -160,12 +166,7 @@
         </ul>
       </div>
     </t-if>
-    <t-if on="/^\.pdf$/i.test(ext)">
-      <object src="/raw/{{userName}}/{{projectName}}/{{file}}"></object>
-    </t-if>
-    <t-else>
-      <div id="content" class="col"></div>
-    </t-else>
+    <div id="content" class="col"></div>
   </div>
   <t-include file="./include/footer.html"/>
 </div>
@@ -206,5 +207,14 @@
   })
   </script>
 </t-if>
+<t-elif on="/^\.pdf$/i.test(ext)">
+  <script type="text/javascript">
+  $(function () {
+    PDFObject.embed('/raw/{{userName}}/{{projectName}}/{{file}}', '#content', {
+      fallbackLink: `<p>你用的古董浏览器不支持PDF文件预览，<a href="[url]" targ="_blank">下载</a> 后自已玩吧</p>`
+    })
+  })
+  </script>
+</t-elif>
 </body>
 </html>

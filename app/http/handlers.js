@@ -58,6 +58,7 @@ async function handle(filename, ext, mime) {
   if (!result.mime) {
     throw new Error('Return value of handler must contains field "mime"')
   }
+  await util.writeFile(cacheFileName + '.json', result)
   return {
     ext: result.ext,
     mime: result.mime,
