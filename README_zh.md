@@ -16,6 +16,8 @@ gitage 运行在 nodejs 上，依赖 git (gitea, gogs, gitlab) 等托管系统�
 
 gitage 主要为团队/公司等非公开组织提供一个易于部署的 pages 服务。
 
+gitage 提供 markdown 文件渲染，以及 docx pdf 文件的预览支持。
+
 ## 用法
 
 ```shell script
@@ -80,7 +82,7 @@ POST `http://127.0.0.1:1997/hook/`
 
 ### 0.5.4
 
-- [ ] 项目列表添加分页支持
+- [ ] 项目列表异步加载
 
 ### 0.6.0
 
