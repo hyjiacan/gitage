@@ -9,14 +9,19 @@ module.exports = {
   /**
    *
    * @param fileName
+   * @param decodeAsJson
    * @return {String}
    */
-  async readFileContent(fileName) {
+  async readFileContent(fileName, decodeAsJson) {
     const buffer = await util.promisify(fs.readFile)(fileName, {
       flag: 'r'
     })
 
-    return buffer.toString('utf-8')
+    const content = buffer.toString('utf-8')
+    if (decodeAsJson) {
+      return JSON.parse(content)
+    }
+    return content
   },
 
   async readFile(fileName) {

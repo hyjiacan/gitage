@@ -20,8 +20,7 @@ module.exports = {
   async get(type, name, defaultValueGetter) {
     const filename = getCacheFileName(type, name)
     if (fs.existsSync(filename)) {
-      const content = await util.readFileContent(filename)
-      return JSON.parse(content)
+      return util.readFileContent(filename, true)
     }
     const result = await defaultValueGetter()
     await this.set(type, name, result)

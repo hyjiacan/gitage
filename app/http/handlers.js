@@ -36,15 +36,33 @@ async function handle(filename, ext, mime) {
   const {userName, projectName} = /^[\\/]?(?<userName>.+?)[\\/](?<projectName>.+?)[\\/]/.exec(relPath).groups
   const md5 = await util.getFileMd5(filename)
 
-  const cacheFileName = path.join(cachePath, userName, projectName, `${md5}.html`)
+  const cacheFilePath = path.join(cachePath, userName, projectName)
+  if (!fs.existsSync(cacheFilePath)) {
+    fs.mkdirSync(cacheFilePath, {recursive: true})
+  }
+  const cacheFileName = path.join(cacheFilePath, md5)
 
   // Try to read from cache
   if (fs.existsSync(cacheFileName)) {
-    return cacheFileName
+    const {ext, mime} = await util.readFileContent(cacheFileName + '.json', true)
+    return {
+      ext,
+      mime,
+      file: cacheFileName
+    }
   }
-  const result = await handler.call(null, filename, {ext, mime})
-  await util.writeFile(cacheFileName, result)
-  return cacheFileName
+  const result = await handler.call(null, filename, {ext, mime, output: cacheFileName})
+  if (!result.ext) {
+    throw new Error('Return value of handler must contains field "ext"')
+  }
+  if (!result.mime) {
+    throw new Error('Return value of handler must contains field "mime"')
+  }
+  return {
+    ext: result.ext,
+    mime: result.mime,
+    file: cacheFileName
+  }
 }
 
 module.exports = {

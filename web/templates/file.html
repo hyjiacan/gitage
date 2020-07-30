@@ -136,10 +136,10 @@
                   <span class="text-wrap">{{item.name}}</span>
                 </t-if>
                 <t-else>
-                  <t-if on="item.ext === '.md' || item.ext === '.markdown'">
+                  <t-if on="/^\.(md|markdown)$/i.test(item.ext)">
                     <i class="fab fa-markdown"></i>
                   </t-if>
-                  <t-elif on="item.ext === '.docx'">
+                  <t-elif on="/^\.docx$/i.test(item.ext)">
                     <i class="fas fa-file-word"></i>
                   </t-elif>
                   <t-else>
@@ -160,44 +160,51 @@
         </ul>
       </div>
     </t-if>
-    <div id="content" class="col"></div>
+    <t-if on="/^\.pdf$/i.test(ext)">
+      <object src="/raw/{{userName}}/{{projectName}}/{{file}}"></object>
+    </t-if>
+    <t-else>
+      <div id="content" class="col"></div>
+    </t-else>
   </div>
   <t-include file="./include/footer.html"/>
 </div>
 <a class="btn btn-dark position-fixed text-light" href="#" style="right: 20px;bottom: 60px;">
   <i class="fa fa-arrow-up"></i>
 </a>
-<script type="text/javascript">
-$(function () {
-  $('#content').html('加载中...')
-  $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content, state, xhr) {
-    var contentType = xhr.getResponseHeader('content-type')
-    if (/text\/html/.test(contentType)) {
-      $('#content').html(content)
-      return
-    }
-    var html = md0(content, {
-      codeHeader: false,
-      // codeIndex: false,
-      useHljs: true
+<t-if on="!/^\.pdf$/i.test(ext)">
+  <script type="text/javascript">
+  $(function () {
+    $('#content').html('加载中...')
+    $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content, state, xhr) {
+      var contentType = xhr.getResponseHeader('content-type')
+      if (/text\/html/.test(contentType)) {
+        $('#content').html(content)
+        return
+      }
+      var html = md0(content, {
+        codeHeader: false,
+        // codeIndex: false,
+        useHljs: true
+      })
+      $('#content').html(html)
+    }).catch(e => {
+      $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
     })
-    $('#content').html(html)
-  }).catch(e => {
-    $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
-  })
 
-  // 高亮当前文件
-  var current = decodeURI(window.location.pathname)
-  var catalog = $('#catalog')
-  catalog.find('a[href]').each(function () {
-    var link = decodeURI($(this).attr('href'))
-    if (link !== current) {
-      return
-    }
-    $(this).removeAttr('href').parent().addClass('active')
-    return false
+    // 高亮当前文件
+    var current = decodeURI(window.location.pathname)
+    var catalog = $('#catalog')
+    catalog.find('a[href]').each(function () {
+      var link = decodeURI($(this).attr('href'))
+      if (link !== current) {
+        return
+      }
+      $(this).removeAttr('href').parent().addClass('active')
+      return false
+    })
   })
-})
-</script>
+  </script>
+</t-if>
 </body>
 </html>

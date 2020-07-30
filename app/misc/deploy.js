@@ -79,7 +79,7 @@ async function checkoutRepo(data, eventType) {
   const configFile = path.join(dist, config.configFile)
 
   if (fs.existsSync(configFile)) {
-    const pageConfig = JSON.parse(await util.readFileContent(configFile))
+    const pageConfig = await util.readFileContent(configFile, true)
     if (pageConfig.tag) {
       if (type !== 'tag' || eventType !== 'create') {
         return 'Ignore: not a tag'

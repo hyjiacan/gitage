@@ -23,7 +23,7 @@ async function getPageConfig(userName, projectName) {
 
   const projectPath = path.join(config.projectRoot, userName, projectName)
   const configFile = path.join(projectPath, config.configFile)
-  const pageConfig = fs.existsSync(configFile) ? JSON.parse(await util.readFileContent(configFile)) : {}
+  const pageConfig = fs.existsSync(configFile) ? await util.readFileContent(configFile, true) : {}
   const dirName = pageConfig.path || 'docs'
   const pageRoot = PAGE_CONFIG_MAP[projectName] = path.join(projectPath, dirName)
   // 部署内容的类型
@@ -106,9 +106,8 @@ async function getMarkdownCatalog(currentPath, root) {
 async function renderMarkdown(res, option) {
   let {userName, projectName, requestName, docRoot, catalog, isReadme} = option
 
-  const content = await util.readFileContent(path.join(config.projectRoot, userName, projectName, config.pushFile))
   // 这是原始的 push 数据
-  const project = JSON.parse(content)
+  const project = await util.readFileContent(path.join(config.projectRoot, userName, projectName, config.pushFile), true)
   requestName = requestName.replace(/\\/g, '/')
 
   await res.render('file.html', {
@@ -118,6 +117,7 @@ async function renderMarkdown(res, option) {
     catalog: catalog || [],
     file: encodeURI(requestName.replace(/^\//, '')),
     name: path.basename(requestName),
+    ext: path.extname(requestName),
     isReadme,
     editUrl: [
       project.repository.html_url.replace(/\/$/g, ''),
@@ -133,9 +133,8 @@ module.exports = {
     const dirs = await util.readDir(userPath)
     const projects = []
     for (const dir of dirs) {
-      const content = await util.readFileContent(path.join(userPath, dir, config.pushFile))
       // 这是原始的 push 数据
-      const project = JSON.parse(content)
+      const project = await util.readFileContent(path.join(userPath, dir, config.pushFile), true)
       // 追加 readme 文件信息
       const readmeFile = await getReadmeFile(path.join(userPath, dir))
       if (readmeFile) {
@@ -261,10 +260,11 @@ module.exports = {
       outputFilename = abs
     } else {
       // 下载时不需要去做这个事
-      outputFilename = await handlers.handle(abs, ext, mime)
-      if (outputFilename) {
-        ext = '.html'
-        mime = 'text/html'
+      const result = await handlers.handle(abs, ext, mime)
+      if (result) {
+        ext = result.ext
+        mime = result.mime
+        outputFilename = result.file
       } else {
         outputFilename = abs
       }
