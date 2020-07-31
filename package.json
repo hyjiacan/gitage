@@ -6,6 +6,7 @@
   "scripts": {
     "serve": "supervisor -w app -e js app/index.js",
     "debug": "node app/index.js",
+    "download": "node download.js",
     "build": "npx webpack --dist --mode=production --progress"
   },
   "repository": "https://gitee.com/hyjiacan/gitage.git",
@@ -23,15 +24,59 @@
     "web hook"
   ],
   "dependencies": {
-    "@hyjiacan/wet": "https://gitee.com/hyjiacan/wet.git",
-    "mammoth": "^1.4.9"
+    "@hyjiacan/wet": "^0.5.2",
+    "bootstrap": "^4.5.0",
+    "fontawesome": "^5.6.3",
+    "highlight.js": "^10.1.2",
+    "jquery": "^3.5.1",
+    "mammoth": "^1.4.9",
+    "md0": "^1.2.6",
+    "pdfobject": "^2.1.1",
+    "timeago.js": "^4.0.2"
   },
   "devDependencies": {
+    "chalk": "^4.1.0",
     "clean-webpack-plugin": "^3.0.0",
     "copy-webpack-plugin": "^6.0.2",
     "eslint": "^7.2.0",
     "supervisor": "^0.12.0",
     "webpack": "^4.43.0",
     "webpack-cli": "^3.3.12"
+  },
+  "assets": {
+    "bootstrap": {
+      "js": [
+        "https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.min.js",
+        "https://cdn.jsdelivr.net/npm/bootstrap@4/dist/js/bootstrap.bundle.min.js"
+      ],
+      "css": "https://cdn.jsdelivr.net/npm/bootstrap@4/dist/css/bootstrap.min.css"
+    },
+    "font-awesome": {
+      "css": "https://cdn.jsdelivr.net/npm/font-awesome@4/css/font-awesome.min.css",
+      "fonts": [
+        "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/FontAwesome.otf",
+        "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/fontawesome-webfont.eot",
+        "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/fontawesome-webfont.svg",
+        "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/fontawesome-webfont.ttf",
+        "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/fontawesome-webfont.woff",
+        "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/fontawesome-webfont.woff2"
+      ]
+    },
+    "md0": [
+      "https://cdn.jsdelivr.net/npm/md0@1/dist/md0.min.js",
+      "https://cdn.jsdelivr.net/npm/md0@1/dist/md0.min.css"
+    ],
+    "jquery": "https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js",
+    "pdfobject": "https://cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js",
+    "timeago.js": "https://cdn.jsdelivr.net/npm/timeago.js@4/dist/timeago.min.js",
+    "highlightjs": {
+      "js": "https://cdn.jsdelivr.net/npm/highlightjs@9/highlight.pack.min.js",
+      "styles": [
+        "https://cdn.jsdelivr.net/npm/highlightjs@9/styles/default.min.css",
+        "https://cdn.jsdelivr.net/npm/highlightjs@9/styles/github.min.css",
+        "https://cdn.jsdelivr.net/npm/highlightjs@9/styles/solarized-dark.min.css",
+        "https://cdn.jsdelivr.net/npm/highlightjs@9/styles/solarized-light.min.css"
+      ]
+    }
   }
 }

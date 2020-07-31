@@ -37,16 +37,16 @@ class HttpResponse {
     if (typeof content === 'string' || content instanceof Buffer) {
       this._content = content
       if (contentType) {
-        this._headers['content-type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
+        this._headers['Content-Type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
       }
       return
     }
     // JSON
     this._content = JSON.stringify(content)
     if (contentType) {
-      this._headers['content-type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
+      this._headers['Content-Type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
     } else {
-      this._headers['content-type'] = 'application/json'
+      this._headers['Content-Type'] = 'application/json'
     }
   }
 
@@ -130,6 +130,7 @@ class HttpResponse {
   flush() {
     this._res.writeHead(this._code, this._headers)
     if (this._content) {
+      this._headers['Content-Length'] = this._content.length
       this._res.write(this._content)
     }
     this._res.end()

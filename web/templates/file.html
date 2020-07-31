@@ -3,15 +3,15 @@
 <head>
   <title>{{userName}}/{{projectName}} - {{$config.name}} - {{$config.description}}</title>
   <t-include file="include/assets.html"/>
-  <script src="/static/lib/timeago.js"></script>
+  <script src="/static/lib/timeago.js/timeago.min.js"></script>
   <t-if on="/^\.(md|markdown)$/i.test(ext)">
-    <script src="/static/lib/highlightjs/highlight.pack.js"></script>
-    <script src="/static/lib/md0/md0.js"></script>
-    <link href="/static/lib/md0/md0.css" rel="stylesheet">
-    <link href="/static/lib/highlightjs/styles/default.css" rel="stylesheet">
+    <script src="/static/lib/highlightjs/js/highlight.pack.min.js"></script>
+    <script src="/static/lib/md0/md0.min.js"></script>
+    <link href="/static/lib/md0/md0.min.css" rel="stylesheet">
+    <link href="/static/lib/highlightjs/styles/solarized-light.min.css" rel="stylesheet">
   </t-if>
   <t-elif on="/^\.pdf$/i.test(ext)">
-    <script src="/static/lib/pdfobject.min.js"></script>
+    <script src="/static/lib/pdfobject/pdfobject.min.js"></script>
   </t-elif>
   <style>
   #catalog {
@@ -37,20 +37,15 @@
       padding: 5px 5px 0 20px;
   }
 
-  .item-content .fa,
-  .item-content .fab,
-  .item-content .fas {
-      font-size: large;
-      color: rgba(95, 99, 113, 0.54);
+  .item-content .fa {
+      color: rgba(95, 99, 113, 0.8);
       vertical-align: middle;
       display: inline-block;
-      width: 24px;
+      width: 18px;
       text-align: center;
   }
 
-  .item-content:hover .fa,
-  .item-content:hover .fab,
-  .item-content:hover .fas {
+  .item-content:hover .fa {
       color: rgb(67, 73, 92);
   }
 
@@ -60,11 +55,8 @@
   }
 
   .item-content.active a,
-  .item-content.active .fa,
-  .item-content.active .fab,
-  .item-content.active .fas {
+  .item-content.active .fa {
       color: #0a7e2d;
-      font-weight: bold;
   }
 
   img {
@@ -86,7 +78,7 @@
 <!--<div class="{{isReadme ? 'container' : 'container'}}">-->
 <div class="container">
   <t-include file="include/header.html"/>
-  <nav aria-label="breadcrumb">
+  <nav aria-label="breadcrumb" class="position-relative">
     <ol class="breadcrumb">
       <li class="breadcrumb-item">
         <a href="/">
@@ -101,25 +93,11 @@
       </li>
       <li class="breadcrumb-item active" aria-current="page">{{projectName}}</li>
       <li class="breadcrumb-item">
-        {{decodeURI(file)}}
+        {{decodeURI(file).split('/').pop()}}
       </li>
     </ol>
-  </nav>
-  <div class="mb-2 p-2">
-    <div class="float-left">
-      <span>
-        <i class="fa fa-book-open"></i>
-        <span>{{$project.repository.description}}</span>
-      </span>
-    </div>
-    <div class="float-right">
-      <span class="badge badge-light mr-4">
-        <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
-        <span>{{$project.pusher.full_name}}</span>
-        <span>更新于</span>
-        <span datetime="{{$project.repository.updated_at}}"></span>
-      </span>
-      <a href="{{editUrl}}" target="_blank" class="mr-4">
+    <div class="position-absolute" style="right: 10px;top: 12px;">
+      <a href="{{editUrl}}" target="_blank" class="mr-2">
         <i class="fa fa-edit"></i>
         <span>编辑</span>
       </a>
@@ -128,8 +106,25 @@
         <span>下载</span>
       </a>
     </div>
+  </nav>
+  <div class="mb-2">
+    <div class="float-left">
+      <span>
+        <i class="fa fa-book"></i>
+        <span>{{$project.repository.description}}</span>
+      </span>
+    </div>
+    <div class="float-right">
+      <span class="badge badge-light">
+        <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
+        <span>{{$project.pusher.full_name}}</span>
+        <span>更新于</span>
+        <span datetime="{{$project.repository.updated_at}}"></span>
+      </span>
+    </div>
     <span class="clearfix"></span>
   </div>
+  <hr>
   <div class="row">
     <t-if on="!isReadme">
       <div class="col-3 overflow-auto p-2 pl-3">
@@ -138,18 +133,21 @@
             <li>
               <div class="item-content d-inline-block">
                 <t-if on="item.type === 'dir'">
-                  <i class="fa fa-folder"></i>
+                  <i class="fa fa-folder-o"></i>
                   <span class="text-wrap">{{item.name}}</span>
                 </t-if>
                 <t-else>
                   <t-if on="/^\.(md|markdown)$/i.test(item.ext)">
-                    <i class="fab fa-markdown"></i>
+                    <i class="fa fa-file-code-o"></i>
                   </t-if>
                   <t-elif on="/^\.docx$/i.test(item.ext)">
-                    <i class="fas fa-file-word"></i>
+                    <i class="fa fa-file-word-o"></i>
+                  </t-elif>
+                  <t-elif on="/^\.pdf$/i.test(item.ext)">
+                    <i class="fa fa-file-pdf-o"></i>
                   </t-elif>
                   <t-else>
-                    <i class="fa fa-file"></i>
+                    <i class="fa fa-file-text-o"></i>
                   </t-else>
                   <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-wrap">
                     {{item.name}}
