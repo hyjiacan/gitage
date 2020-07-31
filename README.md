@@ -25,23 +25,23 @@ Config file: `config` (case-sensitive), should be put in the root path of gitage
 ```
 # DEBUG flag
 DEBUG = false
-# serve ip
+# ip to host
 HOST = 0.0.0.0
-# serve port
+# port to listen
 PORT = 1997
-# Path for logs, can be absolute or relative 
+# The path to put logs file, can be absolute or relative 
 LOG_PATH = logs
-# Path to checkout repository, can be absolute or relative
+# The path to checkout repository, can be absolute or relative
 PROJECT_ROOT_PATH = projects
-# Only log the logs which higher than this value
+# Log the messages which higher than this level
 LOG_LEVEL = info
-# The temorary path to checkout, leave it empty to use system temp path
+# The temporary  path to the checkout, leave it blank to use the system temp path
 PROJECT_CHECKOUT_TMP = 
 ```
 
-> If no config file, the value above will be the default values.
+> If no _config_ file, the value above will be the default values.
 
-> Note: config names must be **UPPERCASE**
+> Note: Configuration item name must be **UPPERCASE**
 
 ## Repo Configuration
 
@@ -56,7 +56,7 @@ Add file `gitage.config.json` into your repo, in the form bellow:
 }
 ```
 
-- `type` Deploy type, only `markdown` supported currently, or just leave it empty **case-sensitive**
+- `type` Deploy type, only `markdown` supported currently, or just leave it blank **case-sensitive**
 - `path` The directory to deploy (where the static assets located in), default: `docs`
 - `index` The index file to deploy，default: `index.html/index.md` **case-sensitive**
 - `tag` Whether to deploy only on `tag` pushed，default: `false` (planning)
