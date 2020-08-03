@@ -2,13 +2,16 @@
 
 基于GIT的静态WEB服务。
 
-目前仅测试过 [gitea](https://gitea.io/)
-
 依赖:
 
 - 简单的 js 模板引擎 [wet](http://gitee.com/hyjiacan/wet)
 
 运行时需要服务器上安装了 git, nodejs>8
+
+目前支持的托管系统:
+
+- [gogs](https://gogs.io/)
+- [gitea](https://gitea.io/)
 
 ## 概述
 
@@ -80,9 +83,7 @@ POST `http://127.0.0.1:1997/hook/`
 
 ## 开发计划
 
-### 0.5.4
-
-- [ ] 项目列表异步加载
+[pdf2json]: https://www.npmjs.com/package/pdf2json
 
 ### 0.6.0
 

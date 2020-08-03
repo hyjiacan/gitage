@@ -5,24 +5,34 @@ const chalk = require('chalk')
 
 const pkg = require('./package.json')
 
-function download(link, paths) {
-  const filename = path.basename(link)
-  const targetPath = paths.join(path.sep)
+function download(link, paths, options) {
+  const temp = link.split('->')
+  link = temp[0]
+
+  const filename = temp[1] || path.basename(link)
+  const targetPath = paths.filter(i => !!i).join(path.sep)
   const targetFile = path.join(targetPath, filename)
 
-  console.log(`Downloading ${filename} into ${targetPath}: ${link}`)
+  console.log(`Downloading ${link} into ${targetFile}`)
 
   if (!fs.existsSync(targetPath)) {
     fs.mkdirSync(targetPath, {recursive: true})
   }
 
   const url = new URL(link)
-  const options = {
+  if (!options) {
+    options = {}
+  }
+  if (!options.headers) {
+    options.headers = {}
+  }
+  options = {
     host: url.host,
     path: url.pathname,
     headers: {
       'user-agent': `${pkg.name}/${pkg.version}`,
-      'accept-encoding': 'utf-8'
+      'accept-encoding': 'utf-8',
+      ...options.headers
     },
     rejectUnauthorized: false
   }
@@ -63,6 +73,11 @@ function getAssets(assets, paths) {
   }
 
   if (typeof assets !== 'object') {
+    return
+  }
+
+  if (assets.url) {
+    download(assets.url, paths, assets)
     return
   }
 

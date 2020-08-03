@@ -33,14 +33,12 @@ async function handle(filename, ext, mime) {
     return null
   }
   const relPath = path.relative(config.projectRoot, filename)
-  const {userName, projectName} = /^[\\/]?(?<userName>.+?)[\\/](?<projectName>.+?)[\\/]/.exec(relPath).groups
-  const md5 = await util.getFileMd5(filename)
 
-  const cacheFilePath = path.join(cachePath, userName, projectName)
+  const cacheFileName = path.join(cachePath, relPath)
+  const cacheFilePath = path.dirname(cacheFileName)
   if (!fs.existsSync(cacheFilePath)) {
     fs.mkdirSync(cacheFilePath, {recursive: true})
   }
-  const cacheFileName = path.join(cacheFilePath, md5)
 
   // Try to read from cache
   if (fs.existsSync(cacheFileName)) {
