@@ -64,7 +64,12 @@ PROJECT_CHECKOUT_TMP =
   "path": "docs",
   "index": "index.html",
   "tag": true,
-  "branch": "master"
+  "branch": "master",
+  "ignore": [
+    "file",
+    "dir",
+    "..."
+  ]
 }
 ```
 

@@ -52,7 +52,13 @@ Add file `gitage.config.json` into your repo, in the form bellow:
   "type": "markdown",
   "path": "docs",
   "index": "index.html",
-  "tag": true
+  "tag": true,
+   "branch": "master",
+   "ignore": [
+     "file",
+     "dir",
+     "..."
+   ]
 }
 ```
 

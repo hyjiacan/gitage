@@ -5,6 +5,7 @@ const logger = require('./logger')
 const util = require('./util')
 const cache = require('./cache')
 const config = require('../config')
+const os = require('os')
 
 const FLAG_DIR = path.join(config.projectRoot, '.pending')
 
@@ -33,7 +34,7 @@ async function checkoutRepo(data, eventType) {
   const branch = ref.split('/')[2]
 
   // 由用户名和项目名称组成
-  const dist = path.join(config.projectTemp, repository.owner.username, name)
+  const tempDir = path.join(config.projectTemp, repository.owner.username, name)
 
   const fullName = data.repository.full_name.replace('/', '#')
   const url = data.repository.clone_url
@@ -43,43 +44,44 @@ async function checkoutRepo(data, eventType) {
 
   logger.info(`Checkout: ${url}`)
 
-  let dirExists = fs.existsSync(dist)
+  let dirExists = fs.existsSync(tempDir)
 
   // .git 目录是否存在
-  if (!fs.existsSync(path.join(dist, '.git'))) {
-    fs.rmdirSync(dist, {recursive: true})
+  if (!fs.existsSync(path.join(tempDir, '.git'))) {
+    fs.rmdirSync(tempDir, {recursive: true})
     dirExists = false
   }
 
   if (dirExists) {
     // 清空工作目录
-    await util.runCommand(`git clean -f -d "${dist}"`, dist)
+    await util.runCommand(`git clean -f -d "${tempDir}"`, tempDir)
     // logger.info(`rmdir: ${dist}`)
     // fs.rmdirSync(dist, {recursive: true})
     // git --work-tree=${WEB_DIR} checkout --force
-    await util.runCommand(`git fetch origin ${branch} --prune --verbose`, dist)
+    await util.runCommand(`git fetch origin ${branch} --prune --verbose`, tempDir)
     // await util.runCommand(`git reset --hard origin/${branch}`, dist)
-    const head = await util.readFileContent(path.join(dist, '.git', 'HEAD'))
+    const head = await util.readFileContent(path.join(tempDir, '.git', 'HEAD'))
     logger.info('Checking current branch name: ' + head)
     if (!head.startsWith(`ref: refs/heads/${branch}`)) {
-      await util.runCommand(`git checkout -B ${branch} -f`, dist)
+      await util.runCommand(`git checkout -B ${branch} -f`, tempDir)
     }
-    await util.runCommand(`git pull origin ${branch} --verbose`, dist)
+    await util.runCommand(`git pull origin ${branch} --verbose`, tempDir)
   } else {
-    logger.info(`mkdir: ${dist}`)
-    fs.mkdirSync(dist, {recursive: true, mode: '777'})
+    logger.info(`mkdir: ${tempDir}`)
+    fs.mkdirSync(tempDir, {recursive: true, mode: '777'})
 
     // 克隆代码
-    await util.runCommand(`git clone -b ${branch} --verbose --depth=1 ${url} "${dist}"`, dist)
+    await util.runCommand(`git clone -b ${branch} --verbose --depth=1 ${url} "${tempDir}"`, tempDir)
   }
 
   // 写 push 数据
-  await util.writeFile(path.join(dist, config.pushFile), data)
+  await util.writeFile(path.join(tempDir, config.pushFile), data)
 
-  const configFile = path.join(dist, config.configFile)
+  const configFile = path.join(tempDir, config.configFile)
 
+  let pageConfig
   if (fs.existsSync(configFile)) {
-    const pageConfig = await util.readFileContent(configFile, true)
+    pageConfig = await util.readFileContent(configFile, true)
     if (pageConfig.tag) {
       if (type !== 'tag' || eventType !== 'create') {
         return 'Ignore: not a tag'
@@ -99,18 +101,42 @@ async function checkoutRepo(data, eventType) {
   }
   fs.mkdirSync(workingDir)
 
-  // // 此操作无法跨分区工作
-  // fs.renameSync(dist, workingDir)
-  // Windows
+  const ignore = pageConfig ? pageConfig.ignore : []
+  ignore.push('.git')
+
   const ignoreFile = path.join(config.projectTemp, '.ignore', `${repository.owner.username}#${name}.txt`)
   if (!fs.existsSync(path.dirname(ignoreFile))) {
     fs.mkdirSync(path.dirname(ignoreFile), {recursive: true})
   }
-  if (!fs.existsSync(ignoreFile)) {
-    fs.writeFileSync(ignoreFile, path.join(dist, '.git'), {encoding: 'utf-8'})
-  }
-  await util.runCommand(`xcopy "${dist}" "${workingDir}" /S /I /EXCLUDE:${ignoreFile}`)
 
+  // // 此操作无法跨分区工作
+  // fs.renameSync(dist, workingDir)
+  if (process.platform === 'win32') {
+    // Windows
+    // 忽略使用绝对路径
+    // 忽略的文件/目录
+    // gitage.config.js ->
+    // ignore: []
+    fs.appendFileSync(ignoreFile, ignore.map(item => path.join(tempDir, item)).join(os.EOL), {encoding: 'utf8'})
+
+    await util.runCommand(`xcopy "${tempDir}" "${workingDir}" /S /I /EXCLUDE:${ignoreFile}`, tempDir)
+  } else {
+    // Linux
+    // 忽略使用相对路径
+    // 忽略的文件/目录
+    // gitage.config.js ->
+    // ignore: []
+    fs.appendFileSync(ignoreFile, ignore.join(os.EOL), {encoding: 'utf8'})
+    const command = [
+      'rsync',
+      '-ar',
+      '--exclude-from',
+      ignoreFile,
+      tempDir,
+      workingDir
+    ]
+    await util.runCommand(command.join(' '), tempDir)
+  }
   // 移除目录缓存
   cache.remove('catalog', fullName)
   cache.remove('projects', 'projects')
