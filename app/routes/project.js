@@ -10,7 +10,7 @@ const deploy = require('../misc/deploy')
 const cache = require('../misc/cache')
 const handlers = require('../http/handlers')
 
-const PAGE_CONFIG_MAP = {}
+const PAGE_CONFIG_MAP = Object.create(null)
 
 // 读取配置文件
 async function getPageConfig(userName, projectName) {
@@ -23,7 +23,7 @@ async function getPageConfig(userName, projectName) {
 
   const projectPath = path.join(config.projectRoot, userName, projectName)
   const configFile = path.join(projectPath, config.configFile)
-  const pageConfig = fs.existsSync(configFile) ? await util.readFileContent(configFile, true) : {}
+  const pageConfig = fs.existsSync(configFile) ? await util.readFileContent(configFile, true) : Object.create(null)
   const dirName = pageConfig.path || 'docs'
   const pageRoot = PAGE_CONFIG_MAP[projectName] = path.join(projectPath, dirName)
   // 部署内容的类型

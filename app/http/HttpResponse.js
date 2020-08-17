@@ -17,7 +17,7 @@ class HttpResponse {
   constructor(request, response) {
     this._req = request
     this._res = response
-    this._headers = {}
+    this._headers = Object.create(null)
     this._code = 200
   }
 

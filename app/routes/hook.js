@@ -1,6 +1,7 @@
 const util = require('../misc/util')
 const logger = require('../misc/logger')
 const deploy = require('../misc/deploy')
+const HttpClient = require('../http/HttpClient')
 
 const HOSTS = ['gitea', 'gogs', 'gitlab', 'github']
 
@@ -20,7 +21,38 @@ function getHeader(headers, suffix) {
 
 async function handleRequest(req, eventType) {
   const data = await util.receivePostData(req.raw)
-  await deploy.checkout(data, eventType)
+  /**
+   * @type {string} ref 操作名称（branch名称/tag名称）
+   * @type {string} ref_type 操作类型（branch/tag）
+   */
+  const {ref, ref_type: type} = data
+  const branch = ref.split('/')[2]
+
+  // 判断请求是否有效
+  // 加载 gitage.config.json
+  // 当文件不存在时返回 500
+  // http://192.168.12.224:3000/api/v1/repos/hyjiacan/vue-common/contents/gitage.config.js
+  const url = `http://192.168.12.224:3000/api/v1/repos/${data.repository.full_name}/contents/gitage.config.js`
+  try {
+    const content = HttpClient.get(url)
+    const pageConfig = JSON.parse(content)
+    if (pageConfig.tag) {
+      if (type !== 'tag' || eventType !== 'create') {
+        return 'Ignore: not a tag'
+      }
+    }
+    if (pageConfig.branch) {
+      if (branch !== pageConfig.branch) {
+        return `Ignore: branch ${branch} is not expected`
+      }
+    }
+  } catch (e) {
+    logger.error(e)
+  }
+  // 此操作可能在耗时较长
+  // 为避免git端收到 timeout 的响应
+  // checkout 前就将其返回
+  deploy.checkout(data)
 }
 
 module.exports = {
@@ -73,7 +105,7 @@ module.exports = {
 
     logger.debug(`Accept git push from ${host}: ${delivery.value}`)
 
-    handleRequest(req, eventType)
+    await handleRequest(req, eventType)
 
     res.write({
       code: 'OK'

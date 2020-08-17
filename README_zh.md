@@ -90,6 +90,10 @@ POST `http://127.0.0.1:1997/hook/`
 
 [pdf2json]: https://www.npmjs.com/package/pdf2json
 
+## issues
+
+- [ ] 目前所有文本文件响应的编码都是 utf-8，应该读取文件的编码，然后返回实际值
+
 ### 0.6.0
 
 - [ ] 插件支持

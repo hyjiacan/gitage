@@ -3,6 +3,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 
 const distConfig = {
+  mode: 'production',
   entry: {
     gitage: './app/index.js'
   },
@@ -13,11 +14,6 @@ const distConfig = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].js'
-  },
-  optimization: {
-    splitChunks: {
-      chunks: 'all'
-    }
   },
   plugins: [
     new CleanWebpackPlugin(),
@@ -34,9 +30,9 @@ const distConfig = {
       ]
     })
   ],
-  externals: {
+  externals: [{
     '../assets/mime': 'require(\'./assets/mime.json\')'
-  }
+  }]
 }
 
 module.exports = distConfig

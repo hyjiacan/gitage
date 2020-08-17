@@ -20,24 +20,22 @@ function removeFlag(name) {
 /**
  * 从 GIT 检出代码
  * @param {{repository: {full_name: string, clone_url: string}}} data
- * @param eventType
  * @return {Promise<string>}
  */
-async function checkoutRepo(data, eventType) {
+async function checkoutRepo(data) {
   /**
    * @type {{owner: object, ref_type: string}} repository
    * @type {string} ref 操作名称（branch名称/tag名称）
-   * @type {string} ref_type 操作类型（branch/tag）
    */
-  const {repository, ref, ref_type: type} = data
+  const {repository, ref} = data
   const name = repository.name
   const branch = ref.split('/')[2]
 
   // 由用户名和项目名称组成
   const tempDir = path.join(config.projectTemp, repository.owner.username, name)
 
-  const fullName = data.repository.full_name.replace('/', '#')
-  const url = data.repository.clone_url
+  const fullName = repository.full_name.replace('/', '#')
+  const url = repository.clone_url
 
   // 写检出标记
   await setFlag(fullName)
@@ -82,16 +80,16 @@ async function checkoutRepo(data, eventType) {
   let pageConfig
   if (fs.existsSync(configFile)) {
     pageConfig = await util.readFileContent(configFile, true)
-    if (pageConfig.tag) {
-      if (type !== 'tag' || eventType !== 'create') {
-        return 'Ignore: not a tag'
-      }
-    }
-    if (pageConfig.branch) {
-      if (branch !== pageConfig.branch) {
-        return `Ignore: branch ${branch} is not expected`
-      }
-    }
+  //   if (pageConfig.tag) {
+  //     if (type !== 'tag' || eventType !== 'create') {
+  //       return 'Ignore: not a tag'
+  //     }
+  //   }
+  //   if (pageConfig.branch) {
+  //     if (branch !== pageConfig.branch) {
+  //       return `Ignore: branch ${branch} is not expected`
+  //     }
+  //   }
   }
 
   // 移动目录

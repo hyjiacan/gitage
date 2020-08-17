@@ -1,7 +1,8 @@
 const fs = require('fs')
 const path = require('path')
-const https = require('https')
 const chalk = require('chalk')
+
+const HttpClient = require('./app/http/HttpClient')
 
 const pkg = require('./package.json')
 
@@ -19,45 +20,9 @@ function download(link, paths, options) {
     fs.mkdirSync(targetPath, {recursive: true})
   }
 
-  const url = new URL(link)
-  if (!options) {
-    options = {}
-  }
-  if (!options.headers) {
-    options.headers = {}
-  }
-  options = {
-    host: url.host,
-    path: url.pathname,
-    headers: {
-      'user-agent': `${pkg.name}/${pkg.version}`,
-      'accept-encoding': 'utf-8',
-      ...options.headers
-    },
-    rejectUnauthorized: false
-  }
-
-  https.get(options, res => {
-    if (res.statusCode !== 200) {
-      throw new Error(res.statusMessage)
-    }
-    let content
-    res.on('data', data => {
-      if (content) {
-        content = Buffer.concat([content, data])
-      } else {
-        content = data
-      }
-    })
-
-    res.on('end', () => {
-      fs.writeFileSync(targetFile, content)
-      console.log(`${filename} download complete`)
-    })
-
-    res.on('error', err => {
-      throw err
-    })
+  HttpClient.get(link, options).then(content => {
+    fs.writeFileSync(targetFile, content)
+    console.log(`${filename} download complete`)
   })
 }
 

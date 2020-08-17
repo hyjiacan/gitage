@@ -1,7 +1,7 @@
 const url = require('url')
 
 function resolveQuery(url) {
-  const query = {}
+  const query = Object.create(null)
   if (!url.query) {
     return query
   }

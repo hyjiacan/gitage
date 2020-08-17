@@ -1,6 +1,6 @@
 const path = require('path')
 
-const routes = {}
+const routes = Object.create(null)
 
 /**
  * 从注册的 requestPath 中解析出请求参数
