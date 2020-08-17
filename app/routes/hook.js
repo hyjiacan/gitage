@@ -28,13 +28,16 @@ async function handleRequest(req, eventType) {
   const {ref, ref_type: type} = data
   const branch = ref.split('/')[2]
 
+  const repoUrl = new URL(data.repository.html_url)
+
   // 判断请求是否有效
   // 加载 gitage.config.json
   // 当文件不存在时返回 500
-  // http://192.168.12.224:3000/api/v1/repos/hyjiacan/vue-common/contents/gitage.config.js
-  const url = `http://192.168.12.224:3000/api/v1/repos/${data.repository.full_name}/contents/gitage.config.js`
+  const url = `${repoUrl.origin}/api/v1/repos/${data.repository.full_name}/contents/gitage.config.json?ref=${data.before}`
   try {
-    const content = HttpClient.get(url)
+    // 得到的是 base64
+    const response = await HttpClient.get(url)
+    const content = Buffer.from(JSON.parse(response.toString()).content, 'base64').toString()
     const pageConfig = JSON.parse(content)
     if (pageConfig.tag) {
       if (type !== 'tag' || eventType !== 'create') {
@@ -105,10 +108,19 @@ module.exports = {
 
     logger.debug(`Accept git push from ${host}: ${delivery.value}`)
 
-    await handleRequest(req, eventType)
+    try {
+      await handleRequest(req, eventType)
 
-    res.write({
-      code: 'OK'
-    })
+      res.write({
+        code: 'OK'
+      })
+    } catch (e) {
+      logger.error(e)
+
+      res.write({
+        code: 'FAIL',
+        message: e.message
+      })
+    }
   }
 }

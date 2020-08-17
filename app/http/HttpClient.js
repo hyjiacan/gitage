@@ -16,14 +16,14 @@ class HttpClient {
     }
 
     this.options = {
-      host: this.url.host,
+      host: this.url.hostname,
+      port: this.url.port,
       path: this.url.pathname,
       headers: {
         'user-agent': `${pkg.name}/${pkg.version}`,
         'accept-encoding': 'utf-8',
         ...options.headers
-      },
-      rejectUnauthorized: false
+      }
     }
   }
 
