@@ -62,18 +62,7 @@
         "https://cdn.jsdelivr.net/npm/font-awesome@4/fonts/fontawesome-webfont.woff2"
       ]
     },
-    "md0": {
-      "": [
-        "https://cdn.jsdelivr.net/npm/md0@1/dist/md0.min.js",
-        "https://cdn.jsdelivr.net/npm/md0@1/dist/md0.min.css"
-      ],
-      "assets": {
-        "url": "https://api.github.com/emojis->emojis.json",
-        "headers": {
-          "accept": "application/vnd.github.v3+json"
-        }
-      }
-    },
+    "marked": "https://cdn.jsdelivr.net/npm/marked@1/lib/marked.min.js",
     "jquery": "https://cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js",
     "pdfobject": "https://cdn.jsdelivr.net/npm/pdfobject@2/pdfobject.min.js",
     "timeago.js": "https://cdn.jsdelivr.net/npm/timeago.js@4/dist/timeago.min.js",

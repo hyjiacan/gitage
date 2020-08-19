@@ -23,6 +23,8 @@ gitage 提供 markdown 文件渲染，以及 docx pdf 文件的预览支持。
 
 ## 用法
 
+> 首次运行，需要执行命令 `npm run download` 下载依赖的第三方包。
+
 ```shell script
 npm run build
 node dist/gitage.js

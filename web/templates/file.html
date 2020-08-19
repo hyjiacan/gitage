@@ -6,14 +6,23 @@
   <script src="/static/lib/timeago.js/timeago.min.js"></script>
   <t-if on="/^\.(md|markdown|txt|text)$/i.test(ext)">
     <script src="/static/lib/highlightjs/js/highlight.pack.min.js"></script>
-    <script src="/static/lib/md0/md0.min.js"></script>
-    <link href="/static/lib/md0/md0.min.css" rel="stylesheet">
+    <script src="/static/lib/marked/marked.min.js"></script>
     <link href="/static/lib/highlightjs/styles/solarized-light.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="/static/styles/markdown.css"/>
   </t-if>
   <t-elif on="/^\.pdf$/i.test(ext)">
     <script src="/static/lib/pdfobject/pdfobject.min.js"></script>
   </t-elif>
   <style>
+  #container {
+      position: relative;
+  }
+
+  #sidebar {
+      float: left;
+      width: 360px;
+  }
+
   #catalog {
       font-size: small;
       border-left: 1px dotted #5f6371;
@@ -34,7 +43,17 @@
   }
 
   #catalog li {
-      padding: 5px 5px 0 20px;
+      padding: 5px 0 0 20px;
+  }
+
+  #catalog > li {
+      padding-left: 5px;
+  }
+
+  #content {
+      margin-left: 370px;
+      overflow: auto;
+      font-size: 13px;
   }
 
   .item-content .fa {
@@ -61,16 +80,6 @@
 
   img {
       max-width: 100%;
-  }
-
-  .md0-code-block {
-      background: none;
-      border: none;
-      margin-top: 0;
-  }
-
-  .md0-code-block-content {
-      padding-top: 0;
   }
   </style>
 </head>
@@ -125,9 +134,9 @@
     <span class="clearfix"></span>
   </div>
   <hr>
-  <div class="row">
+  <div id="container">
     <t-if on="!isReadme">
-      <div class="col-3 overflow-auto p-2 pl-3">
+      <div id="sidebar">
         <ul id="catalog">
           <t-tree on="catalog as item">
             <li>
@@ -164,7 +173,7 @@
         </ul>
       </div>
     </t-if>
-    <div id="content" class="col"></div>
+    <div id="content"></div>
   </div>
   <t-include file="./include/footer.html"/>
 </div>
@@ -181,11 +190,13 @@
         $('#content').html(content)
         return
       }
-      var html = md0(content, {
-        codeHeader: false,
-        // codeIndex: false,
-        useHljs: true
+      marked.setOptions({
+        highlight: function (code, language) {
+          const validLanguage = hljs.getLanguage(language) ? language : 'plaintext'
+          return hljs.highlight(validLanguage, code).value
+        }
       })
+      var html = marked(content)
       $('#content').html(html)
     }).catch(e => {
       $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
@@ -209,7 +220,7 @@
   <script type="text/javascript">
   $(function () {
     PDFObject.embed('/raw/{{userName}}/{{projectName}}/{{file}}', '#content', {
-      fallbackLink: `<p>你用的古董浏览器不支持PDF文件预览，<a href="[url]" target="_blank">下载</a> 后自已玩吧</p>`
+      fallbackLink: `<p>你用的古董浏览器不支持PDF文件预览，<a href="[url]" target="_blank">下载</a> 后重来。</p>`
     })
   })
   </script>

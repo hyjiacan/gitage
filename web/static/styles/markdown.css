@@ -1,0 +1,42 @@
+#content h1:not(:first-child),
+#content h2:not(:first-child),
+#content h3:not(:first-child) {
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+#content pre {
+    padding: 10px;
+    background-color: #fbfae5;
+}
+
+#content pre code {
+}
+
+#content code {
+
+}
+
+#content table {
+    width: 100%;
+    border-collapse: collapse;
+    border: 1px solid #e9e8e8;
+    margin-bottom: 10px;
+}
+
+#content table th,
+#content table td {
+    border: 1px solid #e9e8e8;
+    padding: 5px 2px;
+}
+
+#content blockquote {
+    padding: 10px 5px;
+    border-left: 4px solid #c0c0c0;
+    color: #555555;
+     background-color: #fafafa;
+}
+
+#content blockquote p:last-child {
+    margin-bottom: 0;
+}
