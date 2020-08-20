@@ -7,7 +7,9 @@ const logger = require('../misc/logger')
 const cachePath = config.cachePath
 
 function getCacheFileName(type, name) {
-  return path.join(cachePath, encodeURIComponent(type), encodeURIComponent(name))
+  return path.join(cachePath,
+    encodeURIComponent(type.replace('/', '#')),
+    encodeURIComponent(name.replace('/', '#')))
 }
 
 module.exports = {
