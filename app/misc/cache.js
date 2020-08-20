@@ -2,6 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const config = require('../config')
 const util = require('../misc/util')
+const logger = require('../misc/logger')
 
 const cachePath = config.cachePath
 
@@ -33,6 +34,8 @@ module.exports = {
     const filename = getCacheFileName(type, name)
     if (fs.existsSync(filename)) {
       fs.unlinkSync(filename)
+    }else{
+      logger.info(`cache "${type}/${name}" not found`)
     }
   },
   clear() {

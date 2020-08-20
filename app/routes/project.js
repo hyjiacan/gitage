@@ -269,7 +269,12 @@ module.exports = {
         outputFilename = abs
       }
     }
-    const content = await util.readFile(outputFilename)
+    let content
+    if (mime.startsWith('text/')) {
+      content = await util.readFileContent(outputFilename)
+    } else {
+      content = await util.readFile(outputFilename)
+    }
     res.write(content, mime)
   }
 }

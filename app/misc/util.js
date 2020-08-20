@@ -3,7 +3,10 @@ const path = require('path')
 const crypto = require('crypto')
 const child_process = require('child_process')
 const util = require('util')
+const iconv = require('iconv-lite')
 const logger = require('./logger')
+const charsets = require('./charsets')
+
 
 module.exports = {
   /**
@@ -17,7 +20,9 @@ module.exports = {
       flag: 'r'
     })
 
-    const content = buffer.toString('utf-8')
+    // 当未检测到编码时，使用 gb2312
+    const charset = charsets.detect(buffer, 'gb2312')
+    const content = iconv.decode(buffer, charset)
     if (decodeAsJson) {
       return JSON.parse(content)
     }

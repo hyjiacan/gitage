@@ -34,18 +34,16 @@ class HttpResponse {
   }
 
   write(content, contentType) {
+    if (contentType) {
+      this._headers['Content-Type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
+    }
     if (typeof content === 'string' || content instanceof Buffer) {
       this._content = content
-      if (contentType) {
-        this._headers['Content-Type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
-      }
       return
     }
     // JSON
     this._content = JSON.stringify(content)
-    if (contentType) {
-      this._headers['Content-Type'] = contentType.startsWith('text/') ? `${contentType};charset=utf8` : contentType
-    } else {
+    if (!contentType) {
       this._headers['Content-Type'] = 'application/json'
     }
   }
