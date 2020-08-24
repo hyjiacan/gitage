@@ -139,6 +139,7 @@ async function checkoutRepo(data) {
       await util.runCommand(command.join(' '), tempDir)
     }
     // 移除目录缓存
+    cache.remove('index', 'meta')
     cache.remove('catalog', fullName)
     cache.remove('projects', 'projects')
     logger.info('Checkout done!')
