@@ -92,9 +92,9 @@ POST `http://127.0.0.1:1997/hook/`
 
 [pdf2json]: https://www.npmjs.com/package/pdf2json
 
-## issues
+### next-version
 
-### 0.6.0
-
+- [ ] file.html 页面中，如果加载文件成功，那么展示当前打开文件最后更新时间
+- [ ] 每个仓库的 checkout 日志，单独写到一个文件中（每次一个文件）
 - [ ] 插件支持
 - [ ] 优化 `wet` 性能

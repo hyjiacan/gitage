@@ -196,6 +196,36 @@
         $('#content').html(content)
         return
       }
+      // 判断是不是 markdown 文件
+      // # `` ** __ _ * > -
+      var isMarkdown = content.split('\n').some(function (line) {
+        if (/^#+/.test(line)) {
+          return true
+        }
+        if (/`.+?`/.test(line)) {
+          return true
+        }
+        if (/^```/.test(line)) {
+          return true
+        }
+        if (/([*_]{1,2}).+?\1/.test(line)) {
+          return true
+        }
+        if (/^\s*>/.test(line)) {
+          return true
+        }
+        if (/\[.+?]\(.+?\)/.test(line)) {
+          return true
+        }
+        if (/^\|?-+/.test(line)) {
+          return true
+        }
+        return false
+      })
+      if (!isMarkdown) {
+        $('#content').empty().append($('<pre>').text(content))
+        return
+      }
       marked.setOptions({
         highlight: function (code, language) {
           const validLanguage = hljs.getLanguage(language) ? language : 'plaintext'
@@ -203,7 +233,7 @@
         }
       })
       var html = marked(content)
-      $('#content').html(html)
+      $('#content').html(html).addClass('is-markdown')
     }).catch(e => {
       $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
     })

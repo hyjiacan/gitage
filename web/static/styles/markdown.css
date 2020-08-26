@@ -1,42 +1,44 @@
-#content h1:not(:first-child),
-#content h2:not(:first-child),
-#content h3:not(:first-child) {
+.is-markdown h1:not(:first-child),
+.is-markdown h2:not(:first-child),
+.is-markdown h3:not(:first-child) {
     margin-top: 40px;
     margin-bottom: 10px;
 }
 
-#content pre {
+.is-markdown pre {
     padding: 10px;
     background-color: #fbfae5;
+    word-break: break-all;
+    white-space: pre-wrap;
 }
 
-#content pre code {
+.is-markdown pre code {
 }
 
-#content code {
+.is-markdown code {
 
 }
 
-#content table {
+.is-markdown table {
     width: 100%;
     border-collapse: collapse;
     border: 1px solid #e9e8e8;
     margin-bottom: 10px;
 }
 
-#content table th,
-#content table td {
+.is-markdown table th,
+.is-markdown table td {
     border: 1px solid #e9e8e8;
-    padding: 5px 2px;
+    padding: 5px;
 }
 
-#content blockquote {
+.is-markdown blockquote {
     padding: 10px 5px;
     border-left: 4px solid #c0c0c0;
     color: #555555;
-     background-color: #fafafa;
+    background-color: #fafafa;
 }
 
-#content blockquote p:last-child {
+.is-markdown blockquote p:last-child {
     margin-bottom: 0;
 }
