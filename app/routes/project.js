@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+// const {Worker} = require('worker_threads')
 
 const config = require('../config')
 
@@ -10,7 +11,13 @@ const deploy = require('../misc/deploy')
 const cache = require('../misc/cache')
 const handlers = require('../http/handlers')
 
+// const catalogWorkerFile = path.resolve(path.join(config.root, 'workers/catalog.js'))
+
+// const catalogWorker = new Worker(catalogWorkerFile)
+
 const PAGE_CONFIG_MAP = Object.create(null)
+
+// catalogWorker.setMaxListeners(Infinity)
 
 // 读取配置文件
 async function getPageConfig(userName, projectName) {
@@ -59,6 +66,36 @@ async function getReadmeFile(projectPath) {
   return null
 }
 
+// async function getMarkdownCatalog(currentPath) {
+//   return new Promise((resolve, reject) => {
+//     try {
+//       catalogWorker.on('error', e => {
+//         reject(e)
+//       })
+//       catalogWorker.on('message', catalog => {
+//         resolve(catalog)
+//       })
+//       catalogWorker.postMessage({
+//         path: currentPath, context: {
+//           config,
+//           deploy,
+//           util,
+//           MIME,
+//           handlers
+//         }
+//       })
+//     } catch (e) {
+//       reject(e)
+//     }
+//   })
+// }
+
+function getMeta(filename) {
+  const relPath = path.relative(config.projectRoot, filename)
+  const {project, file} = /^(?<project>.+?[/\\].+?)[/\\](?<file>.+)$/.exec(relPath).groups
+  return deploy.getFileInfo(project, file)
+}
+
 /**
  * 根据 markdown 文件结构生成目录
  * @return {Promise<>}
@@ -94,10 +131,12 @@ async function getMarkdownCatalog(currentPath, root) {
     if (!/^\.(md|markdown|txt|text)$/i.test(ext) && !handlers.match(ext, mime)) {
       continue
     }
+    const meta = await getMeta(abs)
     files.push({
       name: path.basename(entity),
       ext,
-      file: encodeURI(path.join(relativeRoot, entity).replace(/\\/g, '/'))
+      file: encodeURI(path.join(relativeRoot, entity).replace(/\\/g, '/')),
+      meta
     })
   }
   return dirs.concat(files)
@@ -230,7 +269,7 @@ module.exports = {
     const fullName = `${userName}/${projectName}`
 
     if (deploy.isPending(fullName)) {
-      await res.notAvailable(`Project ${fullName} is deploying, please waiting for a moment`, 'text/plain')
+      await res.notAvailable(`正在部署项目 "${fullName}"，请稍等片刻`, 'text/plain')
       return
     }
     const conf = await getPageConfig(userName, projectName)

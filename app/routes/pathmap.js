@@ -4,11 +4,13 @@ const project = require('./project')
 const staticRender = require('./static')
 const hook = require('./hook')
 const misc = require('./misc')
+const proxy = require('./proxy')
 
 module.exports = {
   map(router) {
     // 首页
     router.get('/', index.render)
+    router.post('/proxy', proxy.handle)
     // 内置页面
     router.get('/misc/about/', misc.about)
     // 静态资源

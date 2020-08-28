@@ -62,6 +62,10 @@
       font-size: 13px;
   }
 
+  .item-content {
+      width: 100%;
+  }
+
   .item-content .fa {
       color: rgba(95, 99, 113, 0.8);
       vertical-align: middle;
@@ -82,10 +86,49 @@
   .item-content.active a,
   .item-content.active .fa {
       color: #0a7e2d;
+      font-weight: bold;
   }
 
   img {
       max-width: 100%;
+  }
+
+  span[data-user] {
+      text-transform: uppercase;
+      color: #e30071;
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      line-height: 14px;
+      vertical-align: 0;
+      text-align: center;
+      cursor: default;
+      font-size: 12px;
+      font-weight: bold;
+      background-color: #eaeaea;
+      border: 1px solid #aeaeae;
+      border-radius: 50%;
+  }
+
+  span[data-date] {
+      vertical-align: middle;
+  }
+
+  .data-msg {
+      width: 100%;
+      color: #555555;
+      font-size: 12px;
+      text-overflow: ellipsis;
+      overflow: hidden;
+      word-break: keep-all;
+      white-space: nowrap;
+      padding-left: 2px;
+  }
+
+  .data-msg .badge {
+      font-weight: normal;
+      background-color: #eaeaea;
+      line-height: 1.4;
   }
   </style>
 </head>
@@ -130,12 +173,21 @@
       </span>
     </div>
     <div class="float-right">
-      <span class="badge badge-light">
-        <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
-        <span>{{$project.pusher.full_name}}</span>
-        <span>更新于</span>
-        <span datetime="{{$project.repository.updated_at}}"></span>
-      </span>
+      <t-if on="isReadme">
+        <span class="badge badge-light">
+          <img src="{{$project.pusher.avatar_url}}" alt="{{$project.pusher.username}}" width="20"/>
+          <span>{{$project.pusher.full_name}}</span>
+          <span>更新于</span>
+          <span datetime="{{$project.repository.updated_at}}"></span>
+        </span>
+      </t-if>
+      <t-else>
+        <span class="badge badge-light">
+          <span id="update-user"></span>
+          <span>更新于</span>
+          <span id="update-date"></span>
+        </span>
+      </t-else>
     </div>
     <span class="clearfix"></span>
   </div>
@@ -167,6 +219,13 @@
                   <a href="/projects/{{userName}}/{{projectName}}/{{item.file}}" class="text-wrap">
                     {{item.name}}
                   </a>
+                  <div class="data-msg">
+                    <span data-user="{{item.meta.user}}"></span>
+                    <span data-date datetime="{{item.meta.date}}"
+                          class="badge badge-light"
+                    ></span>
+                    <span title="{{item.meta.message}}">{{item.meta.message}}</span>
+                  </div>
                 </t-else>
               </div>
               <t-if on="item.children">
@@ -238,15 +297,73 @@
       $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
     })
 
+    var users = {}
+
+    /**
+     * 加载用户名和头像
+     */
+    function getUserInfo(user, callback) {
+      if (users[user]) {
+        callback(users[user])
+        return
+      }
+      var origin = new URL('{{editUrl}}').origin
+      $.post('/proxy/', {
+        target: origin + '/api/v1/users/' + user
+      }).then(function (response) {
+        users[user] = {
+          avatar: response.avatar_url,
+          name: response.full_name || user
+        }
+        callback(users[user])
+      }).catch(function () {
+      })
+    }
+
     // 高亮当前文件
     var current = decodeURI(window.location.pathname)
     var catalog = $('#catalog')
+    catalog.find('span[data-user]').each(function () {
+      var el = $(this)
+      var user = el.attr('data-user')
+      el.text(user[0]).attr('title', '用户 ' + user + ' 最后更新')
+      getUserInfo(user, function (info) {
+        var title = '用户 ' + info.name + ' 最后更新'
+        if (info.avatar) {
+          el.before($('<img width="16" height="16"' +
+            ' style="vertical-align: -3px;margin-right: 2px" title="' +
+            title +
+            '">')
+            .attr('src', info.avatar))
+          el.hide()
+          return
+        }
+        el.text(info.name[0]).attr('title', title)
+      })
+    })
     catalog.find('a[href]').each(function () {
       var link = decodeURI($(this).attr('href'))
       if (link !== current) {
         return
       }
       $(this).removeAttr('href').parent().addClass('active')
+      var msg = $(this).next()
+      var user = msg.find('span[data-user]')
+      $('#update-user').text(user.attr('data-user'))
+      var date = user.next()
+      $('#update-date').text(date.text())
+        .attr('datetime', date.attr('datetime'))
+        .attr('title', date.attr('datetime'))
+      setTimeout(function () {
+        getUserInfo(user.attr('data-user'), function (info) {
+          if (info.avatar) {
+            $('#update-user')
+              .before($('<img width="16" height="16" style="vertical-align: -3px;margin-right: 2px">')
+                .attr('src', info.avatar))
+          }
+          $('#update-user').text(info.name)
+        })
+      }, 0)
       return false
     })
   })

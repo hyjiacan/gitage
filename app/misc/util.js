@@ -93,22 +93,33 @@ module.exports = {
       windowsHide: true,
       cwd: workingDir
     })
-
+    const output = {
+      stdout,
+      stderr
+    }
     logger.debug(stdout)
     if (stderr) {
       logger.info(stderr)
     }
+    return output
   },
+  /**
+   *
+   * @param req
+   * @return {Promise<Buffer>}
+   */
   async receivePostData(req) {
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       let buffer = []
       req.on('data', chunk => {
         buffer.push(chunk)
       })
 
       req.on('end', () => {
-        const data = JSON.parse(Buffer.concat(buffer).toString())
-        resolve(data)
+        resolve(Buffer.concat(buffer))
+      })
+      req.on('error', e => {
+        reject(e)
       })
     })
   },
@@ -128,6 +139,18 @@ module.exports = {
         const md5 = md5sum.digest('hex')
         resolve(md5)
       })
+    })
+  },
+  /**
+   *
+   * @param {Number} delay 单位为毫秒
+   * @return {Promise<unknown>}
+   */
+  async sleep(delay) {
+    return new Promise(resolve => {
+      setTimeout(() => {
+        resolve()
+      }, delay)
     })
   }
 }

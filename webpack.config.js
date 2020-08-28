@@ -27,6 +27,10 @@ const distConfig = {
           from: './app/assets/',
           to: 'assets'
         }
+        // {
+        //   from: './workers/',
+        //   to: 'workers'
+        // }
       ]
     })
   ],

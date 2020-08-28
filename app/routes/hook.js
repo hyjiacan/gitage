@@ -1,4 +1,3 @@
-const util = require('../misc/util')
 const logger = require('../misc/logger')
 const deploy = require('../misc/deploy')
 const HttpClient = require('../http/HttpClient')
@@ -20,7 +19,7 @@ function getHeader(headers, suffix) {
 }
 
 async function handleRequest(req, eventType) {
-  const data = await util.receivePostData(req.raw)
+  const data = JSON.parse(req.body.toString())
   /**
    * @type {string} ref 操作名称（branch名称/tag名称）
    * @type {string} ref_type 操作类型（branch/tag）
@@ -35,8 +34,10 @@ async function handleRequest(req, eventType) {
   // 当文件不存在时返回 500
   const url = `${repoUrl.origin}/api/v1/repos/${data.repository.full_name}/contents/gitage.config.json?ref=${data.before}`
   try {
+    logger.debug(`Loading gitage.config.json from remote repo.`)
     // 得到的是 base64
     const response = await HttpClient.get(url)
+    logger.debug('Load complete')
     const content = Buffer.from(JSON.parse(response.toString()).content, 'base64').toString()
     const pageConfig = JSON.parse(content)
     if (pageConfig.tag) {
@@ -50,7 +51,7 @@ async function handleRequest(req, eventType) {
       }
     }
   } catch (e) {
-    logger.error(e)
+    logger.warn(e.message)
   }
   // 此操作可能在耗时较长
   // 为避免git端收到 timeout 的响应

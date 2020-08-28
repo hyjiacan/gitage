@@ -72,7 +72,8 @@ async function checkoutRepo(data) {
       fs.mkdirSync(tempDir, {recursive: true, mode: '777'})
 
       // 克隆代码
-      await util.runCommand(`git clone -b ${branch} ${VERBOSE} --depth=1 ${url} "${tempDir}"`, tempDir)
+      // await util.runCommand(`git clone -b ${branch} ${VERBOSE} --depth=1 ${url} "${tempDir}"`, tempDir)
+      await util.runCommand(`git clone -b ${branch} ${VERBOSE} ${url} "${tempDir}"`, tempDir)
     }
 
     // 写 push 数据
@@ -100,7 +101,13 @@ async function checkoutRepo(data) {
     if (fs.existsSync(workingDir)) {
       fs.rmdirSync(workingDir, {recursive: true})
     }
-    fs.mkdirSync(workingDir)
+    try {
+      fs.mkdirSync(workingDir, {recursive: true})
+    } catch (e) {
+      logger.warn(`mkdir failed: ${e.message}, Will retry in 500ms`)
+      await util.sleep(500)
+      fs.mkdirSync(workingDir, {recursive: true})
+    }
 
     const ignore = pageConfig && pageConfig.ignore ? pageConfig.ignore : []
     ignore.push('.git')
@@ -168,5 +175,40 @@ module.exports = {
    */
   isPending(fullName) {
     return fs.existsSync(path.join(FLAG_DIR, fullName.replace('/', '#')))
+  },
+  /**
+   * 获取仓库内某个文件的最后更新时间和用户
+   * @param fullName
+   * @param filePath
+   * @return {Promise<void>}
+   */
+  async getFileInfo(fullName, filePath) {
+    const tempDir = path.join(config.projectTemp, fullName)
+    const {stdout} = await util.runCommand(`git log -1 --format=fuller -- "${filePath}"`, tempDir)
+
+    // commit 8e7b9877f68ccd08c770f891a28d887e2810c627
+    // Author:     hyjiacan <hyjiacan@163.com>
+    // AuthorDate: Tue Jul 28 10:37:11 2020 +0800
+    // Commit:     hyjiacan <hyjiacan@163.com>
+    // CommitDate: Tue Jul 28 10:37:11 2020 +0800
+    //
+    //     Modified   docs/AJAX.md
+    const lines = stdout.split('\n')
+    const {user} = /^Author:\s*(?<user>[\S]+)/.exec(lines[1]).groups
+    const {date, timezone} = /^AuthorDate:\s*(?<date>.+)(?<timezone>\+\d{4})$/.exec(lines[2]).groups
+    const message = lines.slice(6).join('\n')
+
+    const localDate = new Date(date)
+    // 得到的单位为分钟
+    const offset = parseInt(timezone.substr(0, 1) + '1') *
+      (parseInt(timezone.substr(1, 2)) * 60 + parseInt(timezone.substr(3, 2)))
+    localDate.setMinutes(localDate.getMinutes() + offset)
+    return {
+      user,
+      date: localDate.toJSON()
+        .replace('T', ' ')
+        .replace('Z', ''),
+      message
+    }
   }
 }

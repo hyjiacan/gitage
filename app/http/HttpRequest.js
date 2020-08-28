@@ -22,13 +22,18 @@ class HttpRequest {
   /**
    *
    * @param {IncomingMessage} request
+   * @param {Buffer} body
    */
-  constructor(request) {
+  constructor(request, body) {
     this._req = request
     this._method = request.method
     this._url = url.parse(request.url)
-
+    this._body = body
     this._query = resolveQuery(this._url)
+  }
+
+  get body() {
+    return this._body
   }
 
   get query() {

@@ -5,11 +5,13 @@ const logger = require('./misc/logger')
 const router = require('./router')
 const HttpRequest = require('./http/HttpRequest')
 const HttpResponse = require('./http/HttpResponse')
+const util = require('./misc/util')
 
 const server = http.createServer(async (req, res) => {
-  const request = new HttpRequest(req)
   const response = new HttpResponse(req, res)
   try {
+    const body = await util.receivePostData(req)
+    const request = new HttpRequest(req, body)
     await router.route(request, response)
   } catch (e) {
     logger.error(e)
