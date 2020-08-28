@@ -1,0 +1,155 @@
+
+#container {
+    position: relative;
+}
+
+#container:after {
+    content: ' ';
+    clear: both;
+    display: block;
+}
+
+#sidebar {
+    float: left;
+    width: 360px;
+    position: sticky;
+    top: 0;
+    overflow: auto;
+}
+
+#catalog {
+    font-size: small;
+    border-left: 1px dotted #5f6371;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#catalog ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-left: 1px dotted transparent;
+}
+
+#catalog ul:hover {
+    border-left-color: #5f6371;
+}
+
+#catalog li {
+    padding: 5px 0 0 20px;
+}
+
+#catalog > li {
+    padding-left: 5px;
+}
+
+#content {
+    margin-left: 370px;
+    overflow: auto;
+    font-size: 13px;
+}
+
+.item-content {
+    width: 100%;
+}
+
+.item-content .fa {
+    color: rgba(95, 99, 113, 0.8);
+    vertical-align: middle;
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+}
+
+.item-content:hover .fa {
+    color: rgb(67, 73, 92);
+}
+
+.item-content a {
+    color: #015aba;
+    vertical-align: middle;
+}
+
+.item-content.active a,
+.item-content.active .fa {
+    color: #0a7e2d;
+    font-weight: bold;
+}
+
+img {
+    max-width: 100%;
+}
+
+span[data-user] {
+    text-transform: uppercase;
+    color: #e30071;
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    line-height: 14px;
+    vertical-align: 0;
+    text-align: center;
+    cursor: default;
+    font-size: 12px;
+    font-weight: bold;
+    background-color: #eaeaea;
+    border: 1px solid #aeaeae;
+    border-radius: 50%;
+}
+
+span[data-date] {
+    vertical-align: middle;
+}
+
+.data-msg {
+    width: 100%;
+    color: #555555;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    word-break: keep-all;
+    white-space: nowrap;
+    padding-left: 2px;
+}
+
+.data-msg .badge {
+    font-weight: normal;
+    background-color: #eaeaea;
+    line-height: 1.4;
+}
+
+#tool-buttons {
+    bottom: 40px;
+    right: 20px;
+}
+
+#tool-buttons a {
+    display: block;
+    margin-top: 10px;
+}
+
+.mode-focus > header,
+.mode-focus > footer,
+.mode-focus > nav,
+.mode-focus > nav + div,
+.mode-focus #tool-btn-top {
+    display: none;
+}
+
+.mode-focus #sidebar {
+    display: none;
+}
+
+.mode-focus #tool-btn-focus {
+    opacity: 0.2;
+    transition: opacity 618ms;
+}
+
+.mode-focus #tool-btn-focus:hover {
+    opacity: 0.8;
+}
+
+.mode-focus #content {
+    margin-left: 0;
+}
