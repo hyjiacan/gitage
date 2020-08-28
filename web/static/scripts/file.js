@@ -6,24 +6,27 @@
  */
 function isMarkdown(content) {
   return content.split('\n').some(function (line) {
+    // heading
     if (/^#+/.test(line)) {
       return true
     }
+    // inline code
     if (/`.+?`/.test(line)) {
       return true
     }
+    // block code
     if (/^```/.test(line)) {
       return true
     }
-    if (/([*_]{1,2}).+?\1/.test(line)) {
-      return true
-    }
+    // quoteblock
     if (/^\s*>/.test(line)) {
       return true
     }
+    // link/image
     if (/\[.+?]\(.+?\)/.test(line)) {
       return true
     }
+    // table
     if (/^\|?-+/.test(line)) {
       return true
     }
