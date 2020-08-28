@@ -183,9 +183,9 @@
       </t-if>
       <t-else>
         <span class="badge badge-light">
-          <span id="update-user"></span>
+          <span id="update-user">{{$project.pusher.full_name}}</span>
           <span>更新于</span>
-          <span id="update-date"></span>
+          <span id="update-date" datetime="{{$project.repository.updated_at}}"></span>
         </span>
       </t-else>
     </div>
