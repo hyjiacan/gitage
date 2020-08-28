@@ -142,12 +142,16 @@ span[data-date] {
 }
 
 .mode-focus #tool-btn-focus {
-    opacity: 0.2;
-    transition: opacity 618ms;
+    transition: background-color 200ms, border-color 200ms;
+    background-color: transparent;
+    color: rgba(52, 58, 64, 0.18) !important;
+    border-color: transparent;
 }
 
 .mode-focus #tool-btn-focus:hover {
-    opacity: 0.8;
+    background-color: #343a40;
+    color: #ffffff !important;
+    border-color: #1d2124;
 }
 
 .mode-focus #content {
