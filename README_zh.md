@@ -19,7 +19,7 @@ gitage 运行在 nodejs 上，依赖 git (gitea, gogs, gitlab) 等托管系统�
 
 gitage 主要为团队/公司等非公开组织提供一个易于部署的 pages 服务。
 
-gitage 提供 markdown 文件渲染，以及 docx pdf 文件的预览支持。
+gitage 提供 markdown 文件渲染，以及 [一些类型](#type-markdown) 文件的预览支持。
 
 ## 用法
 
@@ -84,9 +84,17 @@ PROJECT_CHECKOUT_TMP =
 
 POST `http://127.0.0.1:1997/hook/`
 
-
 `127.0.0.1` 是部署的服务器IP
 `1997` 是部署的端口
+
+### type-markdown
+
+当 `type=markdown` 时，可以在仓库内指定一个目录 (可以是仓库根目录 `/`)，用于发布文档文件。
+
+在此模式下，会扫描整个部署目录，并自动生成文档树。
+每个文件都包含其最后更新的用户/日期以及更新消息。
+
+> 目前支持 `.md|.markdown|.txt|.pdf|.docx` 类型文件在线查看。
 
 ## 开发计划
 
@@ -94,7 +102,6 @@ POST `http://127.0.0.1:1997/hook/`
 
 ### next-version
 
-- [ ] file.html 页面中，如果加载文件成功，那么展示当前打开文件最后更新时间
 - [ ] 每个仓库的 checkout 日志，单独写到一个文件中（每次一个文件）
 - [ ] 插件支持
 - [ ] 优化 `wet` 性能
