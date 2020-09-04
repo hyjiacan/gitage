@@ -45,10 +45,11 @@ async function handleRequest(req, eventType) {
         return 'Ignore: not a tag'
       }
     }
-    if (pageConfig.branch) {
-      if (branch !== pageConfig.branch) {
-        return `Ignore: branch ${branch} is not expected`
-      }
+    if (!pageConfig.branch) {
+      pageConfig.branch = 'master'
+    }
+    if (branch !== pageConfig.branch) {
+      return `Ignore: branch ${branch} is not expected`
     }
   } catch (e) {
     logger.warn(e.message)

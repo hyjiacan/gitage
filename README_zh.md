@@ -79,6 +79,7 @@ PROJECT_CHECKOUT_TMP =
 - `path` 部署目录，默认为 `docs`
 - `index` 部署目录下的索引页名称，默认为 `index.html/index.md` **区分大小写**
 - `tag` 是否仅在收到 `tag` 时部署，默认为 `false` (计划中)
+- `branch` 指定部署的分支，默认为 `master` (配置文件应该存放在主分支上，以避免无法正常读取)
 
 在仓库的 web hook 上添加地址:
 
