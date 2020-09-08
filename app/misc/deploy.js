@@ -196,7 +196,9 @@ module.exports = {
     const lines = stdout.split('\n')
     const {user} = /^Author:\s*(?<user>[\S]+)/.exec(lines[1]).groups
     const {date, timezone} = /^AuthorDate:\s*(?<date>.+)(?<timezone>\+\d{4})$/.exec(lines[2]).groups
-    const message = lines.slice(6).join('\n')
+    // 从第6行开始为消息内容
+    // 移除首尾的空白字符
+    const message = lines.slice(6).join('\n').trim()
 
     const localDate = new Date(date)
     // 得到的单位为分钟

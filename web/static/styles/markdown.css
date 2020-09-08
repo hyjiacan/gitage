@@ -1,6 +1,6 @@
-.is-markdown h1:not(:first-child),
-.is-markdown h2:not(:first-child),
-.is-markdown h3:not(:first-child) {
+#content h1:not(:first-child),
+#content h2:not(:first-child),
+#content h3:not(:first-child) {
     margin-top: 40px;
     margin-bottom: 10px;
 }
@@ -19,26 +19,32 @@
 
 }
 
-.is-markdown table {
+#content table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #e9e8e8;
+    border: 1px solid #c1c1c1;
     margin-bottom: 10px;
 }
 
-.is-markdown table th,
-.is-markdown table td {
-    border: 1px solid #e9e8e8;
+#content table th p:last-child,
+#content table td p:last-child
+{
+    margin-bottom: 0;
+}
+
+#content table th,
+#content table td {
+    border: 1px solid #c1c1c1;
     padding: 5px;
 }
 
-.is-markdown blockquote {
+#content blockquote {
     padding: 10px 5px;
     border-left: 4px solid #c0c0c0;
     color: #555555;
     background-color: #fafafa;
 }
 
-.is-markdown blockquote p:last-child {
+#content blockquote p:last-child {
     margin-bottom: 0;
 }
