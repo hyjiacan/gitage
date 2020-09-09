@@ -121,7 +121,10 @@ span[data-date] {
 
 #tool-buttons {
     bottom: 40px;
-    right: 20px;
+    right: 0;
+    padding: 10px;
+    border: 1px solid transparent;
+    transition: background-color 200ms, border-color 200ms, transform 200ms;
 }
 
 #tool-buttons a {
@@ -132,8 +135,7 @@ span[data-date] {
 .mode-focus > header,
 .mode-focus > footer,
 .mode-focus > nav,
-.mode-focus > nav + div,
-.mode-focus #tool-btn-top {
+.mode-focus > nav + div {
     display: none;
 }
 
@@ -141,17 +143,25 @@ span[data-date] {
     display: none;
 }
 
-.mode-focus #tool-btn-focus {
-    transition: background-color 200ms, border-color 200ms;
-    background-color: transparent;
-    color: rgba(52, 58, 64, 0.18) !important;
-    border-color: transparent;
+.mode-focus #tool-buttons {
+    transform: translateX(40px);
+    border-radius: 50%;
+    background-color: rgba(0, 0, 0, .5);
+    border-color: #ffffff;
 }
 
-.mode-focus #tool-btn-focus:hover {
-    background-color: #343a40;
-    color: #ffffff !important;
-    border-color: #1d2124;
+.mode-focus #tool-buttons .btn {
+    opacity: 0.1;
+    transition: opacity 200ms;
+}
+
+.mode-focus #tool-buttons:hover {
+    transform: translateX(0);
+    background-color: transparent;
+}
+
+.mode-focus #tool-buttons:hover .btn {
+    opacity: 1;
 }
 
 .mode-focus #content {
