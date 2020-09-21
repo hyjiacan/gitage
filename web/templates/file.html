@@ -81,7 +81,7 @@
         <ul id="catalog">
           <t-tree on="catalog as item">
             <li>
-              <div class="item-content d-inline-block">
+              <div class="item-content d-inline-block {{item.type !== 'dir' ? 'is-file' : ''}}">
                 <t-if on="item.type === 'dir'">
                   <i class="fa fa-folder-o"></i>
                   <span class="text-wrap">{{item.name}}</span>
@@ -145,99 +145,7 @@
   <script src="/static/scripts/file.js"></script>
   <script type="text/javascript">
   $(function () {
-    $('#content').html('加载中...')
-    $.get('/raw/{{userName}}/{{projectName}}/{{file}}').then(function (content, state, xhr) {
-      var contentType = xhr.getResponseHeader('content-type')
-      if (/text\/html/.test(contentType)) {
-        $('#content').html(content)
-        return
-      }
-      if (!isMarkdown(content)) {
-        $('#content').empty().append($('<pre>').text(content))
-        return
-      }
-      marked.setOptions({
-        highlight: function (code, language) {
-          const validLanguage = hljs.getLanguage(language) ? language : 'plaintext'
-          return hljs.highlight(validLanguage, code).value
-        }
-      })
-      var html = marked(content)
-      $('#content').html(html).addClass('is-markdown')
-    }).catch(e => {
-      $('#content').html(`<div class="err text-muted m-5">File ${e.statusText}: <b>{{decodeURI(file)}}</b></div>`)
-    })
-
-    var users = {}
-
-    /**
-     * 加载用户名和头像
-     */
-    function getUserInfo(user, callback) {
-      if (users[user]) {
-        callback(users[user])
-        return
-      }
-      var origin = new URL('{{editUrl}}').origin
-      $.post('/proxy/', {
-        target: origin + '/api/v1/users/' + user
-      }).then(function (response) {
-        users[user] = {
-          avatar: response.avatar_url,
-          name: response.full_name || user
-        }
-        callback(users[user])
-      }).catch(function () {
-      })
-    }
-
-    // 高亮当前文件
-    var current = decodeURI(window.location.pathname)
-    var catalog = $('#catalog')
-    catalog.find('span[data-user]').each(function () {
-      var el = $(this)
-      var user = el.attr('data-user')
-      el.text(user[0]).attr('title', '用户 ' + user + ' 最后更新')
-      getUserInfo(user, function (info) {
-        var title = '用户 ' + info.name + ' 最后更新'
-        if (info.avatar) {
-          el.before($('<img width="16" height="16"' +
-            ' style="vertical-align: -3px;margin-right: 2px" title="' +
-            title +
-            '">')
-            .attr('src', info.avatar))
-          el.hide()
-          return
-        }
-        el.text(info.name[0]).attr('title', title)
-      })
-    })
-    catalog.find('a[href]').each(function () {
-      var link = decodeURI($(this).attr('href'))
-      if (link !== current) {
-        return
-      }
-      $(this).removeAttr('href').parent().addClass('active')
-      var msg = $(this).next()
-      var user = msg.find('span[data-user]')
-      $('#update-user').text(user.attr('data-user'))
-      var date = user.next()
-      $('#update-date').text(date.text())
-        .attr('datetime', date.attr('datetime'))
-        .attr('title', date.attr('datetime'))
-      setTimeout(function () {
-        getUserInfo(user.attr('data-user'), function (info) {
-          if (info.avatar) {
-            $('#update-user')
-              .before($('<img width="16" height="16" style="vertical-align: -3px;margin-right: 2px">')
-                .attr('src', info.avatar))
-          }
-          $('#update-user').text(info.name)
-        })
-      }, 0)
-      return false
-    })
-    $('#sidebar').css('height', window.innerHeight + 'px')
+    loadFile('/raw/{{userName}}/{{projectName}}/{{file}}', '{{file}}')
   })
   </script>
 </t-if>
@@ -250,5 +158,10 @@
   })
   </script>
 </t-elif>
+<script>
+highlightCurrentFile('{{editUrl}}')
+highlightLastUpdatedFile()
+$('#sidebar').css('height', window.innerHeight + 'px')
+</script>
 </body>
 </html>
