@@ -6,9 +6,8 @@ const deploy = require('./misc/deploy')
 const router = require('./router')
 const pathmap = require('./routes/pathmap')
 const cache = require('./misc/cache')
-
-require('./handers/docx')
-require('./handers/pdf')
+const customHandlers = require('./http/handlers')
+const handlers = require('./http-handlers')
 
 process.on('uncaughtException', e => {
   logger.error(e)
@@ -29,5 +28,11 @@ deploy.clearFlag()
 cache.clear()
 
 pathmap.map(router)
+
+console.info('Load http handlers')
+handlers.forEach(({test, handler}) => {
+  customHandlers.register(test, handler)
+})
+console.info('done')
 
 server.start()
