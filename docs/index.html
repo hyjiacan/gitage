@@ -1,0 +1,142 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gitage - Static server based on git-scm</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css"
+      integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="jumbotron">
+        <h1>Gitage</h1>
+        <p class="lead">
+          Static server based on git-scm, git pages for intranet.
+        </p>
+      </div>
+      <p>Tested on <a href="https:/./gitea.io">gitea</a> for now.</p>
+      <h2>Dependencies</h2>
+      <ul>
+        <li>
+          Simple Javascript Template Engine
+          <a href="http://github.com/hyjiacan/wet">wet</a>
+        </li>
+        <li>Git</li>
+        <li>Nodejs &gt;8 must be installed on your server</li>
+      </ul>
+
+      <h2>
+        <a
+          id="user-content-usage"
+          class="anchor"
+          aria-hidden="true"
+          href="#usage"
+          ><svg
+            class="octicon octicon-link"
+            viewBox="0 0 16 16"
+            version="1.1"
+            width="16"
+            height="16"
+            aria-hidden="true"
+          >
+            <path
+              fill-rule="evenodd"
+              d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0z"
+            ></path></svg></a
+        >Usage
+      </h2>
+      <div class="highlight highlight-source-shell">
+        <pre>
+npm run build
+      node dist/gitage.js</pre
+        >
+      </div>
+      <h2>Server Configuration</h2>
+      <p>
+        Config file: <code>config</code> (case-sensitive), should be put in the
+        root path of gitage.
+      </p>
+      <p><em>config</em></p>
+      <pre><code>
+    # DEBUG flag
+    DEBUG = false
+    # ip to host
+    HOST = 0.0.0.0
+    # port to listen
+    PORT = 1997
+    # The path to put logs file, can be absolute or relative
+    LOG_PATH = logs
+    # The path to checkout repository, can be absolute or relative
+    PROJECT_ROOT_PATH = projects
+    # Log the messages which higher than this level
+    LOG_LEVEL = info
+    # The temporary  path to the checkout, leave it blank to use the system temp path
+    PROJECT_CHECKOUT_TMP =
+      </code></pre>
+      <blockquote>
+        <p>
+          If no <em>config</em> file, the value above will be the default
+          values.
+        </p>
+      </blockquote>
+      <blockquote>
+        <p>Note: Configuration item name must be <strong>UPPERCASE</strong></p>
+      </blockquote>
+      <h2>Repo Configuration</h2>
+      <p>
+        Add file <code>gitage.config.json</code> into your repo, in the form
+        bellow:
+      </p>
+      <div>
+        <pre>
+          <code>
+    {
+      "type": "markdown",
+      "path": "docs",
+      "index": "index.html",
+      "tag": true,
+        "branch": "master",
+        "ignore": [
+          "file",
+          "dir",
+          "..."
+        ]
+    }
+          </code>
+        </pre>
+      </div>
+      <ul>
+        <li>
+          <code>type</code> Deploy type, only <code>markdown</code> supported
+          currently, or just leave it blank <strong>case-sensitive</strong>
+        </li>
+        <li>
+          <code>path</code> The directory to deploy (where the static assets
+          located in), default: <code>docs</code>
+        </li>
+        <li>
+          <code>index</code> The index file to deploy，default:
+          <code>index.html/index.md</code> <strong>case-sensitive</strong>
+        </li>
+        <li>
+          <code>tag</code> Whether to deploy only on
+          <code>tag</code> pushed，default: <code>false</code> (planning)
+        </li>
+      </ul>
+      <p>Add web-hook on your repository:</p>
+      <p>POST <code>http://127.0.0.1:1997/hook/</code></p>
+      <p>
+        <code>127.0.0.1</code> The IP to serve <code>1997</code> The port to
+        serve
+      </p>
+      <h2>Screenshots</h2>
+      <p>
+        <img src="images/1.png" alt="gitage" />
+      </p>
+    </div>
+  </body>
+</html>
