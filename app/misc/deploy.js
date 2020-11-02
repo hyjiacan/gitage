@@ -42,7 +42,6 @@ async function checkoutRepo(data) {
   // 写检出标记
   await setFlag(fullName)
   try {
-
     logger.info(`Checkout: ${url}`)
 
     let dirExists = fs.existsSync(tempDir)
@@ -54,6 +53,9 @@ async function checkoutRepo(data) {
     }
 
     if (dirExists) {
+      // 仓库的地址可能发生变化，在 checkout 前，先重新设置一下 clone 地址
+      // git remote set-url origin [url]
+      await util.runCommand(`git remote set-url origin ${url}`, tempDir)
       // 清空工作目录
       await util.runCommand(`git clean -f -d "${tempDir}"`, tempDir)
       // logger.info(`rmdir: ${dist}`)
@@ -72,7 +74,7 @@ async function checkoutRepo(data) {
       fs.mkdirSync(tempDir, {recursive: true, mode: '777'})
 
       // 克隆代码
-      // await util.runCommand(`git clone -b ${branch} ${VERBOSE} --depth=1 ${url} "${tempDir}"`, tempDir)
+      // await util.runComman(`git clone -b ${branch} ${VERBOSE} --depth=1 ${url} "${tempDir}"`, tempDir)
       await util.runCommand(`git clone -b ${branch} ${VERBOSE} ${url} "${tempDir}"`, tempDir)
     }
 
