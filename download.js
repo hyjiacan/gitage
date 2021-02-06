@@ -23,6 +23,8 @@ function download(link, paths, options) {
   HttpClient.get(link, options).then(content => {
     fs.writeFileSync(targetFile, content)
     console.log(`${filename} download complete`)
+  }).catch(e => {
+    console.warn(`${filename} download failed: ${e.message}`)
   })
 }
 
