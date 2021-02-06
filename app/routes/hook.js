@@ -53,6 +53,10 @@ async function handleRequest(req, eventType) {
     }
   } catch (e) {
     logger.warn(e.message)
+    if (e.message === 'Not Found') {
+      return 'Not a Gitage repository: File gitage.config.json not found'
+    }
+    return e.message
   }
   // 此操作可能在耗时较长
   // 为避免git端收到 timeout 的响应
@@ -111,10 +115,11 @@ module.exports = {
     logger.debug(`Accept git push from ${host}: ${delivery.value}`)
 
     try {
-      await handleRequest(req, eventType)
+      const result = await handleRequest(req, eventType)
 
       res.write({
-        code: 'OK'
+        code: 'OK',
+        message: result
       })
     } catch (e) {
       logger.error(e)
