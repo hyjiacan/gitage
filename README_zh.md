@@ -99,9 +99,9 @@ POST `http://127.0.0.1:1997/hook/`
 
 ## 截图
 
-![1](./docs/1.png)
+![1](./docs/images/1.png)
 
-![2](./docs/2.png)
+![2](./docs/images/2.png)
 
 ## 开发计划
 
