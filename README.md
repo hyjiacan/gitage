@@ -74,3 +74,9 @@ POST `http://127.0.0.1:1997/hook/`
 
 `127.0.0.1` The IP to serve
 `1997` The port to serve
+
+## Screenshots
+
+![1](./docs/1.png)
+
+![2](./docs/2.png)

@@ -97,6 +97,12 @@ POST `http://127.0.0.1:1997/hook/`
 
 > 目前支持 `.md|.markdown|.txt|.pdf|.docx` 类型文件在线查看。
 
+## 截图
+
+![1](./docs/1.png)
+
+![2](./docs/2.png)
+
 ## 开发计划
 
 [pdf2json]: https://www.npmjs.com/package/pdf2json
