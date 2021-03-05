@@ -1,14 +1,13 @@
 # gitage
 
-Static web server based on git-scm.
+Static web server based on NodeJS for git-pages.
 
 Tested on [gitea](https://gitea.io/) for now.
 
 Dependencies:
 
-- Simple Javascript Template Engine [wet](http://github.com/hyjiacan/wet)
-
-- Git, nodejs>8 must be installed on your server.
+- Git 
+- nodejs>8
 
 ## Usage
 

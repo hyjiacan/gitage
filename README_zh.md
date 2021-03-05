@@ -1,6 +1,6 @@
 # gitage
 
-基于GIT的静态WEB服务。
+基于 NodeJS 的静态 git-pages WEB服务。
 
 依赖:
 
