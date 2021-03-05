@@ -4,9 +4,8 @@
 
 依赖:
 
-- 简单的 js 模板引擎 [wet](http://gitee.com/hyjiacan/wet)
-
-运行时需要服务器上安装了 git, nodejs>8
+- git
+- nodejs>8
 
 目前支持的托管系统:
 
