@@ -61,7 +61,7 @@ async function checkoutRepo(data) {
       // logger.info(`rmdir: ${dist}`)
       // fs.rmdirSync(dist, {recursive: true})
       // git --work-tree=${WEB_DIR} checkout --force
-      await util.runCommand(`git fetch origin ${branch} --prune --all ${VERBOSE}`, tempDir)
+      await util.runCommand(`git fetch origin ${branch} --prune ${VERBOSE}`, tempDir)
       // await util.runCommand(`git reset --hard origin/${branch}`, dist)
       const head = await util.readFileContent(path.join(tempDir, '.git', 'HEAD'))
       logger.info('Checking current branch name: ' + head)
