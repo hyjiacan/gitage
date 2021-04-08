@@ -23,3 +23,7 @@
 *:hover {
     scrollbar-color: rgba(30, 30, 30, 0.3) rgba(255, 255, 255, .5);
 }
+
+.commit-message {
+    word-break: break-all;
+}

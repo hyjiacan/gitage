@@ -49,7 +49,14 @@
                   <li>
                     <span class="text-black-50">{{item.committer.name}}</span>
                     <span datetime="{{item.timestamp}}" class="text-muted"></span>
-                    <span>{{item.message}}</span>
+                    <span class="commit-message" title="{{item.message.length > 80 ? item.message : ''}}">
+					  <t-if on="item.message.length > 80">
+					    {{item.message.substr(0, 100)}}...
+					  </t-if>
+					  <t-else>
+					    {{item.message}}
+					  </t-else>
+					</span>
                   </li>
                 </t-for>
               </ul>
